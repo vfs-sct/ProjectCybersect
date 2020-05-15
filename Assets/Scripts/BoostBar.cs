@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShieldBar : MonoBehaviour
+public class BoostBar : MonoBehaviour
 {
     [SerializeField] private PlayerStats _player;
 
-    private Image _shieldBar;
+    private Image _boostBar;
 
     private void Start()
     {
-        _shieldBar = GetComponent<Image>();
+        _boostBar = GetComponent<Image>();
     }
 
     private void Update()
@@ -21,11 +21,11 @@ public class ShieldBar : MonoBehaviour
         // if it can't find the player, set hp to 0
         if(_player == null)
         {
-            _shieldBar.fillAmount = 0;
+            _boostBar.fillAmount = 0;
             return;
         }
 
         // set fill to health percent
-        _shieldBar.fillAmount = _player.shieldPercent;
+        _boostBar.fillAmount = _player.boostPercent;
     }
 }
