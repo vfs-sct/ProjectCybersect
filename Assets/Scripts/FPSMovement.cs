@@ -49,7 +49,7 @@ public class FPSMovement : MonoBehaviour
         if (x < 1)
             return 1 + constant;
         else
-            return Mathf.Abs(Mathf.Pow(x - 1, power) + 1) + constant;
+            return Mathf.Pow(x - Mathf.Sign(x), power) + 1 + constant;
     }
 
     private void HorizontalMovement()
@@ -70,7 +70,7 @@ public class FPSMovement : MonoBehaviour
                 if (targetVelocity == Vector2.zero)
                     constant = -decelerationPercent;
 
-                float accelerationMultiplier = AccelerationFunction(currentVelocity.magnitude/movementSpeed, 2, constant); 
+                float accelerationMultiplier = AccelerationFunction(currentVelocity.magnitude/movementSpeed, 4, constant); 
                 float deltaMagnitude = accelerationMultiplier*movementAcceleration*Time.fixedDeltaTime;
                 float deltaToDistanceRatio = deltaMagnitude/distance;
                 if (deltaToDistanceRatio > 1.0f)

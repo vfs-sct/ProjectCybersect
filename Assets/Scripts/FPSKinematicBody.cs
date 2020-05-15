@@ -34,7 +34,27 @@ public class FPSKinematicBody : MonoBehaviour
         transform.position += deltaPosition;
     }
 
-    private void HandleCollisions()
+    private void ComputeVelocity(Vector3 normal)
+    {
+        Vector3 velocity = new Vector3(velocityX, velocityY, velocityZ);
+
+        Vector3 velocityProjectedOnNormal = Vector3.Project(velocity, normal);
+        velocity -= velocityProjectedOnNormal;
+
+        if (!groundCheck.grounded)
+        {
+            velocityX = frictionAlpha*velocityX;
+            velocityZ = frictionAlpha*velocityZ;
+            if (velocityY > 0.0f)
+                velocityY = frictionAlpha*velocityY;
+        }
+
+        velocityX = velocity.x;
+        velocityY = velocity.y;
+        velocityZ = velocity.z;
+    }
+
+    private void CheckForCollisions()
     {
         foreach (Collider collider in colliders)
         {
@@ -49,31 +69,7 @@ public class FPSKinematicBody : MonoBehaviour
             if (result)
             {
                 transform.position += clearDirection*clearDistance;
-
-                Vector3 velocity = new Vector3(velocityX, velocityY, velocityZ);
-                if (!Mathf.Approximately(Vector3.Dot(clearDirection, velocity), -1.0f))
-                {
-                    Vector3 velocityProjectedOnNormal = Vector3.Project(velocity, clearDirection);
-                    velocity -= velocityProjectedOnNormal;
-
-                    if (!groundCheck.grounded)
-                    {
-                        velocityX = frictionAlpha*velocityX;
-                        velocityZ = frictionAlpha*velocityZ;
-                        if (velocityY > 0.0f)
-                            velocityY = frictionAlpha*velocityY;
-                    }
-
-                    velocityX = velocity.x;
-                    velocityY = velocity.y;
-                    velocityZ = velocity.z;
-                }
-                else
-                {
-                    velocityX = 0;
-                    velocityY = 0;
-                    velocityZ = 0;
-                }
+                ComputeVelocity(clearDirection);
             }
         }
     }
@@ -82,6 +78,6 @@ public class FPSKinematicBody : MonoBehaviour
     {
         Gravity();
         MoveObject();
-        HandleCollisions();
+        CheckForCollisions();
     }
 }

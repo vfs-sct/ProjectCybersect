@@ -11,6 +11,7 @@ public class FPSInput : MonoBehaviour
 
     [HideInInspector] public float mouseDeltaX;
     [HideInInspector] public float mouseDeltaY;
+    [HideInInspector] public bool leftMouseDown;
 
     [HideInInspector] public bool spaceDown = false;
     [HideInInspector] public bool grappleDown = false;
@@ -39,6 +40,8 @@ public class FPSInput : MonoBehaviour
     {
         mouseDeltaX = Input.GetAxisRaw("Mouse X");
         mouseDeltaY = Input.GetAxisRaw("Mouse Y");
+
+        leftMouseDown = Input.GetMouseButton(0);
     }
 
     private void Update()

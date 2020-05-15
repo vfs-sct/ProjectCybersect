@@ -8,10 +8,17 @@ public class FPSLook : MonoBehaviour
     [SerializeField] private float verticalRotationMultiplier = 1.0f;
     [SerializeField] private float maxPitch = 85;
     [SerializeField] private float minPitch = -70;
+    [SerializeField, Range(0, 1)] private float cameraYawAlpha = 0.2f;
+    [SerializeField] private float cameraYawClamp = 30.0f;
+
+    public bool rotationLocked = false;
 
     private FPSInput input;
     private Transform viewTransform;
+
     private float cameraPitch = 0.0f;
+    private float targetCameraYaw = 0.0f;
+    private float cameraYaw = 0.0f;
 
     private void LockAndHideCursor()
     {
@@ -28,15 +35,25 @@ public class FPSLook : MonoBehaviour
 
     private void Update()
     {
-
         float deltaYaw = input.mouseDeltaX*rotationMultiplier;
         float deltaPitch = -input.mouseDeltaY*rotationMultiplier*verticalRotationMultiplier;
 
-        transform.Rotate(new Vector3(0.0f, deltaYaw, 0.0f));
+        if (rotationLocked)
+        {
+            targetCameraYaw += deltaYaw;
+            targetCameraYaw = Mathf.Clamp(targetCameraYaw, -cameraYawClamp, cameraYawClamp);
+        }
+        else
+        {
+            targetCameraYaw = 0.0f;
+            transform.Rotate(new Vector3(0.0f, deltaYaw, 0.0f));
+        }
+
+        cameraYaw = Mathf.Lerp(cameraYaw, targetCameraYaw, cameraYawAlpha);
 
         cameraPitch += deltaPitch;
         cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
 
-        viewTransform.localRotation = Quaternion.Euler(cameraPitch, 0.0f, 0.0f);
+        viewTransform.localRotation = Quaternion.Euler(cameraPitch, cameraYaw, 0.0f);
     }
 }
