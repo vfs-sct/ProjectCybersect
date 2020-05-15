@@ -13,20 +13,10 @@ public class CameraAnimator : MonoBehaviour
     public float grappleFOVMultiplier = 1.2f;
     public float grappleFOVAlpha = 0.2f;
 
-    [Header("Landing")]
-    public float landingDepressionAmount = 1.0f;
-    public float landingDepressionOffset = 0.1f;
-    public float landingDepressionPitch = 1.0f;
-    public float landingDepressionIncreaseHalfLife = 0.15f;
-    public float landingDepressionRecoverySmoothness = 0.5f;
-    public float landingDepressionRecoverySpeed = 0.1f;
-
     private Grapple grapple;
     private Camera cameraComponent;
 
     private float cameraShake = 0.0f;
-    private float depression = 0.0f;
-    private float depressionROC = 0.0f;
 
     private float pitch = 0.0f;
     private float yaw = 0.0f;
@@ -51,10 +41,14 @@ public class CameraAnimator : MonoBehaviour
     float sinTimer = 0.0f;
     private void CalculateCameraShake()
     {
+        if (cameraShake > 0.01f)
+            return;
+
         float shakeX = Mathf.Sin(sinTimer*shakeFreqency*Mathf.PI)*cameraShake;
         float shakeY = Mathf.Sin(sinTimer*shakeFreqency*2.0f*Mathf.PI)*cameraShake;
-        pitch = shakeX;
-        yaw = shakeY;
+        pitch += shakeX;
+        yaw += shakeY;
+
         cameraShake = HalfLife(cameraShake, Time.deltaTime, shakeHalfLife);
         sinTimer += Time.deltaTime;
     }
@@ -63,12 +57,16 @@ public class CameraAnimator : MonoBehaviour
     {
         if (fov == targetFov)
             return;
+
         fov = Mathf.Lerp(fov, targetFov, grappleFOVAlpha);
         cameraComponent.fieldOfView = fov;
     }
 
     private void Update()
     {
+        pitch = 0;
+        yaw = 0;
+
         CalculateCameraShake();
         CalculateFOV();
 
@@ -84,7 +82,7 @@ public class CameraAnimator : MonoBehaviour
         }
 
         if (grapple.state == GrappleState.ENGAGED)
-            targetFov = startFov + (grappleFOVMultiplier - 1)*startFov*grapple.GetPercentOfMaxSpeed();
+            targetFov = startFov + (grappleFOVMultiplier - 1)*startFov*grapple.currentToMaxSpeedRatio;
         else
             targetFov = startFov;
     }

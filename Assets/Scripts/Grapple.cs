@@ -30,6 +30,8 @@ public class Grapple : MonoBehaviour
     [HideInInspector] public GrappleState state = GrappleState.INACTIVE;
     [HideInInspector] public GrappleState previousState = GrappleState.INACTIVE;
 
+    public float currentToMaxSpeedRatio = 0.0f;
+
     private FPSKinematicBody kb;
     private FPSInput input;
     private FPSLook look;
@@ -106,11 +108,8 @@ public class Grapple : MonoBehaviour
 
     private void DisengageGrapple()
     {
-        if (state == GrappleState.ENGAGED)
-        {
-            state = GrappleState.RETURNING;
-            grappleTimer = distanceToGrapplePoint/grappleEngagementSpeed;
-        }
+        state = GrappleState.RETURNING;
+        grappleTimer = distanceToGrapplePoint/grappleEngagementSpeed;
     }
 
     private void EngageGrapple()
@@ -277,9 +276,7 @@ public class Grapple : MonoBehaviour
         }
     }
 
-    float grappleTimer = 0.0f;
-    bool lastGrappleDown = false;
-    private void Grappling()
+    private void HandleInput()
     {
         previousState = state;
 
@@ -295,19 +292,30 @@ public class Grapple : MonoBehaviour
             HideSeeker();
         }
 
-        bool grapplePressed = false;
-        if (input.grappleDown && !lastGrappleDown)
-            grapplePressed = true;
-        bool cancelKeyDown = input.spaceDown || input.shiftDown || grapplePressed;
-
         /* Grapple engage/disengage logic */
         if (state == GrappleState.SEEKING && input.leftMouseDown)
             ActivateGrapple();
-        else if (state == GrappleState.ENGAGED && cancelKeyDown)
-            DisengageGrapple();
-        else if (distanceToGrapplePoint <= grappleDisengageDistance)
-            DisengageGrapple();
+        else if (state == GrappleState.ENGAGED)
+        {
+            /* Detect if cancel key is down/pressed */
+            bool grapplePressed = false;
+            if (input.grappleDown && !lastGrappleDown)
+                grapplePressed = true;
+            bool cancelKeyDown = input.spaceDown || input.shiftDown || grapplePressed;
 
+            if (cancelKeyDown)
+                DisengageGrapple();
+            else if (distanceToGrapplePoint <= grappleDisengageDistance)
+                DisengageGrapple();
+        }
+
+        lastGrappleDown = input.grappleDown;
+    }
+
+    float grappleTimer = 0.0f;
+    bool lastGrappleDown = false;
+    private void Grappling()
+    {
         if (state != GrappleState.INACTIVE && state != GrappleState.SEEKING)
         {
             toGrapplePoint = grapplePoint - transform.position;
@@ -339,13 +347,23 @@ public class Grapple : MonoBehaviour
 
             grappleTimer -= Time.fixedDeltaTime;
         }
+    }
 
-        lastGrappleDown = input.grappleDown;
+    private void ComputeSpeedRatio()
+    {
+        Vector3 velocity = new Vector3(kb.velocityX, kb.velocityY, kb.velocityZ);
+        float dot = Vector3.Dot(velocity.normalized, toGrapplePoint);
+        if (dot < 0.0f)
+            dot = 0.0f;
+        velocity *= dot;
+        currentToMaxSpeedRatio = velocity.magnitude/grappleSpeed;
     }
 
     private void FixedUpdate()
     {
+        HandleInput();
         Grappling();
+        ComputeSpeedRatio();
     }
 
     private void UpdateGrappleTransform()
@@ -371,15 +389,5 @@ public class Grapple : MonoBehaviour
     private void LateUpdate()
     {
         UpdateGrappleTransform();
-    }
-
-    public float GetPercentOfMaxSpeed()
-    {
-        Vector3 velocity = new Vector3(kb.velocityX, kb.velocityY, kb.velocityZ);
-        float dot = Vector3.Dot(velocity.normalized, toGrapplePoint);
-        if (dot < 0.0f)
-            dot = 0.0f;
-        velocity *= dot;
-        return velocity.magnitude/grappleSpeed;
     }
 }
