@@ -618,6 +618,7 @@ GameObject:
   - component: {fileID: 1436038399}
   - component: {fileID: 1436038403}
   - component: {fileID: 1436038404}
+  - component: {fileID: 1436038405}
   m_Layer: 10
   m_Name: player
   m_TagString: Untagged
@@ -779,7 +780,7 @@ MonoBehaviour:
   grappleEngagementSpeed: 100
   grappleAcceleration: 80
   grappleSpeed: 25
-  grappleCooldown: 10
+  grappleCooldown: 0
   grapplePerpendicularVelocityDecayAlpha: 0.1
   grappleDisengageDistance: 3
   grappleSnapDistance: 0.05
@@ -787,6 +788,27 @@ MonoBehaviour:
   state: 0
   previousState: 0
   currentToMaxSpeedRatio: 0
+--- !u!114 &1436038405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436038395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f49cc460d81c1514f951d9ef38e7a0c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentHealth: 100
+  _maxHealth: 100
+  _currentShield: 4
+  _maxShield: 4
+  _currentBoost: 9999
+  _maxBoost: 9999
+  healthPercent: 100
+  shieldPercent: 1
+  boostPercent: 1
 --- !u!1 &1754086263
 GameObject:
   m_ObjectHideFlags: 0
