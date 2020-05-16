@@ -19,6 +19,7 @@ public class FPSMovement : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float jumpPower = 3.0f;
 
+    private PlayerStats playerStats;
     private FPSGroundCheck groundCheck;
     private FPSKinematicBody kb;
     private FPSInput input;
@@ -39,6 +40,7 @@ public class FPSMovement : MonoBehaviour
         kb = GetComponent<FPSKinematicBody>();
         input = GetComponent<FPSInput>();
         groundCheck = GetComponent<FPSGroundCheck>();
+        playerStats = GetComponent<PlayerStats>();
 
         ConvertDecelerationPercentToUsableConstant();
         CalculateHorizontalBoostYOffset();
@@ -107,7 +109,7 @@ public class FPSMovement : MonoBehaviour
     bool lastShiftDown = false;
     private void Boosting()
     {
-        if (input.shiftDown && !lastShiftDown)
+        if (input.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0)
         {
             if (input.movementZ != 0 || input.movementX != 0)
             {
@@ -128,6 +130,8 @@ public class FPSMovement : MonoBehaviour
             {
                 kb.velocityY = verticalBoostPower;
             }
+
+            playerStats.UseBoost();
         }
 
         lastShiftDown = input.shiftDown;

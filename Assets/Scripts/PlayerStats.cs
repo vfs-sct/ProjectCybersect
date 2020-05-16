@@ -28,4 +28,14 @@ public class PlayerStats : MonoBehaviour
         shieldPercent = _currentShield / _maxShield;
         boostPercent = _currentBoost / _maxBoost;
     }
+    
+    public int ReadBoost()
+    {
+        return _currentBoost;
+    }
+
+    public void UseBoost()
+    {
+        --_currentBoost;
+    }
 }
