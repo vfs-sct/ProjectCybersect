@@ -9,9 +9,9 @@ public class FPSLook : MonoBehaviour
     [SerializeField] private float maxPitch = 85;
     [SerializeField] private float minPitch = -70;
     [SerializeField, Range(0, 1)] private float cameraYawAlpha = 0.2f;
-    [SerializeField] private float cameraYawClamp = 30.0f;
+    [SerializeField] private float cameraYawClamp = 50.0f;
 
-    public bool rotationLocked = false;
+    [HideInInspector] public bool rotationLocked = false;
 
     private FPSInput input;
     private Transform viewTransform;

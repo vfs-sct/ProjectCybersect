@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class FPSKinematicBody : MonoBehaviour
 {
-    private const float gravity = 9.81f;
+    public const float gravity = 9.81f;
 
     [SerializeField, Range(0, 1)] private float frictionAlpha = 0.9f;
 
     [HideInInspector] public float velocityX = 0; 
     [HideInInspector] public float velocityY = 0;
     [HideInInspector] public float velocityZ = 0;
+    [HideInInspector] public float gravityMultiplier = 1.0f;
 
     private FPSGroundCheck groundCheck;
     private Collider objectCollider;
@@ -25,7 +26,7 @@ public class FPSKinematicBody : MonoBehaviour
 
     private void Gravity()
     {
-        velocityY -= gravity*Time.fixedDeltaTime;
+        velocityY -= gravity*Time.fixedDeltaTime*gravityMultiplier;
     }
 
     private void MoveObject()

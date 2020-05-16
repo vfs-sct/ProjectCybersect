@@ -6,8 +6,8 @@ public class FPSMovement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 5.0f;
-    [SerializeField, Range(0, 100)] private float decelerationPercent = 60.0f;
-    [SerializeField] private float movementAcceleration = 15.0f;
+    [SerializeField, Range(0, 100)] private float decelerationPercent = 41.0f;
+    [SerializeField] private float movementAcceleration = 50.0f;
     [SerializeField] private float airMovementMultiplier = 0.1f;
     [SerializeField] public const float footstepFrequency = 2.0f;
 

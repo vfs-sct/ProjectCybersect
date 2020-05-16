@@ -5,13 +5,13 @@ using UnityEngine;
 public class CameraAnimator : MonoBehaviour
 {
     [Header("Shake")]
-    public float shakeFreqency = 5.0f;
-    public float shakeHalfLife = 0.15f;
+    public float shakeFreqency = 6.0f;
+    public float shakeHalfLife = 0.05f;
 
     [Header("Grappling")]
-    public float grappleActivationShakeAmount = 2.0f;
-    public float grappleFOVMultiplier = 1.2f;
-    public float grappleFOVAlpha = 0.2f;
+    public float grappleActivationShakeAmount = 2.5f;
+    public float grappleFOVMultiplier = 1.3f;
+    public float grappleFOVAlpha = 0.1f;
 
     private Grapple grapple;
     private Camera cameraComponent;
@@ -41,7 +41,7 @@ public class CameraAnimator : MonoBehaviour
     float sinTimer = 0.0f;
     private void CalculateCameraShake()
     {
-        if (cameraShake > 0.01f)
+        if (cameraShake < 0.01f)
             return;
 
         float shakeX = Mathf.Sin(sinTimer*shakeFreqency*Mathf.PI)*cameraShake;

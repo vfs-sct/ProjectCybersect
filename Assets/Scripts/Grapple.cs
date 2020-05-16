@@ -16,21 +16,23 @@ public class Grapple : MonoBehaviour
 {  
     private const int initialEdgePointArrayLength = 64;
 
+    [Header("Grappling")]
     [SerializeField] private GameObject grapplePrefab;
     [SerializeField] private float grappleEngagementSpeed = 100.0f;
-    [SerializeField] private float grappleAcceleration = 50.0f;
+    [SerializeField] private float grappleAcceleration = 80.0f;
     [SerializeField] private float grappleSpeed = 25.0f;
+    [SerializeField] private float grappleCooldown = 10.0f;
     [SerializeField,
     Range(0, 1)]     private float grapplePerpendicularVelocityDecayAlpha = 0.1f;
-    [SerializeField] private float grappleDisengageDistance = 1.0f;
-    [SerializeField] private int grappleSnapPixels = 100;
+    [SerializeField] private float grappleDisengageDistance = 3.0f;
+    [Header("Snapping")]
+    [SerializeField] private float grappleSnapDistance = 0.05f;
     [SerializeField,
-    Range(0, 1)]     private float grappleSnapAlpha = 0.25f;
+    Range(0, 1)]     private float grappleSnapAlpha = 0.5f;
 
     [HideInInspector] public GrappleState state = GrappleState.INACTIVE;
     [HideInInspector] public GrappleState previousState = GrappleState.INACTIVE;
-
-    public float currentToMaxSpeedRatio = 0.0f;
+    [HideInInspector] public float currentToMaxSpeedRatio = 0.0f;
 
     private FPSKinematicBody kb;
     private FPSInput input;
@@ -40,6 +42,8 @@ public class Grapple : MonoBehaviour
     private Vector3 grapplePoint;
     private Vector3 toGrapplePoint;
     private float distanceToGrapplePoint;
+    private bool grappleAvailable = true;
+    private float engagementDistanceTravelled = 0.0f;
 
     private Transform grappleTransform;
     private Transform cameraTransform;
@@ -48,6 +52,7 @@ public class Grapple : MonoBehaviour
     private Vector3[] edgePoints = new Vector3[initialEdgePointArrayLength];
     private int edgeCount = 0;
     private Transform seekerTransform;
+    private Vector3 seekerNormalizedPosition = new Vector3(0.5f, 0.5f);
     Vector3 seekerWorldPoint;
 
     private void AquireReferences()
@@ -82,6 +87,7 @@ public class Grapple : MonoBehaviour
             edgePoints[2*edgeCount + 6] = new Vector3(position.x - s.x, position.y + s.y, position.z + s.z);
             edgePoints[2*edgeCount + 7] = new Vector3(position.x - s.x, position.y + s.y, position.z - s.z);
 
+            /* bottom edges
             edgePoints[2*edgeCount + 8] = new Vector3(position.x + s.x, position.y - s.y, position.z + s.z);
             edgePoints[2*edgeCount + 9] = new Vector3(position.x - s.x, position.y - s.y, position.z + s.z);
             edgePoints[2*edgeCount + 10] = new Vector3(position.x + s.x, position.y - s.y, position.z - s.z);
@@ -90,10 +96,10 @@ public class Grapple : MonoBehaviour
             edgePoints[2*edgeCount + 12] = new Vector3(position.x + s.x, position.y - s.y, position.z + s.z);
             edgePoints[2*edgeCount + 13] = new Vector3(position.x + s.x, position.y - s.y, position.z - s.z);
             edgePoints[2*edgeCount + 14] = new Vector3(position.x - s.x, position.y - s.y, position.z + s.z);
-            edgePoints[2*edgeCount + 15] = new Vector3(position.x - s.x, position.y - s.y, position.z - s.z);
+            edgePoints[2*edgeCount + 15] = new Vector3(position.x - s.x, position.y - s.y, position.z - s.z); */
 
             /* 8 horizontal edges in a cube */
-            edgeCount += 8;
+            edgeCount += 4;
 
             if (edgeCount*2 == edgePoints.Length)
                 Array.Resize(ref edgePoints, edgePoints.Length*2);
@@ -109,7 +115,8 @@ public class Grapple : MonoBehaviour
     private void DisengageGrapple()
     {
         state = GrappleState.RETURNING;
-        grappleTimer = distanceToGrapplePoint/grappleEngagementSpeed;
+        engagementDistanceTravelled = distanceToGrapplePoint;
+        kb.gravityMultiplier = 1.0f;
     }
 
     private void EngageGrapple()
@@ -135,7 +142,8 @@ public class Grapple : MonoBehaviour
             toGrapplePoint.Normalize();
 
             state = GrappleState.ACTIVE;
-            grappleTimer = 0.0f;
+            grappleAvailable = false;
+            engagementDistanceTravelled = 0.0f;
             grappleTransform = Instantiate(grapplePrefab).transform;
             look.rotationLocked = true;
             movement.enabled = false;
@@ -147,7 +155,7 @@ public class Grapple : MonoBehaviour
     private void CheckForBreak()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, toGrapplePoint, out hit, Mathf.Infinity, ~0))
+        if (Physics.Raycast(transform.position, toGrapplePoint, out hit, Mathf.Infinity, ~(1 << 10)))
         {
             if (Mathf.Abs(hit.point.sqrMagnitude - grapplePoint.sqrMagnitude) > 0.1f)
                 DisengageGrapple();
@@ -175,20 +183,24 @@ public class Grapple : MonoBehaviour
                 velocityToGrapple = velocityToGrapple.normalized*grappleSpeed;
             velocity += velocityToGrapple;
         }
-        
+
         if (!Mathf.Approximately(velocityToGrappleDot, 1.0f))
         {
             Vector3 rightPerpendicularVelocityToGrapple = Vector3.Project(velocity, transform.right);
             Vector3 upPerpendicularToGrapple = Vector3.Cross(toGrapplePoint, transform.right);
             Vector3 upPerpendicularVelocityToGrapple = Vector3.Project(velocity, upPerpendicularToGrapple);
 
-            velocity -= rightPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha;
-            velocity -= upPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha;
+            velocity -= rightPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha*
+                        currentToMaxSpeedRatio;
+            velocity -= upPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha*
+                        currentToMaxSpeedRatio;
         }
 
         kb.velocityX = velocity.x;
         kb.velocityY = velocity.y;
         kb.velocityZ = velocity.z;
+
+        kb.gravityMultiplier = 1 - currentToMaxSpeedRatio;
     }
 
     private void ShowSeeker()
@@ -203,38 +215,46 @@ public class Grapple : MonoBehaviour
 
     private void PositionSeeker()
     {
-        Vector3 sCenter = new Vector3(cameraComponent.pixelWidth/2.0f, 
-                                      cameraComponent.pixelHeight/2.0f, 0.0f);
+        Vector3 sCenter = new Vector3(0.5f, 0.5f);
         Vector3 point = new Vector3(0, 0);
         float distance = float.MaxValue;
-        Vector3 sPoint = new Vector3(0, 0);
+        Vector3 sPoint = new Vector3(0.5f, 0.5f);
         bool found = false;
 
         for (int i = 0; i < edgeCount; ++i)
         {
             Vector3 p1 = edgePoints[i*2 + 0];
             Vector3 p2 = edgePoints[i*2 + 1];
-            Vector3 sp1 = cameraComponent.WorldToScreenPoint(p1);
-            Vector3 sp2 = cameraComponent.WorldToScreenPoint(p2);
+            Vector3 sp1 = cameraComponent.WorldToViewportPoint(p1);
+            Vector3 sp2 = cameraComponent.WorldToViewportPoint(p2);
 
             if (sp1.z < 0 || sp2.z < 0)
                 continue;
 
-            bool check1 = sCenter.x < sp1.x;
-            bool check2 = sCenter.x < sp2.x;
-            if (check1 == check2)
+            if (sp1.x < 0 || sp1.x > 1 || sp1.y < 0 || sp1.y > 1 ||
+                sp2.x < 0 || sp2.x > 1 || sp2.y < 0 || sp2.y > 1)
                 continue;
 
-            float alpha = Mathf.InverseLerp(sp1.x, sp2.x, sCenter.x);
-            float y = Mathf.Lerp(sp1.y, sp2.y, alpha);
-            float tDistance = Mathf.Abs(y - sCenter.y);
-            if (tDistance > grappleSnapPixels)
+            Vector3 leftBound = (sp1.x < sp2.x) ? sp1 : sp2;
+            Vector3 rightBound = (sp2.x > sp1.x) ? sp2 : sp1;
+            if (sCenter.x < leftBound.x - grappleSnapDistance || 
+                sCenter.x > rightBound.x + grappleSnapDistance)
+                continue;
+            float x = Mathf.Clamp(sCenter.x, leftBound.x, rightBound.x);
+
+            float alpha = Mathf.InverseLerp(leftBound.x, rightBound.x, x);
+            float y = Mathf.Lerp(leftBound.y, rightBound.y, alpha);
+
+            Vector2 pointOnEdge = new Vector2(x, y);
+            Vector2 cursorPoint = new Vector2(sCenter.x, sCenter.y);
+            float tDistance = Vector2.Distance(pointOnEdge, cursorPoint);
+            if (tDistance > grappleSnapDistance)
                 continue;
             if (tDistance > distance && found)
                 continue;
 
-            Vector3 screenPoint = new Vector3(sCenter.x, y, 1);
-            Vector3 tpoint = cameraComponent.ScreenToWorldPoint(screenPoint);
+            Vector3 screenPoint = new Vector3(x, y, 1);
+            Vector3 tpoint = cameraComponent.ViewportToWorldPoint(screenPoint);
             tpoint -= cameraTransform.position;
             {
                 float yDist = p1.y - cameraTransform.position.y;
@@ -245,8 +265,8 @@ public class Grapple : MonoBehaviour
             }
             tpoint += cameraTransform.position;
 
-            Vector3 tSPoint = new Vector3(sCenter.x, y);
-            Ray cameraRay = cameraComponent.ScreenPointToRay(tSPoint);
+            Vector3 tSPoint = new Vector3(x, y);
+            Ray cameraRay = cameraComponent.ViewportPointToRay(tSPoint);
             RaycastHit hit;
             if (Physics.Raycast(cameraRay, out hit))
                 if (Mathf.Abs(hit.point.sqrMagnitude - tpoint.sqrMagnitude) > 0.1f)
@@ -260,19 +280,36 @@ public class Grapple : MonoBehaviour
 
         if (found)
         {
-            seekerTransform.position = Vector3.Lerp(seekerTransform.position, sPoint, grappleSnapAlpha);
             seekerWorldPoint = point;
         }
         else
         {
-            seekerTransform.position = Vector3.Lerp(seekerTransform.position, sCenter, grappleSnapAlpha);
-
-            Ray cameraRay = cameraComponent.ScreenPointToRay(sCenter);
+            Ray cameraRay = cameraComponent.ViewportPointToRay(sCenter);
             RaycastHit hit;
             if (Physics.Raycast(cameraRay, out hit))
                 seekerWorldPoint = hit.point;
             else
                 seekerWorldPoint = Vector3.zero;
+        }
+
+        seekerNormalizedPosition = Vector3.Lerp(seekerNormalizedPosition, sPoint, grappleSnapAlpha);
+        Vector3 screenSize = new Vector3(cameraComponent.pixelWidth, cameraComponent.pixelHeight);
+        seekerTransform.position = new Vector3(seekerNormalizedPosition.x*screenSize.x,
+                                               seekerNormalizedPosition.y*screenSize.y);
+    }
+
+    float grappleAvailabilityTimer = 0.0f;
+    private void ComputeGrappleAvailability()
+    {
+        if (!grappleAvailable)
+        {
+            if (grappleAvailabilityTimer >= grappleCooldown)
+            {
+                grappleAvailabilityTimer = 0.0f;
+                grappleAvailable = true;
+            }
+
+            grappleAvailabilityTimer += Time.fixedDeltaTime;
         }
     }
 
@@ -294,7 +331,10 @@ public class Grapple : MonoBehaviour
 
         /* Grapple engage/disengage logic */
         if (state == GrappleState.SEEKING && input.leftMouseDown)
-            ActivateGrapple();
+        {
+            if (grappleAvailable)
+                ActivateGrapple();
+        }
         else if (state == GrappleState.ENGAGED)
         {
             /* Detect if cancel key is down/pressed */
@@ -312,7 +352,6 @@ public class Grapple : MonoBehaviour
         lastGrappleDown = input.grappleDown;
     }
 
-    float grappleTimer = 0.0f;
     bool lastGrappleDown = false;
     private void Grappling()
     {
@@ -332,20 +371,16 @@ public class Grapple : MonoBehaviour
             PositionSeeker();
         }
 
-        /* Timing logic */
+        /* Engagement/return logic */
         if (state == GrappleState.ACTIVE)
         {
-            if (grappleTimer*grappleEngagementSpeed >= distanceToGrapplePoint)
+            if (engagementDistanceTravelled >= distanceToGrapplePoint)
                 EngageGrapple();
-
-            grappleTimer += Time.fixedDeltaTime;
         }
         else if (state == GrappleState.RETURNING)
         {
-            if (grappleTimer <= 0.0f)
+            if (engagementDistanceTravelled >= distanceToGrapplePoint)
                 DeactivateGrapple();
-
-            grappleTimer -= Time.fixedDeltaTime;
         }
     }
 
@@ -361,6 +396,7 @@ public class Grapple : MonoBehaviour
 
     private void FixedUpdate()
     {
+        ComputeGrappleAvailability();
         HandleInput();
         Grappling();
         ComputeSpeedRatio();
@@ -371,23 +407,28 @@ public class Grapple : MonoBehaviour
         if (state == GrappleState.INACTIVE || state == GrappleState.SEEKING)
             return;
 
-        Vector3 newToGrapplePoint = grapplePoint - transform.position;
         float newDistanceToGrapplePoint = Vector3.Distance(transform.position, grapplePoint);
 
+        Vector3 newToGrapplePoint = grapplePoint - transform.position;
         grappleTransform.rotation = Quaternion.LookRotation(newToGrapplePoint);
         grappleTransform.position = transform.position;
 
         Vector3 scale = new Vector3(1.0f, 1.0f, newDistanceToGrapplePoint);
-        if (state == GrappleState.RETURNING || state == GrappleState.ACTIVE)
-        {
-            float multiplier = grappleTimer*grappleEngagementSpeed/scale.z;
-            scale.z *= multiplier;
-        }
+        if (state == GrappleState.ACTIVE)
+            scale.z *= engagementDistanceTravelled/distanceToGrapplePoint;
+        else if (state == GrappleState.RETURNING)
+            scale.z *= 1 - engagementDistanceTravelled/distanceToGrapplePoint;
         grappleTransform.localScale = scale;
+    }
+
+    private void ComputeEngagementDistance()
+    {
+        engagementDistanceTravelled += Time.deltaTime*grappleEngagementSpeed;
     }
 
     private void LateUpdate()
     {
         UpdateGrappleTransform();
+        ComputeEngagementDistance();
     }
 }
