@@ -19,10 +19,13 @@ public class FPSMovement : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float jumpPower = 3.0f;
 
+    [HideInInspector] public bool canMove = true;
+
     private PlayerStats playerStats;
     private FPSGroundCheck groundCheck;
     private FPSKinematicBody kb;
     private FPSInput input;
+    private Grapple grapple;
     private float horizontalBoostYOffset;
 
     private void ConvertDecelerationPercentToUsableConstant()
@@ -41,17 +44,18 @@ public class FPSMovement : MonoBehaviour
         input = GetComponent<FPSInput>();
         groundCheck = GetComponent<FPSGroundCheck>();
         playerStats = GetComponent<PlayerStats>();
+        grapple = GetComponent<Grapple>();
 
         ConvertDecelerationPercentToUsableConstant();
         CalculateHorizontalBoostYOffset();
     }
 
-    private float AccelerationFunction(float x, int power, float constant)
+    private float AccelerationFunction(float x, float slope, float constant)
     {
         if (x < 1)
             return 1 + constant;
         else
-            return Mathf.Pow(x - Mathf.Sign(x), power) + 1 + constant;
+            return slope*(x - Mathf.Sign(x)) + 1 + constant;
     }
 
     private void HorizontalMovement()
@@ -61,7 +65,12 @@ public class FPSMovement : MonoBehaviour
             Vector3 velocity = new Vector3(kb.velocityX, 0.0f, kb.velocityZ);
             velocity = Quaternion.Inverse(transform.rotation)*velocity;
 
-            Vector2 targetVelocity = new Vector2(input.movementX, input.movementZ).normalized*movementSpeed;
+            Vector2 targetVelocity;
+            if (canMove)
+                targetVelocity = new Vector2(input.movementX, input.movementZ).normalized*movementSpeed;
+            else
+                targetVelocity = Vector2.zero;
+
             Vector2 currentVelocity = new Vector2(velocity.x, velocity.z);
             Vector2 difference = targetVelocity - currentVelocity;
 
@@ -72,7 +81,7 @@ public class FPSMovement : MonoBehaviour
                 if (targetVelocity == Vector2.zero)
                     constant = -decelerationPercent;
 
-                float accelerationMultiplier = AccelerationFunction(currentVelocity.magnitude/movementSpeed, 4, constant); 
+                float accelerationMultiplier = AccelerationFunction(currentVelocity.magnitude/movementSpeed, 3f, constant); 
                 float deltaMagnitude = accelerationMultiplier*movementAcceleration*Time.fixedDeltaTime;
                 float deltaToDistanceRatio = deltaMagnitude/distance;
                 if (deltaToDistanceRatio > 1.0f)
@@ -100,7 +109,7 @@ public class FPSMovement : MonoBehaviour
     bool lastSpaceDown = false;
     private void Jumping()
     {
-        if (input.spaceDown && !lastSpaceDown && groundCheck.grounded)
+        if (input.spaceDown && !lastSpaceDown && groundCheck.grounded && canMove)
             kb.velocityY = jumpPower;
 
         lastSpaceDown = input.spaceDown;
@@ -109,7 +118,7 @@ public class FPSMovement : MonoBehaviour
     bool lastShiftDown = false;
     private void Boosting()
     {
-        if (input.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0)
+        if (input.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0 && canMove)
         {
             if (input.movementZ != 0 || input.movementX != 0)
             {
@@ -122,9 +131,18 @@ public class FPSMovement : MonoBehaviour
                 }
                 boost *= horizontalBoostPower;
 
-                kb.velocityX = boost.x;
-                kb.velocityZ = boost.z;
-                kb.velocityY = boost.y;
+                if (grapple.state == GrappleState.RETURNING && grapple.previousState == GrappleState.ENGAGED)
+                {
+                    kb.velocityX += boost.x;
+                    kb.velocityZ += boost.z;
+                    kb.velocityY += boost.y;
+                }
+                else
+                {
+                    kb.velocityX = boost.x;
+                    kb.velocityZ = boost.z;
+                    kb.velocityY = boost.y;
+                }
             }
             else
             {

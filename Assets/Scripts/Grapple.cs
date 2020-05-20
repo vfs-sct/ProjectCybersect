@@ -7,33 +7,46 @@ public enum GrappleState
 {
     INACTIVE,
     SEEKING,
-    ACTIVE,
+    ENGAGING,
     ENGAGED,
     RETURNING
+}
+
+public enum GrappleCursorState
+{
+    UNLOCKED,
+    LOCKED,
+    OUT_OF_RANGE
 }
 
 public class Grapple : MonoBehaviour
 {  
     private const int initialEdgePointArrayLength = 64;
 
+    // Serialized Data
     [Header("Grappling")]
     [SerializeField] private GameObject grapplePrefab;
-    [SerializeField] private float grappleEngagementSpeed = 100.0f;
-    [SerializeField] private float grappleAcceleration = 80.0f;
-    [SerializeField] private float grappleSpeed = 25.0f;
-    [SerializeField] private float grappleCooldown = 10.0f;
+    [SerializeField] private float grappleDistance = 50f;
+    [SerializeField] private float grappleEngagementSpeed = 100f;
+    [SerializeField] private float grappleAcceleration = 80f;
+    [SerializeField] private float grappleSpeed = 25f;
+    [SerializeField] private float grappleCooldown = 10f;
     [SerializeField,
     Range(0, 1)]     private float grapplePerpendicularVelocityDecayAlpha = 0.1f;
-    [SerializeField] private float grappleDisengageDistance = 3.0f;
+    [SerializeField] private float grappleDisengageDistance = 3f;
+
     [Header("Snapping")]
     [SerializeField] private float grappleSnapDistance = 0.05f;
     [SerializeField,
     Range(0, 1)]     private float grappleSnapAlpha = 0.5f;
 
     [HideInInspector] public GrappleState state = GrappleState.INACTIVE;
+    [HideInInspector] public GrappleCursorState cursorState = GrappleCursorState.OUT_OF_RANGE;
     [HideInInspector] public GrappleState previousState = GrappleState.INACTIVE;
-    [HideInInspector] public float currentToMaxSpeedRatio = 0.0f;
+    [HideInInspector] public float currentToMaxSpeedRatio = 0f;
+    [HideInInspector] public bool onCooldown = false;
 
+    // Private Members
     private FPSKinematicBody kb;
     private FPSInput input;
     private FPSLook look;
@@ -43,7 +56,7 @@ public class Grapple : MonoBehaviour
     private Vector3 toGrapplePoint;
     private float distanceToGrapplePoint;
     private bool grappleAvailable = true;
-    private float engagementDistanceTravelled = 0.0f;
+    private float engagementDistanceTravelled = 0f;
 
     private Transform grappleTransform;
     private Transform cameraTransform;
@@ -54,6 +67,7 @@ public class Grapple : MonoBehaviour
     private Transform seekerTransform;
     private Vector3 seekerNormalizedPosition = new Vector3(0.5f, 0.5f);
     Vector3 seekerWorldPoint;
+    private float squaredGrappleDistance;
 
     private void AquireReferences()
     {
@@ -74,7 +88,7 @@ public class Grapple : MonoBehaviour
         foreach (BoxCollider collider in colliders)
         {
             Vector3 scale = collider.transform.localScale;
-            Vector3 s = scale/2.0f;
+            Vector3 s = scale/2f;
             Vector3 position = collider.transform.position;
 
             edgePoints[2*edgeCount + 0] = new Vector3(position.x + s.x, position.y + s.y, position.z + s.z);
@@ -87,18 +101,7 @@ public class Grapple : MonoBehaviour
             edgePoints[2*edgeCount + 6] = new Vector3(position.x - s.x, position.y + s.y, position.z + s.z);
             edgePoints[2*edgeCount + 7] = new Vector3(position.x - s.x, position.y + s.y, position.z - s.z);
 
-            /* bottom edges
-            edgePoints[2*edgeCount + 8] = new Vector3(position.x + s.x, position.y - s.y, position.z + s.z);
-            edgePoints[2*edgeCount + 9] = new Vector3(position.x - s.x, position.y - s.y, position.z + s.z);
-            edgePoints[2*edgeCount + 10] = new Vector3(position.x + s.x, position.y - s.y, position.z - s.z);
-            edgePoints[2*edgeCount + 11] = new Vector3(position.x - s.x, position.y - s.y, position.z - s.z);
-
-            edgePoints[2*edgeCount + 12] = new Vector3(position.x + s.x, position.y - s.y, position.z + s.z);
-            edgePoints[2*edgeCount + 13] = new Vector3(position.x + s.x, position.y - s.y, position.z - s.z);
-            edgePoints[2*edgeCount + 14] = new Vector3(position.x - s.x, position.y - s.y, position.z + s.z);
-            edgePoints[2*edgeCount + 15] = new Vector3(position.x - s.x, position.y - s.y, position.z - s.z); */
-
-            /* 8 horizontal edges in a cube */
+            /* 4 upper horizontal edges in a cube */
             edgeCount += 4;
 
             if (edgeCount*2 == edgePoints.Length)
@@ -106,17 +109,24 @@ public class Grapple : MonoBehaviour
         }
     }
 
+    private void CalculateSquaredGrappleDistance()
+    {
+        squaredGrappleDistance = grappleDistance*grappleDistance;
+    }
+
     private void Start()
     {
         AquireReferences();
         CalculateEdgePoints();
+        CalculateSquaredGrappleDistance();
     }
 
     private void DisengageGrapple()
     {
         state = GrappleState.RETURNING;
-        engagementDistanceTravelled = distanceToGrapplePoint;
-        kb.gravityMultiplier = 1.0f;
+        engagementDistanceTravelled = 0f;
+        kb.gravityMultiplier = 1f;
+        movement.canMove = true;
     }
 
     private void EngageGrapple()
@@ -129,7 +139,6 @@ public class Grapple : MonoBehaviour
         state = GrappleState.INACTIVE;
         Destroy(grappleTransform.gameObject);
         look.rotationLocked = false;
-        movement.enabled = true;
     }
 
     private void ActivateGrapple()
@@ -141,12 +150,13 @@ public class Grapple : MonoBehaviour
             distanceToGrapplePoint = toGrapplePoint.magnitude;
             toGrapplePoint.Normalize();
 
-            state = GrappleState.ACTIVE;
+            state = GrappleState.ENGAGING;
             grappleAvailable = false;
-            engagementDistanceTravelled = 0.0f;
+            onCooldown = true;
+            engagementDistanceTravelled = 0f;
             grappleTransform = Instantiate(grapplePrefab).transform;
             look.rotationLocked = true;
-            movement.enabled = false;
+            movement.canMove = false;
 
             HideSeeker();
         }
@@ -165,7 +175,7 @@ public class Grapple : MonoBehaviour
     private void AlignPlayerToGrapplePoint()
     {
         Vector3 direction = grapplePoint - transform.position;
-        direction.y = 0.0f;
+        direction.y = 0f;
         transform.rotation = Quaternion.LookRotation(direction);
     }
 
@@ -175,16 +185,16 @@ public class Grapple : MonoBehaviour
         Vector3 velocityToGrapple = Vector3.Project(velocity, toGrapplePoint);
         float velocityToGrappleDot = Vector3.Dot(velocity.normalized, toGrapplePoint);
 
-        if (velocityToGrapple.magnitude < grappleSpeed || velocityToGrappleDot <= 0.0f)
+        if (velocityToGrapple.magnitude < grappleSpeed || velocityToGrappleDot <= 0f)
         {
             velocity -= velocityToGrapple;
             velocityToGrapple += toGrapplePoint*grappleAcceleration*Time.fixedDeltaTime;
-            if (velocityToGrapple.magnitude > grappleSpeed && velocityToGrappleDot > 0.0f)
+            if (velocityToGrapple.magnitude > grappleSpeed && velocityToGrappleDot > 0f)
                 velocityToGrapple = velocityToGrapple.normalized*grappleSpeed;
             velocity += velocityToGrapple;
         }
 
-        if (!Mathf.Approximately(velocityToGrappleDot, 1.0f))
+        if (!Mathf.Approximately(velocityToGrappleDot, 1f))
         {
             Vector3 rightPerpendicularVelocityToGrapple = Vector3.Project(velocity, transform.right);
             Vector3 upPerpendicularToGrapple = Vector3.Cross(toGrapplePoint, transform.right);
@@ -219,12 +229,17 @@ public class Grapple : MonoBehaviour
         Vector3 point = new Vector3(0, 0);
         float distance = float.MaxValue;
         Vector3 sPoint = new Vector3(0.5f, 0.5f);
-        bool found = false;
+        bool edgeFound = false;
 
         for (int i = 0; i < edgeCount; ++i)
         {
             Vector3 p1 = edgePoints[i*2 + 0];
             Vector3 p2 = edgePoints[i*2 + 1];
+
+            if ((p1 - transform.position).sqrMagnitude > squaredGrappleDistance ||
+                (p2 - transform.position).sqrMagnitude > squaredGrappleDistance)
+                continue;
+
             Vector3 sp1 = cameraComponent.WorldToViewportPoint(p1);
             Vector3 sp2 = cameraComponent.WorldToViewportPoint(p2);
 
@@ -250,7 +265,7 @@ public class Grapple : MonoBehaviour
             float tDistance = Vector2.Distance(pointOnEdge, cursorPoint);
             if (tDistance > grappleSnapDistance)
                 continue;
-            if (tDistance > distance && found)
+            if (tDistance > distance && edgeFound)
                 continue;
 
             Vector3 screenPoint = new Vector3(x, y, 1);
@@ -274,22 +289,37 @@ public class Grapple : MonoBehaviour
 
             point = tpoint;
             sPoint = tSPoint;
-            found = true;
+            edgeFound = true;
             distance = tDistance;
         }
 
-        if (found)
+        if (edgeFound)
         {
             seekerWorldPoint = point;
+            cursorState = GrappleCursorState.LOCKED;
         }
         else
         {
             Ray cameraRay = cameraComponent.ViewportPointToRay(sCenter);
             RaycastHit hit;
             if (Physics.Raycast(cameraRay, out hit))
-                seekerWorldPoint = hit.point;
+            {
+                if (hit.distance > grappleDistance)
+                {
+                    seekerWorldPoint = Vector3.zero;
+                    cursorState = GrappleCursorState.OUT_OF_RANGE;
+                }
+                else
+                {
+                    seekerWorldPoint = hit.point;
+                    cursorState = GrappleCursorState.UNLOCKED;
+                }
+            }
             else
+            {
                 seekerWorldPoint = Vector3.zero;
+                cursorState = GrappleCursorState.OUT_OF_RANGE;
+            }
         }
 
         seekerNormalizedPosition = Vector3.Lerp(seekerNormalizedPosition, sPoint, grappleSnapAlpha);
@@ -298,21 +328,24 @@ public class Grapple : MonoBehaviour
                                                seekerNormalizedPosition.y*screenSize.y);
     }
 
-    float grappleAvailabilityTimer = 0.0f;
+    float grappleAvailabilityTimer = 0f;
     private void ComputeGrappleAvailability()
     {
         if (!grappleAvailable)
         {
             if (grappleAvailabilityTimer >= grappleCooldown)
             {
-                grappleAvailabilityTimer = 0.0f;
+                grappleAvailabilityTimer = 0f;
                 grappleAvailable = true;
+                onCooldown = false;
             }
 
             grappleAvailabilityTimer += Time.fixedDeltaTime;
         }
     }
 
+    bool lastLeftMouseDown = false;
+    bool lastGrappleDown = false;
     private void HandleInput()
     {
         previousState = state;
@@ -330,7 +363,7 @@ public class Grapple : MonoBehaviour
         }
 
         /* Grapple engage/disengage logic */
-        if (state == GrappleState.SEEKING && input.leftMouseDown)
+        if (state == GrappleState.SEEKING && input.leftMouseDown && !lastLeftMouseDown)
         {
             if (grappleAvailable)
                 ActivateGrapple();
@@ -350,9 +383,9 @@ public class Grapple : MonoBehaviour
         }
 
         lastGrappleDown = input.grappleDown;
+        lastLeftMouseDown = input.leftMouseDown;
     }
 
-    bool lastGrappleDown = false;
     private void Grappling()
     {
         if (state != GrappleState.INACTIVE && state != GrappleState.SEEKING)
@@ -372,7 +405,7 @@ public class Grapple : MonoBehaviour
         }
 
         /* Engagement/return logic */
-        if (state == GrappleState.ACTIVE)
+        if (state == GrappleState.ENGAGING)
         {
             if (engagementDistanceTravelled >= distanceToGrapplePoint)
                 EngageGrapple();
@@ -388,8 +421,8 @@ public class Grapple : MonoBehaviour
     {
         Vector3 velocity = new Vector3(kb.velocityX, kb.velocityY, kb.velocityZ);
         float dot = Vector3.Dot(velocity.normalized, toGrapplePoint);
-        if (dot < 0.0f)
-            dot = 0.0f;
+        if (dot < 0f)
+            dot = 0f;
         velocity *= dot;
         currentToMaxSpeedRatio = velocity.magnitude/grappleSpeed;
     }
@@ -413,8 +446,8 @@ public class Grapple : MonoBehaviour
         grappleTransform.rotation = Quaternion.LookRotation(newToGrapplePoint);
         grappleTransform.position = transform.position;
 
-        Vector3 scale = new Vector3(1.0f, 1.0f, newDistanceToGrapplePoint);
-        if (state == GrappleState.ACTIVE)
+        Vector3 scale = new Vector3(1f, 1f, newDistanceToGrapplePoint);
+        if (state == GrappleState.ENGAGING)
             scale.z *= engagementDistanceTravelled/distanceToGrapplePoint;
         else if (state == GrappleState.RETURNING)
             scale.z *= 1 - engagementDistanceTravelled/distanceToGrapplePoint;

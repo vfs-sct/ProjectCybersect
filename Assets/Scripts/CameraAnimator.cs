@@ -77,7 +77,7 @@ public class CameraAnimator : MonoBehaviour
     {
         if (grapple.state != grapple.previousState)
         {
-            if (grapple.state == GrappleState.ACTIVE)
+            if (grapple.state == GrappleState.ENGAGING)
                 cameraShake = grappleActivationShakeAmount;
         }
 
