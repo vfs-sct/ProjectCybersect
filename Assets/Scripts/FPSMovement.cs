@@ -5,7 +5,7 @@ using UnityEngine;
 public class FPSMovement : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float movementSpeed = 5.0f;
+    [SerializeField] public float movementSpeed = 5.0f;
     [SerializeField, Range(0, 100)] private float decelerationPercent = 41.0f;
     [SerializeField] private float movementAcceleration = 50.0f;
     [SerializeField] private float airMovementMultiplier = 0.1f;
@@ -24,7 +24,6 @@ public class FPSMovement : MonoBehaviour
     private PlayerStats playerStats;
     private FPSGroundCheck groundCheck;
     private FPSKinematicBody kb;
-    private FPSInput input;
     private Grapple grapple;
     private float horizontalBoostYOffset;
 
@@ -41,7 +40,6 @@ public class FPSMovement : MonoBehaviour
     private void Start()
     {
         kb = GetComponent<FPSKinematicBody>();
-        input = GetComponent<FPSInput>();
         groundCheck = GetComponent<FPSGroundCheck>();
         playerStats = GetComponent<PlayerStats>();
         grapple = GetComponent<Grapple>();
@@ -67,7 +65,7 @@ public class FPSMovement : MonoBehaviour
 
             Vector2 targetVelocity;
             if (canMove)
-                targetVelocity = new Vector2(input.movementX, input.movementZ).normalized*movementSpeed;
+                targetVelocity = new Vector2(FPSInput.movementX, FPSInput.movementZ).normalized*movementSpeed;
             else
                 targetVelocity = Vector2.zero;
 
@@ -97,7 +95,7 @@ public class FPSMovement : MonoBehaviour
         }
         else
         {
-            Vector3 deltaVelocity = new Vector3(input.movementX, 0, input.movementZ);
+            Vector3 deltaVelocity = new Vector3(FPSInput.movementX, 0, FPSInput.movementZ);
             deltaVelocity.Normalize();
             deltaVelocity = transform.rotation*deltaVelocity;
             deltaVelocity *= airMovementMultiplier;
@@ -109,20 +107,20 @@ public class FPSMovement : MonoBehaviour
     bool lastSpaceDown = false;
     private void Jumping()
     {
-        if (input.spaceDown && !lastSpaceDown && groundCheck.grounded && canMove)
+        if (FPSInput.spaceDown && !lastSpaceDown && groundCheck.grounded && canMove)
             kb.velocityY = jumpPower;
 
-        lastSpaceDown = input.spaceDown;
+        lastSpaceDown = FPSInput.spaceDown;
     }
 
     bool lastShiftDown = false;
     private void Boosting()
     {
-        if (input.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0 && canMove)
+        if (FPSInput.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0 && canMove)
         {
-            if (input.movementZ != 0 || input.movementX != 0)
+            if (FPSInput.movementZ != 0 || FPSInput.movementX != 0)
             {
-                Vector3 boost = new Vector3(input.movementX, 0.0f, input.movementZ).normalized;
+                Vector3 boost = new Vector3(FPSInput.movementX, 0.0f, FPSInput.movementZ).normalized;
                 boost = transform.rotation*boost;
                 if (groundCheck.grounded)
                 {
@@ -152,7 +150,7 @@ public class FPSMovement : MonoBehaviour
             playerStats.UseBoost();
         }
 
-        lastShiftDown = input.shiftDown;
+        lastShiftDown = FPSInput.shiftDown;
     }
 
     private void FixedUpdate()

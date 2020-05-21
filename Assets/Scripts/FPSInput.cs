@@ -6,16 +6,16 @@ public class FPSInput : MonoBehaviour
 {
     [SerializeField] private KeyCode grappleKey = KeyCode.F;
 
-    [HideInInspector] public int movementX;
-    [HideInInspector] public int movementZ;
+    public static int movementX;
+    public static int movementZ;
 
-    [HideInInspector] public float mouseDeltaX;
-    [HideInInspector] public float mouseDeltaY;
-    [HideInInspector] public bool leftMouseDown;
+    public static float mouseDeltaX;
+    public static float mouseDeltaY;
+    public static bool leftMouseDown;
 
-    [HideInInspector] public bool spaceDown = false;
-    [HideInInspector] public bool grappleDown = false;
-    [HideInInspector] public bool shiftDown = false;
+    public static bool spaceDown = false;
+    public static bool grappleDown = false;
+    public static bool shiftDown = false;
 
     private void SetCurrentKeyboardState()
     {

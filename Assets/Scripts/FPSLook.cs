@@ -13,7 +13,6 @@ public class FPSLook : MonoBehaviour
 
     [HideInInspector] public bool rotationLocked = false;
 
-    private FPSInput input;
     private Transform viewTransform;
 
     private float cameraPitch = 0.0f;
@@ -28,15 +27,14 @@ public class FPSLook : MonoBehaviour
 
     private void Start()
     {
-        input = GetComponent<FPSInput>();
         LockAndHideCursor();
         viewTransform = transform.GetChild(0);
     }
 
     private void Update()
     {
-        float deltaYaw = input.mouseDeltaX*rotationMultiplier;
-        float deltaPitch = -input.mouseDeltaY*rotationMultiplier*verticalRotationMultiplier;
+        float deltaYaw = FPSInput.mouseDeltaX*rotationMultiplier;
+        float deltaPitch = -FPSInput.mouseDeltaY*rotationMultiplier*verticalRotationMultiplier;
 
         if (rotationLocked)
         {
