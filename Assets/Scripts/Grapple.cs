@@ -25,7 +25,7 @@ public class Grapple : MonoBehaviour
 
     // Serialized Data
     [Header("Grappling")]
-    [SerializeField] private GameObject grapplePrefab;
+    [SerializeField] private GameObject grapplePrefab = null;
     [SerializeField] private float grappleDistance = 50f;
     [SerializeField] private float grappleEngagementSpeed = 100f;
     [SerializeField] private float grappleAcceleration = 80f;
