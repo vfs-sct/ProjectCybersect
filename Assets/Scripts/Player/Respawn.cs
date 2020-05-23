@@ -21,14 +21,13 @@ public class Respawn : MonoBehaviour
 
     private void CheckForPlayer()
     {
-        if(GameObject.Find("Player"))
+        if(GameObject.Find("player"))
         {
             CanRespawn = false;
         }
         else
         {
             CanRespawn = true;
-            Debug.Log("no Player found");
         }
     }
 
@@ -42,7 +41,7 @@ public class Respawn : MonoBehaviour
                 RespawnTime = 2f;
                 CanRespawn = false;
                 player = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
-                player.name = "Player";
+                player.name = "player";
             }
         }
     }

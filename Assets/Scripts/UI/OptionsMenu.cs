@@ -19,7 +19,8 @@ public class OptionsMenu : MonoBehaviour
     [Header("Gamma")]
     [SerializeField] private Slider _gammaSlider = null;
 
-    //Settings Data
+
+    [Header("Setting Data")]
     public float MasterVolume;
     public float MusicVolume;
     public float SFXVolume;
@@ -29,9 +30,8 @@ public class OptionsMenu : MonoBehaviour
     public bool Fullscreen;
 
     public float GammaLevel;
-    //Settings Data
 
-    private void Awake()
+    private void Start()
     {
         //Check for settings file
         string path = Application.persistentDataPath + "/settings.exq";

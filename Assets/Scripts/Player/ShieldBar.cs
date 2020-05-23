@@ -25,7 +25,7 @@ public class ShieldBar : MonoBehaviour
 
     private void FindPlayer()
     {
-        Player = GameObject.Find("Player");
+        Player = GameObject.Find("player");
         _player = Player.GetComponent<PlayerStats>();
     }
 

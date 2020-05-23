@@ -24,9 +24,18 @@ public class PlayerStats : MonoBehaviour
 
     private void Update()
     {
+        KillPlayer();
         healthPercent = _currentHealth / _maxHealth;
         shieldPercent = (float)_currentShield / (float)_maxShield;
         boostPercent = (float)_currentBoost / (float)_maxBoost;
+    }
+
+    private void KillPlayer()
+    {
+        if(healthPercent <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
     
     public int ReadBoost()
@@ -36,6 +45,44 @@ public class PlayerStats : MonoBehaviour
 
     public void UseBoost()
     {
-        --_currentBoost;
+        if(_currentBoost >= 1)
+        {
+            --_currentBoost;
+        }
+    }
+
+    public void AddBoost()
+    {
+        if(_currentBoost < _maxBoost)
+        {
+            ++_currentBoost;
+        }
+    }
+
+    public void UseShield()
+    {
+        if(_currentShield >= 1)
+        {
+            --_currentShield;
+        }
+    }
+
+    public void AddShield()
+    {
+        if(_currentShield < _maxShield)
+        {
+            ++_currentShield;
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _currentHealth -= damage;
+    }
+
+    public void HealDamage(float health)
+    {
+        if(_currentHealth < _maxHealth)
+        _currentHealth += health;
     }
 }
