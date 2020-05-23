@@ -7,20 +7,34 @@ using UnityEngine.UI;
 
 public class ShieldBar : MonoBehaviour
 {
-    [SerializeField] private PlayerStats _player;
-
+    private PlayerStats _player;
+    private GameObject Player;
     private Image _shieldBar;
 
     private void Start()
     {
         _shieldBar = GetComponent<Image>();
+        FindPlayer();
     }
 
     private void Update()
     {
+        UpdateBar();
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        Player = GameObject.Find("Player");
+        _player = Player.GetComponent<PlayerStats>();
+    }
+
+    private void UpdateBar()
+    {
         // if it can't find the player, set hp to 0
         if(_player == null)
-        {
+        {   
+            _player.shieldPercent = 0;
             _shieldBar.fillAmount = 0;
             return;
         }

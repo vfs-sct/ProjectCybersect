@@ -9,15 +9,15 @@ using UnityEngine.UI;
 public class OptionsMenu : MonoBehaviour
 {
     [Header("Volume Sliders")]
-    [SerializeField] private Slider MasterSlider = null;
-    [SerializeField] private Slider MusicSlider = null;
-    [SerializeField] private Slider SFXSlider = null;
+    [SerializeField] private Slider _masterSlider = null;
+    [SerializeField] private Slider _musicSlider = null;
+    [SerializeField] private Slider _sfxSlider = null;
 
     [Header("Resolution")]
-    [SerializeField] private Toggle WindowToggle = null;
+    [SerializeField] private Toggle _windowToggle = null;
 
     [Header("Gamma")]
-    [SerializeField] private Slider GammaSlider = null;
+    [SerializeField] private Slider _gammaSlider = null;
 
     //Settings Data
     public float MasterVolume;
@@ -33,27 +33,30 @@ public class OptionsMenu : MonoBehaviour
 
     private void Awake()
     {
+        //Check for settings file
         string path = Application.persistentDataPath + "/settings.exq";
         if(File.Exists(path))
         {
+            //load data
             LoadData();
         }
         else
         {
+            //create new data
             SaveData();
         }
 
         //Load Volume 
-        MasterSlider.value = MasterVolume;
-        MusicSlider.value = MusicVolume;
-        SFXSlider.value = SFXVolume;
+        _masterSlider.value = MasterVolume;
+        _musicSlider.value = MusicVolume;
+        _sfxSlider.value = SFXVolume;
 
         //Load Resolution
         Screen.SetResolution(Width, Height, Fullscreen);
-        WindowToggle.isOn = Fullscreen;
+        _windowToggle.isOn = Fullscreen;
 
         //Load Gamma
-        GammaSlider.value = GammaLevel;
+        _gammaSlider.value = GammaLevel;
     }
 
     public void Master(float volume)

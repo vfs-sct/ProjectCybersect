@@ -19,14 +19,14 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _maxBoost = 3;
 
     public float healthPercent = 100f;
-    public int shieldPercent = 1;
-    public int boostPercent = 1;
+    public float shieldPercent = 1f;
+    public float boostPercent = 1f;
 
     private void Update()
     {
         healthPercent = _currentHealth / _maxHealth;
-        shieldPercent = _currentShield / _maxShield;
-        boostPercent = _currentBoost / _maxBoost;
+        shieldPercent = (float)_currentShield / (float)_maxShield;
+        boostPercent = (float)_currentBoost / (float)_maxBoost;
     }
     
     public int ReadBoost()

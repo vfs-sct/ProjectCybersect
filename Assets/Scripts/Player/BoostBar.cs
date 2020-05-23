@@ -7,20 +7,34 @@ using UnityEngine.UI;
 
 public class BoostBar : MonoBehaviour
 {
-    [SerializeField] private PlayerStats _player;
-
+    private PlayerStats _player;
+    private GameObject Player;
     private Image _boostBar;
 
     private void Start()
     {
         _boostBar = GetComponent<Image>();
+        FindPlayer();
     }
 
     private void Update()
     {
+        FindPlayer();
+        UpdateBar();
+    }
+
+    private void FindPlayer()
+    {
+        Player = GameObject.Find("Player");
+        _player = Player.GetComponent<PlayerStats>();
+    }
+    
+    private void UpdateBar()
+    {
         // if it can't find the player, set hp to 0
         if(_player == null)
         {
+            _player.boostPercent = 0;
             _boostBar.fillAmount = 0;
             return;
         }
