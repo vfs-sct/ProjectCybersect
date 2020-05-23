@@ -48,7 +48,6 @@ public class Grapple : MonoBehaviour
 
     // Private Members
     private FPSKinematicBody kb;
-    private FPSInput input;
     private FPSLook look;
     private FPSMovement movement;
 
@@ -72,7 +71,6 @@ public class Grapple : MonoBehaviour
     private void AquireReferences()
     {
         kb = GetComponent<FPSKinematicBody>();
-        input = GetComponent<FPSInput>();
         look = GetComponent<FPSLook>();
         movement = GetComponent<FPSMovement>();
 
@@ -351,19 +349,19 @@ public class Grapple : MonoBehaviour
         previousState = state;
 
         /* Grapple seeking logic */
-        if (input.grappleDown && state == GrappleState.INACTIVE)
+        if (FPSInput.grappleDown && state == GrappleState.INACTIVE)
         {
             state = GrappleState.SEEKING;
             ShowSeeker();
         }
-        else if (!input.grappleDown && state == GrappleState.SEEKING)
+        else if (!FPSInput.grappleDown && state == GrappleState.SEEKING)
         {
             state = GrappleState.INACTIVE;
             HideSeeker();
         }
 
         /* Grapple engage/disengage logic */
-        if (state == GrappleState.SEEKING && input.leftMouseDown && !lastLeftMouseDown)
+        if (state == GrappleState.SEEKING && FPSInput.leftMouseDown && !lastLeftMouseDown)
         {
             if (grappleAvailable)
                 ActivateGrapple();
@@ -372,9 +370,9 @@ public class Grapple : MonoBehaviour
         {
             /* Detect if cancel key is down/pressed */
             bool grapplePressed = false;
-            if (input.grappleDown && !lastGrappleDown)
+            if (FPSInput.grappleDown && !lastGrappleDown)
                 grapplePressed = true;
-            bool cancelKeyDown = input.spaceDown || input.shiftDown || grapplePressed;
+            bool cancelKeyDown = FPSInput.spaceDown || FPSInput.shiftDown || grapplePressed;
 
             if (cancelKeyDown)
                 DisengageGrapple();
@@ -382,8 +380,8 @@ public class Grapple : MonoBehaviour
                 DisengageGrapple();
         }
 
-        lastGrappleDown = input.grappleDown;
-        lastLeftMouseDown = input.leftMouseDown;
+        lastGrappleDown = FPSInput.grappleDown;
+        lastLeftMouseDown = FPSInput.leftMouseDown;
     }
 
     private void Grappling()
@@ -394,6 +392,7 @@ public class Grapple : MonoBehaviour
             distanceToGrapplePoint = toGrapplePoint.magnitude;
             toGrapplePoint.Normalize();
 
+            if (state == GrappleState.ENGAGED)
             CheckForBreak();
             if (state == GrappleState.ENGAGED)
                 ComputeVelocity();
