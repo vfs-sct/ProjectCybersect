@@ -22,6 +22,10 @@ public class PlayerStats : MonoBehaviour
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
 
+    [Header("UI to close")]
+    [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _debugMenu;
+
     private void Update()
     {
         KillPlayer();
@@ -34,6 +38,8 @@ public class PlayerStats : MonoBehaviour
     {
         if(healthPercent <= 0)
         {
+            _pauseMenu.SetActive(false);
+            _debugMenu.SetActive(false);
             Destroy(gameObject);
         }
     }
@@ -73,6 +79,11 @@ public class PlayerStats : MonoBehaviour
         {
             ++_currentShield;
         }
+    }
+
+    public float ReadHealth()
+    {
+        return _currentHealth;
     }
 
     public void TakeDamage(float damage)

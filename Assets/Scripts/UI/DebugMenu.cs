@@ -15,9 +15,18 @@ public class DebugMenu : MonoBehaviour
         playerStats = player.GetComponent<PlayerStats>();
     }
 
+    private void FixedUpdate()
+    {
+        player = GameObject.Find("player");
+        playerStats = player.GetComponent<PlayerStats>();
+    }
+
     public void DamagePlayer()
     {
-        playerStats.TakeDamage(10f);
+        if(playerStats.ReadHealth() > 10f)
+        {
+            playerStats.TakeDamage(10f);
+        }
     }
 
     public void HealPlayer()

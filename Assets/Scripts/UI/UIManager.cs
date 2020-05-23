@@ -48,10 +48,10 @@ public class UIManager : MonoBehaviour
     
     private void PauseGame()
     {
+        Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         _pauseMenu.SetActive(true);
-        Time.timeScale = 0;
     } 
 
     private void ContinueGame()
@@ -64,10 +64,10 @@ public class UIManager : MonoBehaviour
 
     private void OpenDebug()
     {
+        Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         _debugMenu.SetActive(true);
-        Time.timeScale = 0;
     } 
 
     private void CloseDebug()

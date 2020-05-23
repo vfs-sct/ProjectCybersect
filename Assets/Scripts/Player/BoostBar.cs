@@ -32,7 +32,7 @@ public class BoostBar : MonoBehaviour
     private void UpdateBar()
     {
         // if it can't find the player, set hp to 0
-        if(_player == null)
+        if(Player == null)
         {
             _player.boostPercent = 0;
             _boostBar.fillAmount = 0;

@@ -9,11 +9,11 @@ public class HealthBar : MonoBehaviour
 {
     private PlayerStats _player;
     private GameObject Player;
-    private Image _healthBar;
+    private Image healthBar;
 
     private void Start()
     {
-        _healthBar = GetComponent<Image>();
+        healthBar = GetComponent<Image>();
         FindPlayer();
     }
 
@@ -32,14 +32,14 @@ public class HealthBar : MonoBehaviour
     private void UpdateBar()
     {
         // if it can't find the player, set hp to 0
-        if(_player == null)
+        if(Player == null)
         {
             _player.healthPercent = 0;
-            _healthBar.fillAmount = 0f;
+            healthBar.fillAmount = 0f;
             return;
         }
 
         // set fill to health percent
-        _healthBar.fillAmount = _player.healthPercent;
+        healthBar.fillAmount = _player.healthPercent;
     }
 }

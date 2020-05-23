@@ -9843,6 +9843,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 4016582633289516813, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: _debugMenu
+      value: 
+      objectReference: {fileID: 843371697}
+    - target: {fileID: 4016582633289516813, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: _pauseMenu
+      value: 
+      objectReference: {fileID: 996739527}
     - target: {fileID: 4016582633289517044, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: m_LocalPosition.x

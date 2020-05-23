@@ -32,7 +32,7 @@ public class ShieldBar : MonoBehaviour
     private void UpdateBar()
     {
         // if it can't find the player, set hp to 0
-        if(_player == null)
+        if(Player == null)
         {   
             _player.shieldPercent = 0;
             _shieldBar.fillAmount = 0;
