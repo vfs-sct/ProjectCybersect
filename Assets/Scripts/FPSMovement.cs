@@ -63,11 +63,7 @@ public class FPSMovement : MonoBehaviour
             Vector3 velocity = new Vector3(kb.velocityX, 0.0f, kb.velocityZ);
             velocity = Quaternion.Inverse(transform.rotation)*velocity;
 
-            Vector2 targetVelocity;
-            if (canMove)
-                targetVelocity = new Vector2(FPSInput.movementX, FPSInput.movementZ).normalized*movementSpeed;
-            else
-                targetVelocity = Vector2.zero;
+            Vector2 targetVelocity = new Vector2(FPSInput.movementX, FPSInput.movementZ).normalized*movementSpeed;
 
             Vector2 currentVelocity = new Vector2(velocity.x, velocity.z);
             Vector2 difference = targetVelocity - currentVelocity;
@@ -107,7 +103,7 @@ public class FPSMovement : MonoBehaviour
     bool lastSpaceDown = false;
     private void Jumping()
     {
-        if (FPSInput.spaceDown && !lastSpaceDown && groundCheck.grounded && canMove)
+        if (FPSInput.spaceDown && !lastSpaceDown && groundCheck.grounded)
             kb.velocityY = jumpPower;
 
         lastSpaceDown = FPSInput.spaceDown;
@@ -116,7 +112,7 @@ public class FPSMovement : MonoBehaviour
     bool lastShiftDown = false;
     private void Boosting()
     {
-        if (FPSInput.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0 && canMove)
+        if (FPSInput.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0)
         {
             if (FPSInput.movementZ != 0 || FPSInput.movementX != 0)
             {
@@ -155,8 +151,11 @@ public class FPSMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HorizontalMovement();
-        Jumping();
-        Boosting();
+        if (canMove)
+        {
+            HorizontalMovement();
+            Jumping();
+            Boosting();
+        }
     }
 }
