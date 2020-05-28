@@ -64,25 +64,32 @@ public class PlayerStats : MonoBehaviour
     {
         return _currentHealth;
     }
+
+    public int ReadShield()
+    {
+        return _currentShield;
+    }
     
     public int ReadBoost()
     {
         return _currentBoost;
     }
 
-    public void UseBoost()
+    public void Boost(int boostAmount)
     {
-        if(_currentBoost >= 1)
+        if(Mathf.Sign(boostAmount) == -1)
         {
-            --_currentBoost;
+            if(_currentBoost >= 1)
+            {
+                --_currentBoost;
+            }
         }
-    }
-
-    public void AddBoost()
-    {
-        if(_currentBoost < _maxBoost)
+        else
+        {
+            if(_currentBoost < _maxBoost)
         {
             ++_currentBoost;
+        }
         }
     }
 

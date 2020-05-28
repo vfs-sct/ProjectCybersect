@@ -143,7 +143,7 @@ public class FPSMovement : MonoBehaviour
                 kb.velocityY = verticalBoostPower;
             }
 
-            playerStats.UseBoost();
+            playerStats.Boost(-1);
         }
 
         lastShiftDown = FPSInput.shiftDown;

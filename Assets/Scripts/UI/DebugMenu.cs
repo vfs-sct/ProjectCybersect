@@ -20,7 +20,7 @@ public class DebugMenu : MonoBehaviour
 
     public void AddBoost()
     {
-        _player.AddBoost();
+        _player.Boost(1);
     }
 
     public void RemoveShield()
