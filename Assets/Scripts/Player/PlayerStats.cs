@@ -86,6 +86,11 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    public void BreakShield()
+    {
+        _currentShield = 0;
+    }
+
     public void UseShield()
     {
         if(_currentShield >= 1)

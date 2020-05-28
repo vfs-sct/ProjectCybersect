@@ -10,6 +10,7 @@ public class KillFloor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        _player.BreakShield();
         _player.TakeDamage(999999);
     }
 }
