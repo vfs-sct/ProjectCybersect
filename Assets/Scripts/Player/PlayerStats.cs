@@ -22,33 +22,42 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
-
     [Header("Public")]
     public bool isDead = false;
-    public float healthPercent = 100f;
+    public float healthPercent = 1f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
 
 
     private void Update()
     {
-        KillPlayer();
+        CheckPlayer();
+        UpdatePercent();
+    }
+
+    private void UpdatePercent()
+    {
         healthPercent = _currentHealth / _maxHealth;
         shieldPercent = (float)_currentShield / (float)_maxShield;
         boostPercent = (float)_currentBoost / (float)_maxBoost;
     }
 
-    private void KillPlayer()
+    private void CheckPlayer()
     {
-        if(healthPercent <= 0)
+        if((healthPercent <= 0) && !isDead)
         {
+            isDead = true;
             _pauseMenu.SetActive(false);
             _debugMenu.SetActive(false);
-            _currentShield = 0;
-            _currentBoost = 0;
-            _currentHealth = 0f;
-            isDead = true;
         }
+    }
+
+    public void RespawnPlayer()
+    {
+        _currentHealth = _maxHealth;
+        _currentShield = _maxShield;
+        _currentBoost = _maxBoost;
+        isDead = false;
     }
 
     public float ReadHealth()
@@ -95,7 +104,14 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
+        if(_currentShield >= 1)
+        {
+            UseShield();
+        }
+        else
+        {
+            _currentHealth -= damage;
+        }
     }
 
     public void HealDamage(float health)

@@ -64,7 +64,6 @@ public class UIManager : MonoBehaviour
 
     private void OpenDebug()
     {
-        Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         _debugMenu.SetActive(true);
@@ -72,7 +71,6 @@ public class UIManager : MonoBehaviour
 
     private void CloseDebug()
     {
-        Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         _debugMenu.SetActive(false);
