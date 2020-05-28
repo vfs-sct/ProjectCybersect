@@ -87,9 +87,27 @@ public class PlayerStats : MonoBehaviour
         else
         {
             if(_currentBoost < _maxBoost)
-        {
-            ++_currentBoost;
+            {
+                ++_currentBoost;
+            }
         }
+    }
+
+    public void Shield(int shieldAmount)
+    {
+        if(Mathf.Sign(shieldAmount) == -1)
+        {
+            if(_currentShield >= 1)
+            {
+                --_currentShield;
+            }
+        }
+        else
+        {
+            if(_currentShield < _maxShield)
+            {
+                ++_currentShield;
+            }
         }
     }
 
@@ -98,27 +116,11 @@ public class PlayerStats : MonoBehaviour
         _currentShield = 0;
     }
 
-    public void UseShield()
-    {
-        if(_currentShield >= 1)
-        {
-            --_currentShield;
-        }
-    }
-
-    public void AddShield()
-    {
-        if(_currentShield < _maxShield)
-        {
-            ++_currentShield;
-        }
-    }
-
     public void TakeDamage(float damage)
     {
         if(_currentShield >= 1)
         {
-            UseShield();
+            Shield(-1);
         }
         else
         {

@@ -6,13 +6,15 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {   
-    public GameObject _pauseMenu;
-    public GameObject _debugMenu;
+    [SerializeField] private GameObject _pauseUI = null;
+    [SerializeField] private GameObject _pauseMenu = null;
+    [SerializeField] private GameObject _optionMenu = null;
+    [SerializeField] private GameObject _debugUI = null;
 
     private void Awake()
     {
-        _pauseMenu.SetActive(false);
-        _debugMenu.SetActive(false);
+        _pauseUI.SetActive(false);
+        _debugUI.SetActive(false);
     }
 
     private void Update()
@@ -21,8 +23,10 @@ public class UIManager : MonoBehaviour
         {
             CloseDebug();
 
-            if (_pauseMenu.activeInHierarchy) 
+            if (_pauseUI.activeInHierarchy) 
             {
+                _optionMenu.SetActive(false);
+                _pauseMenu.SetActive(true);
                 ContinueGame();   
             }
             else
@@ -35,7 +39,7 @@ public class UIManager : MonoBehaviour
         {
             ContinueGame();
 
-            if (_debugMenu.activeInHierarchy) 
+            if (_debugUI.activeInHierarchy) 
             {
                 CloseDebug();
             }
@@ -48,10 +52,11 @@ public class UIManager : MonoBehaviour
     
     private void PauseGame()
     {
+
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        _pauseMenu.SetActive(true);
+        _pauseUI.SetActive(true);
     } 
 
     private void ContinueGame()
@@ -59,20 +64,20 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _pauseMenu.SetActive(false);
+        _pauseUI.SetActive(false);
     }
 
     private void OpenDebug()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        _debugMenu.SetActive(true);
+        _debugUI.SetActive(true);
     } 
 
     private void CloseDebug()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _debugMenu.SetActive(false);
+        _debugUI.SetActive(false);
     }
 }

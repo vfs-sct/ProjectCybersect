@@ -17,8 +17,6 @@ public static class SaveSettings
 
         formatter.Serialize(stream, data);
         stream.Close();
-
-        Debug.Log("Settings Saved.");
     }
 
     public static SettingsData LoadSetting()
@@ -32,13 +30,10 @@ public static class SaveSettings
             SettingsData data = formatter.Deserialize(stream) as SettingsData;
             stream.Close();
 
-            Debug.Log("Settings Loaded.");
             return data;
         }
         else
         {
-            Debug.Log("File not found in " + path);
-
             return null;
         }
     }
