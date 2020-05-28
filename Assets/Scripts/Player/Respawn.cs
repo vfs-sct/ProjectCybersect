@@ -6,42 +6,32 @@ using UnityEngine;
 
 public class Respawn : MonoBehaviour
 {   
-    [SerializeField] private GameObject _playerPrefab = null;
+    [SerializeField] private GameObject _player = null;
 
-    private float RespawnTime = 2f;
-    private bool CanRespawn = false;
+    private PlayerStats Player;
 
-    GameObject player;
+    [SerializeField] private float RespawnTime = 2f;
+
+    private void Awake()
+    {
+        Player = _player.GetComponent<PlayerStats>();
+    }
 
     private void Update()
     {
-        CheckForPlayer();
         RespawnPlayer();
-    }
-
-    private void CheckForPlayer()
-    {
-        if(GameObject.Find("player"))
-        {
-            CanRespawn = false;
-        }
-        else
-        {
-            CanRespawn = true;
-        }
     }
 
     private void RespawnPlayer()
     {
-        if(CanRespawn)
+        if(Player.isDead)
         {
             RespawnTime -= Time.deltaTime;
             if(RespawnTime < 0)
             {
                 RespawnTime = 2f;
-                CanRespawn = false;
-                player = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
-                player.name = "player";
+                _player.transform.position = this.transform.position;
+                Player.RespawnPlayer();
             }
         }
     }

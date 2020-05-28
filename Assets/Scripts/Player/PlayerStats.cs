@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("UI to close")]
+    [SerializeField] private GameObject _pauseMenu = null;
+    [SerializeField] private GameObject _debugMenu = null;
+
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
     [SerializeField] private float _maxHealth = 100f;
@@ -18,30 +22,47 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
-    public float healthPercent = 100f;
+    [Header("Public")]
+    public bool isDead = false;
+    public float healthPercent = 1f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
 
-    [Header("UI to close")]
-    [SerializeField] private GameObject _pauseMenu;
-    [SerializeField] private GameObject _debugMenu;
 
     private void Update()
     {
-        KillPlayer();
+        CheckPlayer();
+        UpdatePercent();
+    }
+
+    private void UpdatePercent()
+    {
         healthPercent = _currentHealth / _maxHealth;
         shieldPercent = (float)_currentShield / (float)_maxShield;
         boostPercent = (float)_currentBoost / (float)_maxBoost;
     }
 
-    private void KillPlayer()
+    private void CheckPlayer()
     {
-        if(healthPercent <= 0)
+        if((healthPercent <= 0) && !isDead)
         {
+            isDead = true;
             _pauseMenu.SetActive(false);
             _debugMenu.SetActive(false);
-            Destroy(gameObject);
         }
+    }
+
+    public void RespawnPlayer()
+    {
+        _currentHealth = _maxHealth;
+        _currentShield = _maxShield;
+        _currentBoost = _maxBoost;
+        isDead = false;
+    }
+
+    public float ReadHealth()
+    {
+        return _currentHealth;
     }
     
     public int ReadBoost()
@@ -81,14 +102,16 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public float ReadHealth()
-    {
-        return _currentHealth;
-    }
-
     public void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
+        if(_currentShield >= 1)
+        {
+            UseShield();
+        }
+        else
+        {
+            _currentHealth -= damage;
+        }
     }
 
     public void HealDamage(float health)
