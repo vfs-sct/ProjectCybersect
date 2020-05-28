@@ -128,23 +128,7 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1784145529668538992, guid: 03815fbf60c821b49a8bd99f2eab3bde,
-        type: 3}
-      propertyPath: _player
-      value: 
-      objectReference: {fileID: 1161634424}
-    - target: {fileID: 1784145529668538994, guid: 03815fbf60c821b49a8bd99f2eab3bde,
-        type: 3}
-      propertyPath: m_FillAmount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1784145529813460735, guid: 03815fbf60c821b49a8bd99f2eab3bde,
-        type: 3}
-      propertyPath: _player
-      value: 
-      objectReference: {fileID: 1161634424}
-    - target: {fileID: 1784145530611287476, guid: 03815fbf60c821b49a8bd99f2eab3bde,
-        type: 3}
+    - target: {fileID: 3318112, guid: 03815fbf60c821b49a8bd99f2eab3bde, type: 3}
       propertyPath: _player
       value: 
       objectReference: {fileID: 1161634424}
@@ -253,15 +237,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1784145531023327923, guid: 03815fbf60c821b49a8bd99f2eab3bde,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1784145531023327934, guid: 03815fbf60c821b49a8bd99f2eab3bde,
         type: 3}
       propertyPath: m_Name
-      value: UI
+      value: PlayerUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03815fbf60c821b49a8bd99f2eab3bde, type: 3}
@@ -7165,6 +7144,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7537203767124913320, guid: 939851c5ec98e4949bb9181e1a6a90a8,
+        type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1161634424}
     - target: {fileID: 7537203767124913322, guid: 939851c5ec98e4949bb9181e1a6a90a8,
         type: 3}
       propertyPath: m_Name
@@ -7208,7 +7192,7 @@ PrefabInstance:
     - target: {fileID: 7537203767124913326, guid: 939851c5ec98e4949bb9181e1a6a90a8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7537203767124913326, guid: 939851c5ec98e4949bb9181e1a6a90a8,
         type: 3}
@@ -9499,7 +9483,7 @@ Transform:
   - {fileID: 973709998}
   - {fileID: 1352307514}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2123064226
 GameObject:

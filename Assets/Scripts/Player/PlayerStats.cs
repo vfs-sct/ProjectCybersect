@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("UI to close")]
+    [SerializeField] private GameObject _pauseMenu = null;
+    [SerializeField] private GameObject _debugMenu = null;
+
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
     [SerializeField] private float _maxHealth = 100f;
@@ -18,13 +22,13 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
+
+    [Header("Public")]
+    public bool isDead = false;
     public float healthPercent = 100f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
 
-    [Header("UI to close")]
-    [SerializeField] private GameObject _pauseMenu;
-    [SerializeField] private GameObject _debugMenu;
 
     private void Update()
     {
@@ -40,8 +44,16 @@ public class PlayerStats : MonoBehaviour
         {
             _pauseMenu.SetActive(false);
             _debugMenu.SetActive(false);
-            Destroy(gameObject);
+            _currentShield = 0;
+            _currentBoost = 0;
+            _currentHealth = 0f;
+            isDead = true;
         }
+    }
+
+    public float ReadHealth()
+    {
+        return _currentHealth;
     }
     
     public int ReadBoost()
@@ -79,11 +91,6 @@ public class PlayerStats : MonoBehaviour
         {
             ++_currentShield;
         }
-    }
-
-    public float ReadHealth()
-    {
-        return _currentHealth;
     }
 
     public void TakeDamage(float damage)
