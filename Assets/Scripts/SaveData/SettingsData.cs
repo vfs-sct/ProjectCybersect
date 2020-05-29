@@ -15,7 +15,7 @@ public class SettingsData
     public int Height = 1080;
     public bool Fullscreen = true;
 
-    public float GammaLevel = 1f;
+    public float GammaLevel = 0f;
 
     public SettingsData(OptionsMenu settings)
     {

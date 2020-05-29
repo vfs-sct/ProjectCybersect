@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class OptionsMenu : MonoBehaviour
 
     [Header("Gamma")]
     [SerializeField] private Slider _gammaSlider = null;
+
+    [Header("Audio")]
+    [SerializeField] private AudioMixer _audioMixer = null;
 
 
     [Header("Setting Data")]
@@ -50,6 +54,9 @@ public class OptionsMenu : MonoBehaviour
         _masterSlider.value = MasterVolume;
         _musicSlider.value = MusicVolume;
         _sfxSlider.value = SFXVolume;
+        _audioMixer.SetFloat("masterVolume", MasterVolume);
+        _audioMixer.SetFloat("musicVolume", MusicVolume);
+        _audioMixer.SetFloat("musicVolume", MusicVolume);
 
         //Load Resolution
         Screen.SetResolution(Width, Height, Fullscreen);
@@ -62,18 +69,21 @@ public class OptionsMenu : MonoBehaviour
     public void Master(float volume)
     {
         MasterVolume = volume;
+        _audioMixer.SetFloat("masterVolume", MasterVolume);
         SaveData();
     }
 
     public void Music(float volume)
     {
         MusicVolume = volume;
+        _audioMixer.SetFloat("musicVolume", MusicVolume);
         SaveData();
     }
 
     public void SFX(float volume)
     {
         SFXVolume = volume;
+        _audioMixer.SetFloat("sfxVolume", SFXVolume);
         SaveData();
     }
 
