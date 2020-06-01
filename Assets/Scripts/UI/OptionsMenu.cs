@@ -6,6 +6,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using TMPro;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private Slider _sfxSlider = null;
 
     [Header("Resolution")]
-    [SerializeField] private Toggle _windowToggle = null;
+    [SerializeField] private TMP_Dropdown _resolutions = null;
+    [SerializeField] private Toggle _fullscreenToggle = null;
 
     [Header("Gamma")]
     [SerializeField] private Slider _gammaSlider = null;
@@ -23,100 +25,136 @@ public class OptionsMenu : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioMixer _audioMixer = null;
 
+    private bool Fullscreen;
 
-    [Header("Setting Data")]
-    public float MasterVolume;
-    public float MusicVolume;
-    public float SFXVolume;
-
-    public int Width;
-    public int Height;
-    public bool Fullscreen;
-
-    public float GammaLevel;
+    Resolution[] resolutions;
 
     private void Start()
     {
-        //Check for settings file
-        string path = Application.persistentDataPath + "/settings.exq";
-        if(File.Exists(path))
+        AddResolutions();
+
+        if(!PlayerPrefs.HasKey("MasterVolume"))
         {
-            //load data
-            LoadData();
-        }
-        else
-        {
-            //create new data
-            SaveData();
+            Defaults();
+            return;
         }
 
-        //Load Volume 
-        _masterSlider.value = MasterVolume;
-        _musicSlider.value = MusicVolume;
-        _sfxSlider.value = SFXVolume;
-        _audioMixer.SetFloat("masterVolume", MasterVolume);
-        _audioMixer.SetFloat("musicVolume", MusicVolume);
-        _audioMixer.SetFloat("musicVolume", MusicVolume);
+        LoadVolumes();
+        LoadResolution();
+        LoadOther();
+    }
 
-        //Load Resolution
-        Screen.SetResolution(Width, Height, Fullscreen);
-        _windowToggle.isOn = Fullscreen;
+    private void AddResolutions()
+    {
+        resolutions = Screen.resolutions;
+        _resolutions.ClearOptions();
 
-        //Load Gamma
-        _gammaSlider.value = GammaLevel;
+        int currentResolutionIndex = 0;
+        List<string> options = new List<string>();
+
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+            options.Add(option);
+
+            if(resolutions[i].width == Screen.currentResolution.width &&
+               resolutions[i].height == Screen.currentResolution.height)
+            {
+                currentResolutionIndex = i;
+            }
+        }
+
+        _resolutions.AddOptions(options);
+        _resolutions.value = currentResolutionIndex;
+        _resolutions.RefreshShownValue();
+    }
+
+    private void LoadVolumes()
+    {
+        _masterSlider.value = PlayerPrefs.GetFloat("MasterVolume");
+        _musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
+        _sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        _audioMixer.SetFloat("masterVolume", _masterSlider.value);
+        _audioMixer.SetFloat("musicVolume", _musicSlider.value);
+        _audioMixer.SetFloat("musicVolume", _sfxSlider.value);
+    }
+
+    private void LoadResolution()
+    {
+        Fullscreen = (PlayerPrefs.GetInt("Fullscreen") == 1) ? true : false;
+        _fullscreenToggle.isOn = Fullscreen;
+        Screen.fullScreen = Fullscreen;
+        Screen.SetResolution(PlayerPrefs.GetInt("Width"), 
+                            PlayerPrefs.GetInt("Height"),
+                            Fullscreen);
+    }
+
+    private void LoadOther()
+    {
+        _gammaSlider.value = PlayerPrefs.GetFloat("Gamma");
     }
 
     public void Master(float volume)
     {
-        MasterVolume = volume;
-        _audioMixer.SetFloat("masterVolume", MasterVolume);
-        SaveData();
+        PlayerPrefs.SetFloat("MasterVolume", volume);
+        _audioMixer.SetFloat("masterVolume", volume);
+        PlayerPrefs.Save();
     }
 
     public void Music(float volume)
     {
-        MusicVolume = volume;
-        _audioMixer.SetFloat("musicVolume", MusicVolume);
-        SaveData();
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+        _audioMixer.SetFloat("musicVolume", volume);
+        PlayerPrefs.Save();
     }
 
     public void SFX(float volume)
     {
-        SFXVolume = volume;
-        _audioMixer.SetFloat("sfxVolume", SFXVolume);
-        SaveData();
+        PlayerPrefs.SetFloat("SFXVolume", volume);
+        _audioMixer.SetFloat("sfxVolume", volume);
+        PlayerPrefs.Save();
     }
 
-    public void Resolution(bool fullscreen)
+    public void SetResolution(int resolutionIndex)
     {
+        Resolution resolution = resolutions[resolutionIndex];
+        PlayerPrefs.SetInt("Width", resolution.width);
+        PlayerPrefs.SetInt("Height", resolution.height);
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        PlayerPrefs.Save();
+    }
+
+    public void ChangeWindow(bool fullscreen)
+    {
+        if(fullscreen) 
+        {
+            PlayerPrefs.SetInt("Fullscreen", 1);
+        }
+        else 
+        {
+            PlayerPrefs.SetInt("Fullscreen", 0);
+        }
+
         Fullscreen = fullscreen;
-        Screen.SetResolution(Width, Height, Fullscreen);
-        SaveData();
+        Screen.fullScreen = Fullscreen;
+        PlayerPrefs.Save();
     }
 
     public void Gamma(float gamma)
     {
-        GammaLevel = gamma;
-        SaveData();
+        PlayerPrefs.SetFloat("Gamma", gamma);
+        PlayerPrefs.Save();
     }
 
-    public void SaveData()
+    private void Defaults()
     {
-        SaveSettings.SaveSetting(this);
-    }
-
-    public void LoadData()
-    {
-        SettingsData data = SaveSettings.LoadSetting();
-
-        MasterVolume = data.MasterVolume;
-        MusicVolume = data.MusicVolume;
-        SFXVolume = data.SFXVolume;
-
-        Width = data.Width;
-        Height = data.Height;
-        Fullscreen = data.Fullscreen;
-
-        GammaLevel = data.GammaLevel;
+        _masterSlider.value = 0f;
+        _musicSlider.value = 0f;
+        _sfxSlider.value = 0f;
+        _audioMixer.SetFloat("masterVolume", _masterSlider.value);
+        _audioMixer.SetFloat("musicVolume", _musicSlider.value);
+        _audioMixer.SetFloat("musicVolume", _sfxSlider.value);
+        Screen.SetResolution(1920, 1080, true);
+        _gammaSlider.value = 0f;
     }
 }

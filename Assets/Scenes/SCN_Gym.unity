@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2520,7 +2520,8 @@ MonoBehaviour:
   _masterSlider: {fileID: 1229041961}
   _musicSlider: {fileID: 1157470249}
   _sfxSlider: {fileID: 170882971}
-  _windowToggle: {fileID: 1493295026}
+  _resolutions: {fileID: 1819165033}
+  _fullscreenToggle: {fileID: 1493295026}
   _gammaSlider: {fileID: 1227848823}
   _audioMixer: {fileID: 24100000, guid: 2bb23e484a702554e83cc946ac8a9ade, type: 2}
   MasterVolume: 0
@@ -4855,7 +4856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23ca844df64610f45a67739097570942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseMenu: {fileID: 991067295}
+  _pauseMenu: {fileID: 735200771}
 --- !u!224 &991067297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8933,7 +8934,18 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 596782600}
+        m_MethodName: SetResolution
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1819165034
 MonoBehaviour:
   m_ObjectHideFlags: 0

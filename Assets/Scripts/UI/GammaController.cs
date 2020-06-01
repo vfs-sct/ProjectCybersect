@@ -14,7 +14,7 @@ public class GammaController : MonoBehaviour
     private void Awake()
     {
         LGB = _volume.GetComponent<LiftGammaGain>();
-        LGB.gamma.value = new Vector4(1,1,1,_optionsMenu.GammaLevel);
+        LGB.gamma.value = new Vector4(1,1,1,0);
     }
 
     public void ChangeGamma(float gammaValue)
