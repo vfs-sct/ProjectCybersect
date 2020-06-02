@@ -25,11 +25,11 @@ public class DebugMenu : MonoBehaviour
 
     public void RemoveShield()
     {
-        _player.UseShield();
+        _player.Shield(-1);
     }
 
     public void AddShield()
     {
-        _player.AddShield();
+        _player.Shield(1);
     }
 }

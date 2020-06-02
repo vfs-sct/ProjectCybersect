@@ -108,7 +108,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -133,6 +133,8 @@ MonoBehaviour:
   grappleActivationShakeAmount: 2.5
   grappleFOVMultiplier: 1.3
   grappleFOVAlpha: 0.1
+  landingShakeAmount: 2
+  landingShakeSmoothness: 1
 --- !u!1 &4016582633137739014
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,14 +249,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grappleKey: 102
-  movementX: 0
-  movementZ: 0
-  mouseDeltaX: 0
-  mouseDeltaY: 0
-  leftMouseDown: 0
-  spaceDown: 0
-  grappleDown: 0
-  shiftDown: 0
 --- !u!114 &4016582633289516808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 940705fe4598a354aa53ad632eeba538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grapplePrefab: {fileID: 6962134395184942710, guid: 94cbf9df920f4f0409b1da67e8bc7511,
+  grapplePrefab: {fileID: 6862814905760478034, guid: f111907a257271f4b9863151a7e796e7,
     type: 3}
   grappleDistance: 50
   grappleEngagementSpeed: 100
@@ -367,12 +361,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49cc460d81c1514f951d9ef38e7a0c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pauseMenu: {fileID: 0}
+  _debugMenu: {fileID: 0}
   _currentHealth: 100
   _maxHealth: 100
   _currentShield: 4
   _maxShield: 4
   _currentBoost: 3
   _maxBoost: 3
+  isDead: 0
   healthPercent: 100
   shieldPercent: 1
   boostPercent: 1
