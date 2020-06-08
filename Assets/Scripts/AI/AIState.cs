@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class AIState : MonoBehaviour
 {
-    public const float aggressionRadius = 5f;
     private const float checkPeriod = 1f/10f;
 
-    public static bool aggressive = false;
+    public static bool aggressive = true;
+    public static float density = 0f;
+    public static Vector3 averagePosition;
+    public static int agentCount = 0;
 
     private GameObject[] agents;
     private GameObject player;
-    private float aggressionRadiusSquared = aggressionRadius*aggressionRadius;
+    private float aggressionRadiusSquared = AI.aggressionRadius*AI.aggressionRadius;
 
     private void GetAgents()
     {
         agents = GameObject.FindGameObjectsWithTag("agent");
+        agentCount = agents.Length;
     }
 
     private void Start()
@@ -26,20 +29,23 @@ public class AIState : MonoBehaviour
 
     private void EvaluateAggression()
     {
+        if (aggressive)
+            return;
+
         for (uint i = 0; i < agents.Length; ++i)
         {
+            if (agents[i] == null)
+                continue;
+
             Vector3 toPlayer = player.transform.position - agents[i].transform.position;
             if (toPlayer.sqrMagnitude <= aggressionRadiusSquared)
                 aggressive = true;
         }
     }
-
+    
     float timer = 0f;
     private void Update()
     {
-        if (aggressive)
-            return;
-
         if (timer >= checkPeriod)
         {
             EvaluateAggression();

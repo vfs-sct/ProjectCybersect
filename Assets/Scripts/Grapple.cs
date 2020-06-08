@@ -34,6 +34,7 @@ public class Grapple : MonoBehaviour
     [SerializeField,
     Range(0, 1)]     private float grapplePerpendicularVelocityDecayAlpha = 0.1f;
     [SerializeField] private float grappleDisengageDistance = 3f;
+    [SerializeField] private GameObject mapGameObject;
 
     [Header("Snapping")]
     [SerializeField] private float grappleSnapDistance = 0.05f;
@@ -82,7 +83,10 @@ public class Grapple : MonoBehaviour
 
     private void CalculateEdgePoints()
     {
-        BoxCollider[] colliders = GameObject.Find("map").GetComponentsInChildren<BoxCollider>();
+        if (mapGameObject == null)
+            return;
+
+        BoxCollider[] colliders = mapGameObject.GetComponentsInChildren<BoxCollider>();
         foreach (BoxCollider collider in colliders)
         {
             Vector3 scale = collider.transform.localScale;
