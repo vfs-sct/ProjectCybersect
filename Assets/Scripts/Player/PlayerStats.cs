@@ -54,10 +54,10 @@ public class PlayerStats : MonoBehaviour
 
     public void RespawnPlayer()
     {
+        isDead = false;
         _currentHealth = _maxHealth;
         _currentShield = _maxShield;
         _currentBoost = _maxBoost;
-        isDead = false;
     }
 
     public float ReadHealth()

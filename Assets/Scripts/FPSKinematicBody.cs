@@ -58,7 +58,10 @@ public class FPSKinematicBody : MonoBehaviour
     private void CheckForCollisions()
     {
         foreach (Collider collider in colliders)
-        {
+        {   
+            if(collider == null)
+                continue;
+                
             if (collider == objectCollider)
                 continue;
 
