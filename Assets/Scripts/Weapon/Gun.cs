@@ -8,7 +8,7 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     [Header("Gun Effects")]
-    [SerializeField] private Camera _playerCam;
+    [SerializeField] private Camera _playerCam = null;
     [SerializeField] private ParticleSystem _muzzleFlash = null;
     [SerializeField] private GameObject _impactEffect = null;
 
