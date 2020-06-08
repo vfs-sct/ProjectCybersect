@@ -26,13 +26,13 @@ public class UISeeker : MonoBehaviour
             switch (grapple.cursorState)
             {
                 case GrappleCursorState.LOCKED:
-                    seekerImage.image = locked.texture;
+                    seekerImage.sprite = locked;
                     break;
                 case GrappleCursorState.UNLOCKED:
-                    seekerImage.image = unlocked.texture;
+                    seekerImage.sprite = unlocked;
                     break;
                 case GrappleCursorState.OUT_OF_RANGE:
-                    seekerImage.image = outOfRange.texture;
+                    seekerImage.sprite = outOfRange;
                     break;
             }
         }
