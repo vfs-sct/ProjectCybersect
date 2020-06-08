@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("UI to close")]
+    [SerializeField] private GameObject _pauseMenu = null;
+    [SerializeField] private GameObject _debugMenu = null;
+
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
     [SerializeField] private float _maxHealth = 100f;
@@ -18,67 +22,42 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
-    public float healthPercent = 100f;
+    [Header("Public")]
+    public bool isDead = false;
+    public float healthPercent = 1f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
 
-    [Header("UI to close")]
-    [SerializeField] private GameObject _pauseMenu;
-    [SerializeField] private GameObject _debugMenu;
 
     private void Update()
     {
-        KillPlayer();
+        CheckPlayer();
+        UpdatePercent();
+    }
+
+    private void UpdatePercent()
+    {
         healthPercent = _currentHealth / _maxHealth;
         shieldPercent = (float)_currentShield / (float)_maxShield;
         boostPercent = (float)_currentBoost / (float)_maxBoost;
     }
 
-    private void KillPlayer()
+    private void CheckPlayer()
     {
-        if(healthPercent <= 0)
+        if((healthPercent <= 0) && !isDead)
         {
+            isDead = true;
             _pauseMenu.SetActive(false);
             _debugMenu.SetActive(false);
-            Destroy(gameObject);
-        }
-    }
-    
-    public int ReadBoost()
-    {
-        return _currentBoost;
-    }
-
-    public void UseBoost()
-    {
-        if(_currentBoost >= 1)
-        {
-            --_currentBoost;
         }
     }
 
-    public void AddBoost()
+    public void RespawnPlayer()
     {
-        if(_currentBoost < _maxBoost)
-        {
-            ++_currentBoost;
-        }
-    }
-
-    public void UseShield()
-    {
-        if(_currentShield >= 1)
-        {
-            --_currentShield;
-        }
-    }
-
-    public void AddShield()
-    {
-        if(_currentShield < _maxShield)
-        {
-            ++_currentShield;
-        }
+        _currentHealth = _maxHealth;
+        _currentShield = _maxShield;
+        _currentBoost = _maxBoost;
+        isDead = false;
     }
 
     public float ReadHealth()
@@ -86,9 +65,67 @@ public class PlayerStats : MonoBehaviour
         return _currentHealth;
     }
 
+    public int ReadShield()
+    {
+        return _currentShield;
+    }
+    
+    public int ReadBoost()
+    {
+        return _currentBoost;
+    }
+
+    public void Boost(int boostAmount)
+    {
+        if(Mathf.Sign(boostAmount) == -1)
+        {
+            if(_currentBoost >= 1)
+            {
+                --_currentBoost;
+            }
+        }
+        else
+        {
+            if(_currentBoost < _maxBoost)
+            {
+                ++_currentBoost;
+            }
+        }
+    }
+
+    public void Shield(int shieldAmount)
+    {
+        if(Mathf.Sign(shieldAmount) == -1)
+        {
+            if(_currentShield >= 1)
+            {
+                --_currentShield;
+            }
+        }
+        else
+        {
+            if(_currentShield < _maxShield)
+            {
+                ++_currentShield;
+            }
+        }
+    }
+
+    public void BreakShield()
+    {
+        _currentShield = 0;
+    }
+
     public void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
+        if(_currentShield >= 1)
+        {
+            Shield(-1);
+        }
+        else
+        {
+            _currentHealth -= damage;
+        }
     }
 
     public void HealDamage(float health)

@@ -6,8 +6,11 @@ using UnityEngine;
 
 public class KillFloor : MonoBehaviour
 {
+    [SerializeField] private PlayerStats _player = null;
+
     private void OnTriggerEnter(Collider other)
     {
-        Destroy(other.gameObject);
+        _player.BreakShield();
+        _player.TakeDamage(999999);
     }
 }

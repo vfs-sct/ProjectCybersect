@@ -62,6 +62,9 @@ public class FPSKinematicBody : MonoBehaviour
             if (collider == objectCollider)
                 continue;
 
+            if (collider.isTrigger)
+                continue;
+
             Vector3 clearDirection;
             float clearDistance;
             bool result = Physics.ComputePenetration(objectCollider, transform.position, transform.rotation, 
