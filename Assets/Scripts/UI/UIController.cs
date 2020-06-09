@@ -6,13 +6,19 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {   
+    [Header("UI")]
     [SerializeField] private GameObject _pauseUI = null;
+    [SerializeField] private GameObject _debugUI = null;
+
+    [Header("Menu")]
     [SerializeField] private GameObject _pauseMenu = null;
     [SerializeField] private GameObject _optionMenu = null;
-    [SerializeField] private GameObject _debugUI = null;
+
+    private GameManager gameManager = null;
 
     private void Awake()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _pauseUI.SetActive(false);
         _debugUI.SetActive(false);
     }
@@ -52,32 +58,25 @@ public class UIController : MonoBehaviour
     
     private void PauseGame()
     {
-
-        Time.timeScale = 0;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        gameManager.isPaused = true;
         _pauseUI.SetActive(true);
     } 
 
     private void ContinueGame()
     {
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        gameManager.isPaused = false;
         _pauseUI.SetActive(false);
     }
 
     private void OpenDebug()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        gameManager.isPaused = true;
         _debugUI.SetActive(true);
     } 
 
     private void CloseDebug()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        gameManager.isPaused = false;
         _debugUI.SetActive(false);
     }
 }

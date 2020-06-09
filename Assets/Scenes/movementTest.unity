@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 518987d65e8cc3d46842679e18b12f48,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 1024796}
   - component: {fileID: 1024798}
   - component: {fileID: 1024797}
+  - component: {fileID: 1024799}
   m_Layer: 5
   m_Name: seeker
   m_TagString: Untagged
@@ -195,6 +196,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024795}
   m_CullTransparentMesh: 0
+--- !u!114 &1024799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0865a6e69e957449fb12a87e4718e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unlocked: {fileID: 21300000, guid: b773709cd77d5db4783b8e50a98a64ff, type: 3}
+  locked: {fileID: 0}
+  outOfRange: {fileID: 0}
 --- !u!1 &1055901845
 GameObject:
   m_ObjectHideFlags: 0
