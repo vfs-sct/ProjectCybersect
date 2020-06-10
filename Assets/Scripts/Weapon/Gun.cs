@@ -18,12 +18,15 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _impactForce = 0f;
     [SerializeField] private float _fireRate = 15f;
 
+    private AudioSource gunShot = null;
+
     private GameManager gameManager = null;
 
     private float TimeToFire = 0f;
 
     private void Awake()
     {
+        gunShot = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
@@ -41,6 +44,7 @@ public class Gun : MonoBehaviour
     private void Shoot()
     {
         _muzzleFlash.Play();
+        gunShot.Play();
 
         RaycastHit hit;
         if(Physics.Raycast(_playerCam.transform.position, _playerCam.transform.forward, out hit, _range))
