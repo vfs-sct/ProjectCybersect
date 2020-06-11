@@ -73,11 +73,11 @@ public class OptionsMenu : MonoBehaviour
     private void LoadVolumes()
     {
         _masterSlider.value = PlayerPrefs.GetFloat("MasterVolume");
-        _musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
-        _sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume");
         _audioMixer.SetFloat("masterVolume", _masterSlider.value);
+        _musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
         _audioMixer.SetFloat("musicVolume", _musicSlider.value);
-        _audioMixer.SetFloat("musicVolume", _sfxSlider.value);
+        _sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        _audioMixer.SetFloat("sfxVolume", _sfxSlider.value);
     }
 
     private void LoadResolution()
@@ -151,7 +151,7 @@ public class OptionsMenu : MonoBehaviour
     {
         _masterSlider.value = 0f;
         _musicSlider.value = 0f;
-        _sfxSlider.value = 0f;
+        _sfxSlider.value = -40f;
         _audioMixer.SetFloat("masterVolume", _masterSlider.value);
         _audioMixer.SetFloat("musicVolume", _musicSlider.value);
         _audioMixer.SetFloat("musicVolume", _sfxSlider.value);
