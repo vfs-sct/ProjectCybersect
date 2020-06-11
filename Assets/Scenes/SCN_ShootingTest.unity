@@ -924,6 +924,7 @@ GameObject:
   - component: {fileID: 125031259}
   - component: {fileID: 125031261}
   - component: {fileID: 125031260}
+  - component: {fileID: 125031262}
   m_Layer: 5
   m_Name: seeker
   m_TagString: Untagged
@@ -948,7 +949,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 25, y: 25}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &125031260
 MonoBehaviour:
@@ -968,7 +969,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b773709cd77d5db4783b8e50a98a64ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: edba0bb7cc521894d9dd86af022e3f3a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -986,6 +987,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125031258}
   m_CullTransparentMesh: 0
+--- !u!114 &125031262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125031258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0865a6e69e957449fb12a87e4718e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unlocked: {fileID: 21300000, guid: edba0bb7cc521894d9dd86af022e3f3a, type: 3}
+  locked: {fileID: 21300000, guid: 78cc68115855fa34088d9264814301bb, type: 3}
+  outOfRange: {fileID: 21300000, guid: e997cb0e86497c945a7841aa89bc60cc, type: 3}
 --- !u!1 &133969536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3816,6 +3832,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701220, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: jumpPower
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701220, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: verticalBoostPower
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701220, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: decelerationPercent
+      value: 41
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701220, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: airMovementMultiplier
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 267403272448701223, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
