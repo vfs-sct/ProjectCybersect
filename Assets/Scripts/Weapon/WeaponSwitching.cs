@@ -78,6 +78,8 @@ public class WeaponSwitching : MonoBehaviour
         {
             selectedWeapon = 4;
         }
+
+        SelectWeapon();
     }
 
     private void SelectWeapon()
