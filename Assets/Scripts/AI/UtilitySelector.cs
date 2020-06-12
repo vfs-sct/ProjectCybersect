@@ -12,7 +12,7 @@ public struct Selection
     public Callback callback;
 }
 
-public class UtilitySelector 
+public class UtilitySelector
 {
     private const uint MAX_SELECTIONS = 16;
 

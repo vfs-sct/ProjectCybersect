@@ -6,6 +6,9 @@ public class Projectile : MonoBehaviour
 {
     public float speed;
     public float damage;
+    public float timeout = 5f;
+
+    private float timer = 0f;
 
     private Rigidbody rb;
 
@@ -23,5 +26,9 @@ public class Projectile : MonoBehaviour
     private void LateUpdate()
     {
         AlignToVelocity();
+
+        if (timer > timeout)
+            Destroy(gameObject);
+        timer += Time.deltaTime;
     }
 }

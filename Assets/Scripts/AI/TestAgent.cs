@@ -47,9 +47,21 @@ public class TestAgent : MonoBehaviour
     {
         float utility = 0f;
 
-        if (los && toPlayerSqrMag > 7f)
+        if (los && toPlayerSqrMag > 14*14f)
         {
-            utility = Mathf.Clamp01(toPlayerSqrMag/(20f*20f))*40f;
+            utility = Mathf.Clamp01(toPlayerSqrMag/(30f*30f))*40f;
+        }
+
+        return utility;
+    }
+
+    private float MoveAwayPlayerUtility()
+    {
+        float utility = 0f;
+
+        if (los && toPlayerSqrMag < 10*10f)
+        {
+            utility = (1 - Mathf.Clamp01(toPlayerSqrMag/(5*5f)))*40f;
         }
 
         return utility;
@@ -73,7 +85,7 @@ public class TestAgent : MonoBehaviour
         Vector3 playerLook = mainCamera.forward;
 
         float dot = Vector3.Dot(fromPlayer, playerLook);
-        if (dot > 0.75f)
+        if (dot > 0.85f)
             utility = dot*60f;
 
         return utility;
@@ -101,6 +113,13 @@ public class TestAgent : MonoBehaviour
         pathedToPlayer = true;
     }
 
+    private void PathAwayFromPlayer()
+    {
+        Vector3 toPlayerNormalize = toPlayer.normalized;
+        toPlayerNormalize *= 3f;
+        agent.SetDestination(transform.position - toPlayerNormalize);
+    }
+
     private void ClearPath()
     {
         agent.ResetPath();
@@ -122,6 +141,10 @@ public class TestAgent : MonoBehaviour
         Selection.Input toPlayerInput = MoveToPlayerUtility;
         Selection.Callback toPlayerCallback = PathToPlayer;
         utilitySelector.AddSelection(toPlayerInput, toPlayerCallback);
+
+        Selection.Input awayPlayerInput = MoveAwayPlayerUtility;
+        Selection.Callback awayPlayerCallback = PathAwayFromPlayer;
+        utilitySelector.AddSelection(awayPlayerInput, awayPlayerCallback);
 
         utilitySelector.SetDefault(ClearPath);
     }
