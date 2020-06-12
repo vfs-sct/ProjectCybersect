@@ -17,6 +17,7 @@ public class Respawn : MonoBehaviour
 
     private void RespawnPlayer()
     {
+        //checks if the player is dead, respawn 2 seconds after
         if(_player.isDead)
         {
             RespawnTime -= Time.deltaTime;

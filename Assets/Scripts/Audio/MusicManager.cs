@@ -20,16 +20,16 @@ public class MusicManager : MonoBehaviour
 
     private void Update()
     {
-        // Handle main menu music
+        //Handle main menu music
         if (GameObject.Find(musicTracker).tag == "Music_MainMenu")
         {
-            // Play main menu music if not yet playing
+            //Play main menu music if not yet playing
             if (_mainMenu.isPlaying == false)
             {
                 _mainMenu.Play();
             }
 
-            // Fade in (and crossfade, if necessary)
+            //Fade in (and crossfade, if necessary)
             _mainMenu.volume += addend;
 
             if(_gameplay.isPlaying == true)
@@ -42,16 +42,16 @@ public class MusicManager : MonoBehaviour
                 }
             }
         }
-        // Handle gameplay music
+        //Handle gameplay music
         else if (GameObject.Find(musicTracker).tag == "Music_GamePlay")
         {
-            // Play in game music if not playing
+            //Play in game music if not playing
             if(_gameplay.isPlaying == false)
             {
                 _gameplay.Play();
             }
 
-            // Fade in (and crossfade, if necessary)
+            //Fade in (and crossfade, if necessary)
             _gameplay.volume += addend;
 
             if(_mainMenu.isPlaying == true)
