@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SCN_Gym.unity
     guid: 3ab7050375e490b4eb399d92be567256
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SCN_ShootingTest.unity
     guid: 40cf732d4efed764f9f480feec2813c2
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SCN_NewGym.unity
     guid: 2c81e13f3154f1e4ea89bd59905aa143
   m_configObjects: {}
