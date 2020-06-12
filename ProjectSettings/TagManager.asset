@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Music_MainMenu
   - Music_GamePlay
+  - agent
   layers:
   - Default
   - TransparentFX
