@@ -24,7 +24,8 @@ public class UIController : MonoBehaviour
     }
 
     private void Update()
-    {
+    {   
+        //pause menu
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             CloseDebug();
@@ -41,6 +42,7 @@ public class UIController : MonoBehaviour
             }
         } 
 
+        //debug menu
         if(Input.GetKeyDown(KeyCode.BackQuote))
         {
             ContinueGame();

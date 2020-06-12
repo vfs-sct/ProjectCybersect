@@ -10,6 +10,7 @@ public class KillY : MonoBehaviour
 
     private void Update()
     {
+        //kill if below -10 y
         if(this.transform.position.y <= -10)
         {
             _player.BreakShield();
