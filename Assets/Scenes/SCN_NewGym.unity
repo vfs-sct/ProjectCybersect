@@ -9191,6 +9191,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1913853329}
     m_Modifications:
+    - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
+        type: 3}
+      propertyPath: _playerCam
+      value: 
+      objectReference: {fileID: 1309168881}
+    - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
+        type: 3}
+      propertyPath: _range
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
+        type: 3}
+      propertyPath: _fireRate
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
+        type: 3}
+      propertyPath: _pellets
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
+        type: 3}
+      propertyPath: _spreadAngle
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 126883351, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: _playerCam
       value: 
