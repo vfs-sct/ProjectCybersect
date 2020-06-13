@@ -163,7 +163,7 @@ public class TestAgent : MonoBehaviour
         float projectileSpeed = projectilePrefab.GetComponent<Projectile>().speed;
         Vector3 dir = Trajectory.Calculate(toPlayer, projectileSpeed);
         Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
-        projectile.Release(dir);
+        projectile.Release(dir, gameObject);
     }
 
     private void Shooting()

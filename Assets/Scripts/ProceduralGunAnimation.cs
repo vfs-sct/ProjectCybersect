@@ -23,9 +23,22 @@ public class ProceduralGunAnimation : MonoBehaviour
     [SerializeField] private float delaySmoothness = 0.15f;
     [SerializeField] private float delayOffset = 0.5f;
 
+    [Header("Recoil")]
+    [SerializeField] private float recoilRateOfChangeDecayAlpha = 0.3f;
+    [SerializeField] private float recoilDegrees = 0.005f;
+    [SerializeField] private float recoilUnitDisplacement = 0.05f;
+    [SerializeField] private float recoilAmount = 1.0f;
+    [SerializeField] private float recoilCompensationAlpha = 0.1f;
+
     // Private Members
     private FPSGroundCheck groundCheck;
     private FPSKinematicBody kinematicBody;
+
+    private Vector3 smoothPosition = new Vector3();
+    private Quaternion smoothRotation = Quaternion.identity;
+
+    private float recoil = 0f;
+    private float recoilRateOfChange = 0f;
 
     private void Start()
     {
@@ -89,7 +102,25 @@ public class ProceduralGunAnimation : MonoBehaviour
         return delay;
     }
 
-    private void LateUpdate()
+    private void ComputeRecoil()
+    {
+        recoil = Mathf.Lerp(recoil, 0f, recoilCompensationAlpha);
+        recoil += recoilRateOfChange;
+        recoilRateOfChange = Mathf.Lerp(recoilRateOfChange, 0f, recoilRateOfChangeDecayAlpha);
+    }
+
+    private Vector3 ComputeRecoilOffset()
+    {
+        Vector3 direction = Vector3.back;
+        return direction*recoil*recoilUnitDisplacement;
+    }
+
+    private Quaternion ComputeRecoilRotation()
+    {
+        return Quaternion.Euler(-recoil*recoilDegrees, 0f, 0f);
+    }
+
+    private void FixedUpdate()
     {
         Quaternion targetRotation = Quaternion.identity;
         Vector3 targetPosition = Vector3.zero;
@@ -100,9 +131,16 @@ public class ProceduralGunAnimation : MonoBehaviour
         targetPosition += ComputeBreathing();
         targetPosition += ComputeAirborneDelay();
 
-        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, 
-                                               transitionAlpha*Time.deltaTime);
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, 
-                                                  transitionAlpha*Time.deltaTime);
+        smoothPosition = Vector3.Lerp(smoothPosition, targetPosition, transitionAlpha*Time.deltaTime);
+        smoothRotation = Quaternion.Lerp(smoothRotation, targetRotation, transitionAlpha*Time.deltaTime);
+
+        ComputeRecoil();
+        transform.localPosition = smoothPosition + ComputeRecoilOffset();
+        transform.localRotation = smoothRotation*ComputeRecoilRotation();
+    }
+
+    public void ApplyRecoil()
+    {
+        recoilRateOfChange += recoilAmount;
     }
 }

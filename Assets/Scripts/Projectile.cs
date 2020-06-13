@@ -11,9 +11,11 @@ public class Projectile : MonoBehaviour
     private float timer = 0f;
 
     private Rigidbody rb;
+    private GameObject releasee = null;
 
-    public void Release(Vector3 dir)
+    public void Release(Vector3 dir, GameObject _releasee)
     {
+        releasee = _releasee;
         rb = GetComponent<Rigidbody>();
         rb.velocity = dir.normalized*speed;
     }
@@ -30,5 +32,18 @@ public class Projectile : MonoBehaviour
         if (timer > timeout)
             Destroy(gameObject);
         timer += Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "player")
+        {
+            PlayerStats playerStats = other.GetComponent<PlayerStats>();
+            playerStats.TakeDamage(damage);
+        }
+        else if (releasee != other.gameObject)
+        {
+            Destroy(gameObject);
+        }
     }
 }

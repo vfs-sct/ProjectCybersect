@@ -22,16 +22,20 @@ public class Gun : MonoBehaviour
 
     private GameManager gameManager = null;
 
+    private ProceduralGunAnimation gunAnimation = null;
+
     private float TimeToFire = 0f;
 
     private void Awake()
     {
         gunShot = GetComponent<AudioSource>();
+        gunAnimation = GetComponent<ProceduralGunAnimation>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     private void Update()
     {
+        shot = false;
         //checks the fire input and firerate
         //also checks to see if the game is paused
         if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
@@ -41,9 +45,18 @@ public class Gun : MonoBehaviour
         }
     }
 
+    bool shot = false;
+    private void LateUpdate()
+    {
+        if (shot)
+            _muzzleFlash.Play();
+    }
+
     private void Shoot()
     {
-        _muzzleFlash.Play();
+        shot = true;
+
+        gunAnimation.ApplyRecoil();
         gunShot.Play();
 
         RaycastHit hit;
