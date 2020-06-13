@@ -11,6 +11,7 @@ public class StatBars : MonoBehaviour
     [SerializeField] private Image _healthBar = null;
     [SerializeField] private Image _shieldBar = null;
     [SerializeField] private Image _boostBar = null;
+    [SerializeField] private Image _boostRechargeBar = null;
 
     private PlayerStats playerStats;
 
@@ -40,6 +41,10 @@ public class StatBars : MonoBehaviour
             //boost
             playerStats.boostPercent = 0;
             _boostBar.fillAmount = 0;
+
+            //boost recharge
+            playerStats.boostRechargePercent = 0;
+            _boostRechargeBar.fillAmount = 0;
             return;
         }
 
@@ -47,5 +52,6 @@ public class StatBars : MonoBehaviour
         _healthBar.fillAmount = playerStats.healthPercent;
         _shieldBar.fillAmount = playerStats.shieldPercent;
         _boostBar.fillAmount = playerStats.boostPercent;
+        _boostRechargeBar.fillAmount = playerStats.boostRechargePercent;
     }
 }

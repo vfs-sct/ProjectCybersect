@@ -22,24 +22,46 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
+    [Header("Boost Recharge")]
+    [SerializeField] private float _currentRechargeBoost = 3f;
+    [SerializeField] private float _maxRechargeBoost = 3f;
+    [SerializeField] private float _chargeTime = 2f;
+
     [Header("Public")]
     public bool isDead = false;
     public float healthPercent = 1f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
+    public float boostRechargePercent = 1f;
 
+    private float boostRechargeTimer = 0f;
 
     private void Update()
     {
         CheckPlayer();
         UpdatePercent();
+        RechargeBoost();
+    }
+
+    private void RechargeBoost()
+    {
+        if (_currentBoost/(float)_maxBoost > 0.9f) return;
+
+        if (boostRechargeTimer >= 1f)
+        {
+            boostRechargeTimer = 0f;
+            Boost(1);
+        }
+
+        boostRechargeTimer += Time.deltaTime/_chargeTime;
     }
 
     private void UpdatePercent()
     {
         healthPercent = _currentHealth / _maxHealth;
-        shieldPercent = (float)_currentShield / (float)_maxShield;
-        boostPercent = (float)_currentBoost / (float)_maxBoost;
+        shieldPercent = _currentShield / (float)_maxShield;
+        boostPercent = _currentBoost / (float)_maxBoost;
+        boostRechargePercent = _currentBoost/(float)_maxBoost + boostRechargeTimer*(1/3f);
     }
 
     private void CheckPlayer()
@@ -81,6 +103,7 @@ public class PlayerStats : MonoBehaviour
         {
             if(_currentBoost >= 1)
             {
+                --_currentRechargeBoost;
                 --_currentBoost;
             }
         }

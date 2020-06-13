@@ -13,11 +13,13 @@ public class HealthPickUp : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.Rotate( Vector3.up * (_rotationSpeed * Time.deltaTime));
+        //rotate pickup
+        gameObject.transform.Rotate(Vector3.up * (_rotationSpeed * Time.deltaTime));
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //check for player
         if(other.CompareTag("Player"))
         {
             PickUp(other);
