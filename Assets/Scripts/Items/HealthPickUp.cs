@@ -9,6 +9,12 @@ public class HealthPickUp : MonoBehaviour
     [SerializeField] private bool _shield = false;
     [SerializeField] private int _shieldAmount = 1;
     [SerializeField] private float _healthAmount = 25f;
+    [SerializeField] private float _rotationSpeed = 1f;
+
+    private void Update()
+    {
+        gameObject.transform.Rotate( Vector3.up * (_rotationSpeed * Time.deltaTime));
+    }
 
     private void OnTriggerEnter(Collider other)
     {
