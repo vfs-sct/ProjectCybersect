@@ -21,6 +21,7 @@ public class Gun : MonoBehaviour
     private AudioSource gunShot = null;
     private GameManager gameManager = null;
     private PlayerAmmo playerAmmo = null;
+    private Grapple playerGrapple = null;
     private float TimeToFire = 0f;
 
     private void Awake()
@@ -28,6 +29,7 @@ public class Gun : MonoBehaviour
         gunShot = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
+        playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
     }
 
     private void Update()
@@ -35,7 +37,7 @@ public class Gun : MonoBehaviour
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
+        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();
