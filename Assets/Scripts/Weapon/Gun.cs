@@ -19,10 +19,10 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _fireRate = 15f;
 
     private AudioSource gunShot = null;
-
     private GameManager gameManager = null;
-
     private ProceduralGunAnimation gunAnimation = null;
+    private PlayerAmmo playerAmmo = null;
+    private Grapple playerGrapple = null;
 
     private float TimeToFire = 0f;
 
@@ -31,32 +31,28 @@ public class Gun : MonoBehaviour
         gunShot = GetComponent<AudioSource>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
+        playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
     }
 
     private void Update()
     {
-        shot = false;
+        if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
+        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();
         }
     }
 
-    bool shot = false;
-    private void LateUpdate()
-    {
-        if (shot)
-            _muzzleFlash.Play();
-    }
-
     private void Shoot()
     {
-        shot = true;
-
         gunAnimation.ApplyRecoil();
+        _muzzleFlash.Play();
+        _muzzleFlash.Play();
+        playerAmmo.currentARAmmo--;
         gunShot.Play();
 
         RaycastHit hit;
@@ -80,7 +76,7 @@ public class Gun : MonoBehaviour
             }
 
             GameObject Impact = Instantiate(_impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(Impact, 0.1f);
+            Destroy(Impact, 2f);
         }
 
     }
