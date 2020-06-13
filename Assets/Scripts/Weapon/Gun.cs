@@ -19,19 +19,20 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _fireRate = 15f;
 
     private AudioSource gunShot = null;
-
     private GameManager gameManager = null;
-
+    private PlayerAmmo playerAmmo = null;
     private float TimeToFire = 0f;
 
     private void Awake()
     {
         gunShot = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
     }
 
     private void Update()
     {
+        if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
         if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
@@ -44,6 +45,7 @@ public class Gun : MonoBehaviour
     private void Shoot()
     {
         _muzzleFlash.Play();
+        playerAmmo.currentARAmmo--;
         gunShot.Play();
 
         RaycastHit hit;

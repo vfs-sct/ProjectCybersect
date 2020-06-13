@@ -49,9 +49,10 @@ GameObject:
   - component: {fileID: 267403272448701150}
   - component: {fileID: 267403272448701151}
   - component: {fileID: 267403272448701148}
+  - component: {fileID: 7457980605520770346}
   m_Layer: 10
-  m_Name: player
-  m_TagString: Untagged
+  m_Name: Player
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,6 +208,7 @@ MonoBehaviour:
   grappleCooldown: 0
   grapplePerpendicularVelocityDecayAlpha: 0.1
   grappleDisengageDistance: 3
+  mapGameObject: {fileID: 0}
   grappleSnapDistance: 0.05
   grappleSnapAlpha: 0.494
   state: 0
@@ -250,6 +252,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f26973c0deab9c46a915ff0e2203215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7457980605520770346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267403272448701217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be10952810a43b34ba1f47ae79b263fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentSGAmmo: 32
+  currentARAmmo: 100
 --- !u!1 &267403272964104964
 GameObject:
   m_ObjectHideFlags: 0

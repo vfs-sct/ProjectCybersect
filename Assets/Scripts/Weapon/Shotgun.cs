@@ -23,16 +23,19 @@ public class Shotgun : MonoBehaviour
 
     private AudioSource gunShot = null;
     private GameManager gameManager = null;
+    private PlayerAmmo playerAmmo = null;
     private float timeToFire = 0f;
 
     private void Awake()
     {
         gunShot = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
     }
 
     private void Update()
     {
+        if(playerAmmo.currentSGAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
         if(Input.GetButton("Fire1") && Time.time >= timeToFire && !gameManager.isPaused)
@@ -45,6 +48,7 @@ public class Shotgun : MonoBehaviour
     private void Shoot()
     {
         _muzzleFlash.Play();
+        playerAmmo.currentSGAmmo--;
         gunShot.Play();
 
         for(int i = 0; i < _pellets; i++)
