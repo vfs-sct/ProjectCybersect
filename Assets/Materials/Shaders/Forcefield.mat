@@ -85,7 +85,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_813E45CC: {r: 0.02352941, g: 0.28627446, b: 1, a: 0}
+    - Color_813E45CC: {r: 0, g: 0.26907635, b: 1, a: 0}
     - Color_B6189295: {r: 0.047058824, g: 0.57254905, b: 2, a: 0}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
