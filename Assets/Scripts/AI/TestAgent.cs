@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class TestAgent : MonoBehaviour
 {
+    public bool accountForBulletDrop = true;
     [SerializeField] private GameObject projectilePrefab;
 
     private NavMeshAgent agent;
@@ -161,7 +162,13 @@ public class TestAgent : MonoBehaviour
     private void Shoot()
     {
         float projectileSpeed = projectilePrefab.GetComponent<Projectile>().speed;
-        Vector3 dir = Trajectory.Calculate(toPlayer, projectileSpeed);
+
+        Vector3 dir;
+        if (accountForBulletDrop)
+            dir = Trajectory.Calculate(toPlayer, projectileSpeed);
+        else
+            dir = toPlayer;
+
         Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
         projectile.Release(dir, gameObject);
     }
