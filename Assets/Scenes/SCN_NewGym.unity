@@ -5472,12 +5472,12 @@ PrefabInstance:
     - target: {fileID: 7457980605520770346, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: currentSGAmmo
-      value: 64
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7457980605520770346, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: currentARAmmo
-      value: 320
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7486dd35a861fa94b97edca83f16aa7a, type: 3}
@@ -8248,7 +8248,7 @@ PrefabInstance:
     - target: {fileID: 2151304734884444290, guid: ab121dd8bb755c74384216b3ad65f689,
         type: 3}
       propertyPath: _fireRate
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2151304734884444290, guid: ab121dd8bb755c74384216b3ad65f689,
         type: 3}
@@ -8256,6 +8256,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7221635793536548701, guid: b4ff3eb146ee0314fb38bf09b90df274,
         type: 3}
+    - target: {fileID: 2151304734884444290, guid: ab121dd8bb755c74384216b3ad65f689,
+        type: 3}
+      propertyPath: _maxDamage
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2383130411273839138, guid: ab121dd8bb755c74384216b3ad65f689,
         type: 3}
       propertyPath: m_Layer
@@ -10891,7 +10896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1561786223
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11713,7 +11718,7 @@ PrefabInstance:
     - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
         type: 3}
       propertyPath: _fireRate
-      value: 1
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
         type: 3}
@@ -11739,15 +11744,15 @@ PrefabInstance:
     - target: {fileID: -9080507552925641291, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901,
         type: 3}
       propertyPath: _maxDamage
-      value: 14
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 126883350, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: recoilUnitDisplacement
-      value: 0.02
+      value: 0.0175
       objectReference: {fileID: 0}
     - target: {fileID: 126883350, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: recoilDegrees
-      value: 0.2
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 126883350, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: recoilRateOfChangeDecayAlpha
@@ -11756,6 +11761,10 @@ PrefabInstance:
     - target: {fileID: 126883350, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: recoilCompensationAlpha
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 126883350, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
+      propertyPath: recoilAmount
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 126883351, guid: 3a23b8ddfa9a8b144bbfc09e8cd23901, type: 3}
       propertyPath: _playerCam
@@ -14141,7 +14150,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.05, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1898242107
@@ -15829,15 +15838,15 @@ RectTransform:
   m_GameObject: {fileID: 2107301854}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1974531702}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20.4, y: 20.42}
+  m_AnchoredPosition: {x: -0.15, y: -13.63}
+  m_SizeDelta: {x: 1067, y: 335}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2107301856
 MonoBehaviour:
@@ -15857,9 +15866,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 55dfcc594b0ce1d439edbeefcfcdeb26, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 45fd6af4c6193f045bfb460e333fa8d8, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
