@@ -4846,7 +4846,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 70294335db74b0948866952b770f9440, type: 2}
+  - {fileID: 2100000, guid: fb16d338def35034aaa382a831c8f9ce, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -6540,6 +6540,11 @@ MonoBehaviour:
   breathFrequency: 0.2
   delaySmoothness: 0.15
   delayOffset: 0.5
+  recoilRateOfChangeDecayAlpha: 0.3
+  recoilDegrees: 0.005
+  recoilUnitDisplacement: 0.05
+  recoilAmount: 1
+  recoilCompensationAlpha: 0.1
 --- !u!114 &2151304734884444290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6556,7 +6561,10 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 8748903004504349842}
   _impactEffect: {fileID: 751098255209872561, guid: 32371a539e2faf647a6add8fc890ad21,
     type: 3}
-  _damage: 10
+  _maxDamage: 10
+  _minDamage: 5
+  _rangeOffStart: 30
+  _rangeOffEnd: 50
   _range: 100
   _impactForce: 0
   _fireRate: 10

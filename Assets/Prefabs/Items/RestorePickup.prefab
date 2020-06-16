@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d8b87c31b41ad48949d0f7643e07b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shield: 1
   _shieldAmount: 4
   _healthAmount: 0
   _rotationSpeed: 0
@@ -114,8 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d8b87c31b41ad48949d0f7643e07b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shield: 0
-  _shieldAmount: 0
+  _shieldAmount: 4
   _healthAmount: 100
   _rotationSpeed: 45
 --- !u!135 &4798684366108052342
