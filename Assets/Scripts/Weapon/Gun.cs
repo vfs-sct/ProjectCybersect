@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Gun : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _range = 100f;
     [SerializeField] private float _impactForce = 0f;
     [SerializeField] private float _fireRate = 15f;
+    [SerializeField] private float _spreadAngle = 5f;
 
     private AudioSource gunShot = null;
     private GameManager gameManager = null;
@@ -69,8 +71,14 @@ public class Gun : MonoBehaviour
         playerAmmo.currentARAmmo--;
         gunShot.Play();
 
+        //shot spread
+        Quaternion rotation = Quaternion.LookRotation(_playerCam.transform.forward);
+        Quaternion randomRotation = Random.rotation;
+        rotation = Quaternion.RotateTowards(rotation, randomRotation, Random.Range(0f, _spreadAngle));
+
+        //checks raycast hit
         RaycastHit hit;
-        if(Physics.Raycast(_playerCam.transform.position, _playerCam.transform.forward, out hit, _range))
+        if(Physics.Raycast(_playerCam.transform.position, rotation * Vector3.forward, out hit, _range))
         {
             CritTarget critTarget = hit.transform.GetComponent<CritTarget>();
             if(critTarget != null)
