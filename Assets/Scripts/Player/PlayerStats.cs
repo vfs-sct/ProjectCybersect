@@ -129,7 +129,8 @@ public class PlayerStats : MonoBehaviour
         {
             if(_currentShield < _maxShield)
             {
-                ++_currentShield;
+                _currentShield = _currentShield + shieldAmount;
+                if(_currentShield > _maxShield) _currentShield = _maxShield;
             }
         }
     }
@@ -153,10 +154,8 @@ public class PlayerStats : MonoBehaviour
 
     public void HealDamage(float health)
     {
-        if(_currentHealth < _maxHealth)
-        _currentHealth += health;
+        if(_currentHealth < _maxHealth) _currentHealth += health;
 
-        if(_currentHealth > _maxHealth)
-        _currentHealth = _maxHealth;
+        if(_currentHealth > _maxHealth) _currentHealth = _maxHealth;
     }
 }

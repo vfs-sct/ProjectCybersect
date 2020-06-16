@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class HealthPickUp : MonoBehaviour
 {
-    [SerializeField] private bool _shield = false;
     [SerializeField] private int _shieldAmount = 1;
     [SerializeField] private float _healthAmount = 25f;
     [SerializeField] private float _rotationSpeed = 1f;
@@ -30,14 +29,8 @@ public class HealthPickUp : MonoBehaviour
     {
         PlayerStats playerStats = player.GetComponent<PlayerStats>();
 
-        if(_shield)
-        {
-            playerStats.Shield(_shieldAmount);
-        }
-        else
-        {
-            playerStats.HealDamage(_healthAmount);
-        }
+        playerStats.Shield(_shieldAmount);
+        playerStats.HealDamage(_healthAmount);
 
         Destroy(gameObject);
     }
