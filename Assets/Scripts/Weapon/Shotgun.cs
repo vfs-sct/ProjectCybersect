@@ -29,6 +29,7 @@ public class Shotgun : MonoBehaviour
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
     private float timeToFire = 0f;
+    private ProceduralGunAnimation gunAnimation;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class Shotgun : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
         playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
+        gunAnimation = GetComponent<ProceduralGunAnimation>();
     }
 
     private void Update()
@@ -63,6 +65,7 @@ public class Shotgun : MonoBehaviour
 
     private void Shoot()
     {
+        gunAnimation.ApplyRecoil();
         _muzzleFlash.Play();
         playerAmmo.currentSGAmmo--;
         gunShot.Play();
