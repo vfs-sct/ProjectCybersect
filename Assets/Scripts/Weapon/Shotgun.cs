@@ -14,7 +14,10 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private GameObject _impactEffect = null;
 
     [Header("Gun Stats")]
-    [SerializeField] private float _damage = 10f;
+    [SerializeField] private float _maxDamage = 10f;
+    [SerializeField] private float _minDamage = 5f;
+    [SerializeField] private float _rangeOffStart = 30f;
+    [SerializeField] private float _rangeOffEnd = 50f;
     [SerializeField] private float _range = 100f;
     [SerializeField] private float _impactForce = 0f;
     [SerializeField] private float _fireRate = 15f;
@@ -47,6 +50,17 @@ public class Shotgun : MonoBehaviour
         }
     }
 
+    private float DamageFallOff(RaycastHit hit)
+    {
+        if (hit.distance <= _rangeOffStart) return _maxDamage;
+        if (hit.distance >= _rangeOffEnd) return _minDamage;
+
+        float fallOffRange = _rangeOffEnd - _rangeOffStart;
+        float normalizedDistance = (hit.distance - _rangeOffStart) / fallOffRange;
+
+        return Mathf.Round(Mathf.Lerp(_maxDamage, _minDamage, normalizedDistance));
+    }
+
     private void Shoot()
     {
         _muzzleFlash.Play();
@@ -67,13 +81,13 @@ public class Shotgun : MonoBehaviour
                 CritTarget critTarget = hit.transform.GetComponent<CritTarget>();
                 if(critTarget != null)
                 {
-                    critTarget.TakeDamage(_damage);
+                    critTarget.TakeDamage(DamageFallOff(hit));
                 }
 
                 Target target = hit.transform.GetComponent<Target>();
                 if(target != null)
                 {
-                    target.TakeDamage(_damage);
+                    target.TakeDamage(DamageFallOff(hit));
                 }
 
                 if(hit.rigidbody != null)

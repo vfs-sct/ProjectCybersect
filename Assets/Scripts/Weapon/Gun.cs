@@ -58,7 +58,7 @@ public class Gun : MonoBehaviour
         float fallOffRange = _rangeOffEnd - _rangeOffStart;
         float normalizedDistance = (hit.distance - _rangeOffStart) / fallOffRange;
 
-        return Mathf.Lerp(_maxDamage, _minDamage, normalizedDistance);
+        return Mathf.Round(Mathf.Lerp(_maxDamage, _minDamage, normalizedDistance));
     }
 
     private void Shoot()
