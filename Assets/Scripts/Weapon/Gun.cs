@@ -12,6 +12,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private Camera _playerCam = null;
     [SerializeField] private ParticleSystem _muzzleFlash = null;
     [SerializeField] private GameObject _impactEffect = null;
+    [SerializeField] private float _impactTime = 2f;
 
     [Header("Gun Stats")]
     [SerializeField] private float _maxDamage = 10f;
@@ -97,8 +98,8 @@ public class Gun : MonoBehaviour
                 hit.rigidbody.AddForce(-hit.normal * _impactForce);
             }
 
-            GameObject Impact = Instantiate(_impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(Impact, 2f);
+            GameObject Impact = Instantiate(_impactEffect, hit.point, Quaternion.LookRotation(hit.normal), hit.transform);
+            Destroy(Impact, _impactTime);
         }
 
     }
