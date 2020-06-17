@@ -203,5 +203,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shieldAmount: 0
-  _healthAmount: 25
+  _healthAmount: 20
   _rotationSpeed: 45

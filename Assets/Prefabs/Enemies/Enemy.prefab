@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b405a9761a9b94c40bd44e8f5e9dda18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  accountForBulletDrop: 0
   projectilePrefab: {fileID: 2868524537879091836, guid: 142f1bbf419b59d498df18225f75c1d4,
     type: 3}
 --- !u!114 &5494345792199737605
@@ -163,6 +164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14adcdf1b87bb7f46bf38890912f244d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _randomRange: 12
+  _shieldPrefab: {fileID: 4497264223791912908, guid: 51c42b591ec763049b2a35a74d2bd25a,
+    type: 3}
   health: 100
 --- !u!114 &5494345792199738106
 MonoBehaviour:

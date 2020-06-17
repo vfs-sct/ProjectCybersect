@@ -6559,7 +6559,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCam: {fileID: 0}
   _muzzleFlash: {fileID: 8748903004504349842}
-  _impactEffect: {fileID: 751098255209872561, guid: 32371a539e2faf647a6add8fc890ad21,
+  _impactEffect: {fileID: 650961090677442068, guid: 7c36f65cabbb56645b9e9ebb620ded6b,
     type: 3}
   _maxDamage: 10
   _minDamage: 5
@@ -6568,6 +6568,7 @@ MonoBehaviour:
   _range: 100
   _impactForce: 0
   _fireRate: 10
+  _spreadAngle: 5
 --- !u!82 &3626235581891883516
 AudioSource:
   m_ObjectHideFlags: 0
