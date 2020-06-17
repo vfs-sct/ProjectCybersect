@@ -9,7 +9,7 @@ public class EnemyStats : MonoBehaviour
 {
     [SerializeField] private int _randomRange = 10;
     [SerializeField] private GameObject _shieldPrefab = null;
-    
+
     public float health = 100f;
 
     private void Update()
