@@ -94,6 +94,12 @@ public class Shotgun : MonoBehaviour
                     target.TakeDamage(DamageFallOff(hit));
                 }
 
+                Barrel barrel = hit.transform.GetComponent<Barrel>();
+                if(barrel != null)
+                {
+                    barrel.TakeDamage(_maxDamage);
+                }
+
                 if(hit.rigidbody != null)
                 {
                     hit.rigidbody.AddForce(-hit.normal * _impactForce);

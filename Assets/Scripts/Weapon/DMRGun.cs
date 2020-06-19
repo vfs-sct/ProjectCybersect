@@ -1,12 +1,11 @@
 ﻿// Copyright (c) 2020 by Yuya Yoshino
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Gun : MonoBehaviour
+public class DMRGun : MonoBehaviour
 {
     [Header("Gun Effects")]
     [SerializeField] private Camera _playerCam = null;
@@ -46,7 +45,7 @@ public class Gun : MonoBehaviour
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
+        if(Input.GetButtonDown("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();
@@ -69,7 +68,7 @@ public class Gun : MonoBehaviour
         gunAnimation.ApplyRecoil();
         _muzzleFlash.Play();
         _muzzleFlash.Play();
-        playerAmmo.currentARAmmo--;
+        playerAmmo.currentDMRAmmo--;
         gunShot.Play();
 
         //shot spread

@@ -8,4 +8,5 @@ public class PlayerAmmo : MonoBehaviour
 {
     public int currentSGAmmo = 32;
     public int currentARAmmo = 100;
+    public int currentDMRAmmo = 50;
 }
