@@ -11,6 +11,7 @@ public class Barrel : MonoBehaviour
     [Header("Input")]
     [SerializeField] private AudioSource _explosionSound = null;
     [SerializeField] private ParticleSystem _explosionEffect = null;
+    [SerializeField] private int _explosionRadius = 400;
 
     private SphereCollider _sphereCollider = null;
 
@@ -34,7 +35,7 @@ public class Barrel : MonoBehaviour
     {
         if(health <= 0f)
         {
-            _sphereCollider.radius = 400;
+            _sphereCollider.radius = _explosionRadius;
             _sphereCollider.isTrigger = true;
             _explosionSound.Play();
             _explosionEffect.Play();
