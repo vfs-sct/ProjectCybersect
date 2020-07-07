@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: 0.7
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.12619846, g: 0.15799963, b: 0.2148457, a: 0.7}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -51,7 +51,7 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
+    m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 12
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 94cea93335099564888e334018c3be15,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -383,7 +384,7 @@ GameObject:
   - component: {fileID: 1065314979}
   - component: {fileID: 1065314980}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: DebrisSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -416,10 +417,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debris: {fileID: 8473417242380672508, guid: fcea7adb80b445e4fac6bbe7fb36881a, type: 3}
-  _numOfDebris: 100
-  _xRange: 35
-  _yRange: 10
-  _zRange: 100
+  _numOfDebris: 10
+  _range: {x: 10, y: 10, z: 10}
 --- !u!1 &1276311419
 GameObject:
   m_ObjectHideFlags: 0

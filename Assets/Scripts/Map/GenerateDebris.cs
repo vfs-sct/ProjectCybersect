@@ -14,9 +14,7 @@ public class GenerateDebris : MonoBehaviour
     [SerializeField] private int _numOfDebris = 0;
 
     [Header("Range")]
-    [SerializeField] private float _xRange = 0f;
-    [SerializeField] private float _yRange = 0f;
-    [SerializeField] private float _zRange = 0f;
+    [SerializeField] private Vector3 _range;
 
     private void Awake()
     {
@@ -28,9 +26,15 @@ public class GenerateDebris : MonoBehaviour
 
     private void SpawnDebris()
     {
-        Vector3 randPos = new Vector3(Random.Range(-_xRange,_xRange), 
-                                           Random.Range(-_yRange,_yRange), 
-                                           Random.Range(-_zRange, _zRange)) + this.transform.position;
+        Vector3 randPos = new Vector3(Random.Range(-_range.x,_range.x), 
+                                           Random.Range(-_range.y,_range.y), 
+                                           Random.Range(-_range.z, _range.z)) + this.transform.position;
         GameObject debris = Instantiate(_debris, randPos, transform.rotation = Random.rotation);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position, _range*2);
     }
 }
