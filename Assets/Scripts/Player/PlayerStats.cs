@@ -23,7 +23,6 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _maxBoost = 3;
 
     [Header("Boost Recharge")]
-    [SerializeField] private float _maxRechargeBoost = 3f;
     [SerializeField] private float _chargeTime = 2f;
 
     [Header("Public")]

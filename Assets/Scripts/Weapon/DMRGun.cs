@@ -103,7 +103,8 @@ public class DMRGun : MonoBehaviour
                 hit.rigidbody.AddForce(-hit.normal * _impactForce);
             }
 
-            GameObject Impact = Instantiate(_impactEffect, hit.point, Quaternion.LookRotation(hit.normal), hit.transform);
+            GameObject Impact = Instantiate(_impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            Impact.transform.SetParent(hit.transform);
             Destroy(Impact, _impactTime);
         }
 
