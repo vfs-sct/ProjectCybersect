@@ -29,7 +29,7 @@ public class GenerateDebris : MonoBehaviour
         Vector3 randPos = new Vector3(Random.Range(-_range.x,_range.x), 
                                            Random.Range(-_range.y,_range.y), 
                                            Random.Range(-_range.z, _range.z)) + this.transform.position;
-        GameObject debris = Instantiate(_debris[Random.Range(0,_debris.Length)], randPos, transform.rotation = Random.rotation, this.transform);
+        GameObject debris = Instantiate(_debris[Random.Range(0,_debris.Length)], randPos, Random.rotation, this.transform);
     }
 
     void OnDrawGizmosSelected()
