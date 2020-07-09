@@ -414,8 +414,8 @@ MonoBehaviour:
   - {fileID: 8473417242380672508, guid: fcea7adb80b445e4fac6bbe7fb36881a, type: 3}
   - {fileID: 567745919214022017, guid: 3dacb1d8829874740ab3ad6f4880275d, type: 3}
   - {fileID: 5676502199022438323, guid: 87d1140a3dd59834fab47387870508fe, type: 3}
-  _numOfDebris: 15
-  _range: {x: 10, y: 10, z: 10}
+  _numOfDebris: 50
+  _range: {x: 100, y: 10, z: 35}
 --- !u!1 &1276311419
 GameObject:
   m_ObjectHideFlags: 0
