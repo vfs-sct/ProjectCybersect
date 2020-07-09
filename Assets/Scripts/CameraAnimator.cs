@@ -81,7 +81,7 @@ public class CameraAnimator : MonoBehaviour
         transform.localEulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
 
-    private float lastVelocityY = 0f;
+    float lastVelocityY = 0f;
     private void FixedUpdate()
     {
         if (grapple.state != grapple.previousState)
@@ -101,18 +101,6 @@ public class CameraAnimator : MonoBehaviour
                 cameraShake = (float)System.Math.Tanh(-lastVelocityY*landingShakeSmoothness)*landingShakeAmount;
         }
 
-        lastVelocityY = kinematicBody.velocityY;
+        lastVelocityY = kinematicBody.velocity.y;
     }
 }
-/*
-if (PlayerState.state != State.AIRBORNE && PlayerState.previousState == State.AIRBORNE)
-{
-    cameraShake = shakeAmount;
-    depressionROC = landingDepressionAmount;
-}
-
-depression += depressionROC;
-depression -= (float)System.Math.Tanh((double)depression*landingDepressionRecoverySmoothness)*landingDepressionRecoverySpeed;
-rotation.x += depression*landingDepressionPitch;
-depressionROC = HalfLife(depressionROC, Time.deltaTime, landingDepressionIncreaseHalfLife);
-transform.parent.localPosition = Vector3.down*depression*landingDepressionOffset + Vector3.up*cameraHeight;*/

@@ -8,9 +8,7 @@ public class FPSKinematicBody : MonoBehaviour
 
     [SerializeField, Range(0, 1)] private float frictionAlpha = 0.9f;
 
-    [HideInInspector] public float velocityX = 0; 
-    [HideInInspector] public float velocityY = 0;
-    [HideInInspector] public float velocityZ = 0;
+    [HideInInspector] public Vector3 velocity = Vector3.zero; 
     [HideInInspector] public float gravityMultiplier = 1.0f;
 
     private FPSGroundCheck groundCheck;
@@ -26,33 +24,27 @@ public class FPSKinematicBody : MonoBehaviour
 
     private void Gravity()
     {
-        velocityY -= gravity*Time.fixedDeltaTime*gravityMultiplier;
+        velocity.y -= gravity*Time.fixedDeltaTime*gravityMultiplier;
     }
 
     private void MoveObject()
     {
-        Vector3 deltaPosition = new Vector3(velocityX, velocityY, velocityZ)*Time.fixedDeltaTime;
+        Vector3 deltaPosition = velocity*Time.fixedDeltaTime;
         transform.position += deltaPosition;
     }
 
-    private void ComputeVelocity(Vector3 normal)
+    private void ComputeCollisionVelocity(Vector3 normal)
     {
-        Vector3 velocity = new Vector3(velocityX, velocityY, velocityZ);
-
         Vector3 velocityProjectedOnNormal = Vector3.Project(velocity, normal);
         velocity -= velocityProjectedOnNormal;
 
         if (!groundCheck.grounded)
         {
-            velocityX = frictionAlpha*velocityX;
-            velocityZ = frictionAlpha*velocityZ;
-            if (velocityY > 0.0f)
-                velocityY = frictionAlpha*velocityY;
+            velocity.x = frictionAlpha*velocity.x;
+            velocity.z = frictionAlpha*velocity.z;
+            if (velocity.y > 0.0f)
+                velocity.y = frictionAlpha*velocity.y;
         }
-
-        velocityX = velocity.x;
-        velocityY = velocity.y;
-        velocityZ = velocity.z;
     }
 
     private void CheckForCollisions()
@@ -61,10 +53,8 @@ public class FPSKinematicBody : MonoBehaviour
         {   
             if(collider == null)
                 continue;
-                
             if (collider == objectCollider)
                 continue;
-
             if (collider.isTrigger)
                 continue;
 
@@ -76,7 +66,7 @@ public class FPSKinematicBody : MonoBehaviour
             if (result)
             {
                 transform.position += clearDirection*clearDistance;
-                ComputeVelocity(clearDirection);
+                ComputeCollisionVelocity(clearDirection);
             }
         }
     }
