@@ -194,6 +194,8 @@ public class TestAgent : MonoBehaviour
     float timer = 0f;
     private void Update()
     {
+        if(GetComponent<EnemyStats>().isDead) return;
+        
         if (!AIState.aggressive)
             return;
 

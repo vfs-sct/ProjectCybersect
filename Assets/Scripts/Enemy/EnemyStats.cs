@@ -7,16 +7,19 @@ using Random = UnityEngine.Random;
 
 public class EnemyStats : MonoBehaviour
 {
+    [Header("Pick Up")]
     [SerializeField] private GameObject _shieldPrefab = null;
-    [SerializeField] private int _randomRange = 10;
-    [SerializeField] private Material _dissolveMat = null;
-    [SerializeField] private float _dissolveSpeed = 0f;
-    [SerializeField] private Shader _shader = null;
+    [SerializeField] private int _chance = 10;
 
+    [Header("Shader")]
+    [SerializeField] private Shader _shader = null;
+    [SerializeField] private float _dissolveSpeed = 0f;
+
+    private Material _dissolveMat = null;
     private float timer = 0f;
+    private bool isDissolved = false;
 
     public bool isDead = false;
-    public bool isDissolved = false;
     public float health = 100f;
 
     private void Awake()
@@ -58,7 +61,7 @@ public class EnemyStats : MonoBehaviour
             if(isDissolved)
             {
                 //get and random num and spawn a shield pickup if the number is 1
-                if(Random.Range(1,_randomRange) == 1) Instantiate(_shieldPrefab,this.transform.position, Quaternion.identity);
+                if(Random.Range(1,_chance) == 1) Instantiate(_shieldPrefab,this.transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
         }
