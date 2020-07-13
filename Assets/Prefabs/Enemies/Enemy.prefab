@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -164,9 +164,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14adcdf1b87bb7f46bf38890912f244d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _randomRange: 12
   _shieldPrefab: {fileID: 4497264223791912908, guid: 51c42b591ec763049b2a35a74d2bd25a,
     type: 3}
+  _randomRange: 12
+  _dissolveMat: {fileID: 0}
+  _dissolveSpeed: 1
+  _shader: {fileID: -6465566751694194690, guid: de7723e00aefbe0438624395478d973a,
+    type: 3}
+  isDead: 0
+  isDissolved: 0
   health: 100
 --- !u!114 &5494345792199738106
 MonoBehaviour:

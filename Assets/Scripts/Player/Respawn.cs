@@ -6,27 +6,40 @@ using UnityEngine;
 
 public class Respawn : MonoBehaviour
 {   
-    [SerializeField] private PlayerStats _player = null;
-
     [SerializeField] private float RespawnTime = 2f;
+
+    private GameObject player = null;
+    private PlayerStats playerStats = null;
+    private Rigidbody playerRB = null;
+    private bool respawning = false;
+
+    private void Awake()
+    {
+        player = GameObject.Find("player");
+        playerStats = player.GetComponent<PlayerStats>();
+        playerRB = player.GetComponent<Rigidbody>();
+    }
 
     private void Update()
     {
         RespawnPlayer();
     }
 
+    IEnumerator ResPlayer()
+    {
+        yield return new WaitForSeconds(RespawnTime);
+        playerRB.velocity = Vector3.zero;
+        playerRB.angularVelocity = Vector3.zero;
+        playerStats.transform.position = this.transform.position + Vector3.up;
+        playerStats.RespawnPlayer();
+    }
+
     private void RespawnPlayer()
     {
-        //checks if the player is dead, respawn 2 seconds after
-        if(_player.isDead)
+        if(playerStats.isDead && !respawning)
         {
-            RespawnTime -= Time.deltaTime;
-            if(RespawnTime <= 0)
-            {
-                _player.transform.position = this.transform.position;
-                _player.RespawnPlayer();
-                RespawnTime = 2f;
-            }
+            respawning = true;
+            StartCoroutine("ResPlayer");
         }
     }
 }

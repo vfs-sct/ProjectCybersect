@@ -97,7 +97,7 @@ public class ProceduralGunAnimation : MonoBehaviour
     {
         Vector3 delay = new Vector3();
 
-        delay.y = (float)System.Math.Tanh(-kinematicBody.velocityY*delaySmoothness)*delayOffset;
+        delay.y = (float)System.Math.Tanh(-kinematicBody.velocity.y*delaySmoothness)*delayOffset;
 
         return delay;
     }

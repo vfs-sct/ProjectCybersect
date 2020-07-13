@@ -6,18 +6,21 @@ public class FPSLook : MonoBehaviour
 {
     [SerializeField] private float rotationMultiplier = 1.0f;
     [SerializeField] private float verticalRotationMultiplier = 1.0f;
+    [SerializeField] private float grappleRotationMultiplier = 1.0f;
+    [SerializeField] private float transitionSmoothness = 0.5f;
+    [SerializeField] private float grappleRotationDegrees = 8f;
     [SerializeField] private float maxPitch = 85;
     [SerializeField] private float minPitch = -70;
-    [SerializeField, Range(0, 1)] private float cameraYawAlpha = 0.2f;
-    [SerializeField] private float cameraYawClamp = 50.0f;
 
-    [HideInInspector] public bool rotationLocked = false;
+    public Vector2 grappleLookDir = Vector2.zero;
 
     private Transform viewTransform;
+    private Grapple grapple;
 
-    private float cameraPitch = 0.0f;
-    private float targetCameraYaw = 0.0f;
-    private float cameraYaw = 0.0f;
+    private bool rotationLocked = false;
+    private float cameraPitch = 0f;
+    private float cameraYaw = 0f;
+    private float transitionAlpha = 0f;
 
     private void LockAndHideCursor()
     {
@@ -29,6 +32,17 @@ public class FPSLook : MonoBehaviour
     {
         LockAndHideCursor();
         viewTransform = transform.GetChild(0);
+        grapple = GetComponent<Grapple>();
+    }
+
+    private void EvaluateTransitionAlpha()
+    {
+        if (rotationLocked)
+            transitionAlpha = Mathf.Lerp(transitionAlpha, 1f, transitionSmoothness*grapple.currentToMaxSpeedRatio);
+        else
+            transitionAlpha = Mathf.Lerp(transitionAlpha, 0f, transitionSmoothness);
+
+        transitionAlpha = Mathf.Clamp01(transitionAlpha);
     }
 
     private void Update()
@@ -36,22 +50,60 @@ public class FPSLook : MonoBehaviour
         float deltaYaw = FPSInput.mouseDeltaX*rotationMultiplier;
         float deltaPitch = -FPSInput.mouseDeltaY*rotationMultiplier*verticalRotationMultiplier;
 
-        if (rotationLocked)
+        if (!rotationLocked)
         {
-            targetCameraYaw += deltaYaw;
-            targetCameraYaw = Mathf.Clamp(targetCameraYaw, -cameraYawClamp, cameraYawClamp);
+            transform.Rotate(new Vector3(0.0f, deltaYaw, 0.0f));
+
+            cameraPitch += deltaPitch;
+            cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+
+            float yaw = Mathf.Lerp(0f, cameraYaw, transitionAlpha);
+            viewTransform.localRotation = Quaternion.identity;
+            viewTransform.Rotate(new Vector3(cameraPitch, 0f, 0f), Space.Self);
+            viewTransform.Rotate(new Vector3(0f, yaw, 0f), Space.World);
         }
         else
         {
-            targetCameraYaw = 0.0f;
-            transform.Rotate(new Vector3(0.0f, deltaYaw, 0.0f));
+            grappleLookDir.x += deltaYaw*grappleRotationMultiplier;
+            grappleLookDir.y += -deltaPitch*grappleRotationMultiplier;
+
+            if (grappleLookDir.sqrMagnitude > 1f)
+                grappleLookDir.Normalize();
+
+            cameraYaw = grappleLookDir.x*grappleRotationDegrees;
+            float targetPitch = grappleLookDir.y*grappleRotationDegrees;
+
+            float pitch = Mathf.Lerp(cameraPitch, targetPitch, transitionAlpha);
+            viewTransform.localRotation = Quaternion.identity;
+            viewTransform.Rotate(new Vector3(pitch, 0f, 0f), Space.Self);
+            viewTransform.Rotate(new Vector3(0f, cameraYaw, 0f), Space.World);
         }
+    }
 
-        cameraYaw = Mathf.Lerp(cameraYaw, targetCameraYaw, cameraYawAlpha);
+    private void FixedUpdate()
+    {
+        EvaluateTransitionAlpha();
+    }
 
-        cameraPitch += deltaPitch;
-        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+    public void LockRotation()
+    {
+        if (rotationLocked)
+            return;
 
-        viewTransform.localRotation = Quaternion.Euler(cameraPitch, cameraYaw, 0.0f);
+        grappleLookDir = Vector2.zero;
+
+        transitionAlpha = 0f;
+        cameraYaw = 0f;
+        rotationLocked = true;
+    }
+
+    public void UnlockRotation()
+    {
+        if (!rotationLocked)
+            return;
+
+        transitionAlpha = 1f;
+        cameraPitch = 0f;
+        rotationLocked = false;
     }
 }

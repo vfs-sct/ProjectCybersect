@@ -60,7 +60,7 @@ public class FPSMovement : MonoBehaviour
     {
         if (groundCheck.grounded)
         {
-            Vector3 velocity = new Vector3(kb.velocityX, 0.0f, kb.velocityZ);
+            Vector3 velocity = new Vector3(kb.velocity.x, 0.0f, kb.velocity.z);
             velocity = Quaternion.Inverse(transform.rotation)*velocity;
 
             Vector2 targetVelocity = new Vector2(FPSInput.movementX, FPSInput.movementZ).normalized*movementSpeed;
@@ -86,8 +86,8 @@ public class FPSMovement : MonoBehaviour
             }
 
             velocity = transform.rotation*velocity; 
-            kb.velocityX = velocity.x;
-            kb.velocityZ = velocity.z;
+            kb.velocity.x = velocity.x;
+            kb.velocity.z = velocity.z;
         }
         else
         {
@@ -95,8 +95,8 @@ public class FPSMovement : MonoBehaviour
             deltaVelocity.Normalize();
             deltaVelocity = transform.rotation*deltaVelocity;
             deltaVelocity *= airMovementMultiplier;
-            kb.velocityX += deltaVelocity.x;
-            kb.velocityZ += deltaVelocity.z;
+            kb.velocity.x += deltaVelocity.x;
+            kb.velocity.z += deltaVelocity.z;
         }
     }
 
@@ -104,7 +104,7 @@ public class FPSMovement : MonoBehaviour
     private void Jumping()
     {
         if (FPSInput.spaceDown && !lastSpaceDown && groundCheck.grounded)
-            kb.velocityY = jumpPower;
+            kb.velocity.y = jumpPower;
 
         lastSpaceDown = FPSInput.spaceDown;
     }
@@ -118,29 +118,24 @@ public class FPSMovement : MonoBehaviour
             {
                 Vector3 boost = new Vector3(FPSInput.movementX, 0.0f, FPSInput.movementZ).normalized;
                 boost = transform.rotation*boost;
-                if (groundCheck.grounded)
+                if (groundCheck.grounded && grapple.state == GrappleState.INACTIVE)
                 {
                     boost.y = horizontalBoostYOffset;
                     boost.Normalize();
                 }
                 boost *= horizontalBoostPower;
 
-                if (grapple.state == GrappleState.RETURNING && grapple.previousState == GrappleState.ENGAGED)
-                {
-                    kb.velocityX += boost.x;
-                    kb.velocityZ += boost.z;
-                    kb.velocityY += boost.y;
-                }
+                if (grapple.state != GrappleState.INACTIVE)
+                    kb.velocity += boost;
                 else
-                {
-                    kb.velocityX = boost.x;
-                    kb.velocityZ = boost.z;
-                    kb.velocityY = boost.y;
-                }
+                    kb.velocity = boost;
             }
             else
             {
-                kb.velocityY = verticalBoostPower;
+                if (grapple.state != GrappleState.INACTIVE)
+                    kb.velocity.y += verticalBoostPower;
+                else
+                    kb.velocity.y = verticalBoostPower;
             }
 
             playerStats.Boost(-1);
@@ -151,11 +146,8 @@ public class FPSMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (canMove)
-        {
-            HorizontalMovement();
-            Jumping();
-            Boosting();
-        }
+        HorizontalMovement();
+        Jumping();
+        Boosting();
     }
 }

@@ -28,13 +28,15 @@ public class Grapple : MonoBehaviour
     [SerializeField] private GameObject grapplePrefab = null;
     [SerializeField] private float grappleDistance = 50f;
     [SerializeField] private float grappleEngagementSpeed = 100f;
-    [SerializeField] private float grappleAcceleration = 80f;
+    [SerializeField] private float toPointAcceleration = 80f;
+    [SerializeField] private float toMouseAcceleration = 20f;
+    [SerializeField] private float toMouseAccelerationAngle = 90f;
     [SerializeField] private float grappleSpeed = 25f;
     [SerializeField] private float grappleCooldown = 10f;
-    [SerializeField,
-    Range(0, 1)]     private float grapplePerpendicularVelocityDecayAlpha = 0.1f;
     [SerializeField] private float grappleDisengageDistance = 3f;
+    [SerializeField] private float rotationSmoothness = 0.5f;
     [SerializeField] private GameObject mapGameObject;
+    [SerializeField] private float rotationTransitionSmoothness = 0.5f;
 
     [Header("Snapping")]
     [SerializeField] private float grappleSnapDistance = 0.05f;
@@ -128,7 +130,8 @@ public class Grapple : MonoBehaviour
         state = GrappleState.RETURNING;
         engagementDistanceTravelled = 0f;
         kb.gravityMultiplier = 1f;
-        movement.canMove = true;
+
+        look.UnlockRotation();
     }
 
     private void EngageGrapple()
@@ -140,7 +143,6 @@ public class Grapple : MonoBehaviour
     {
         state = GrappleState.INACTIVE;
         Destroy(grappleTransform.gameObject);
-        look.rotationLocked = false;
     }
 
     private void ActivateGrapple()
@@ -157,8 +159,7 @@ public class Grapple : MonoBehaviour
             onCooldown = true;
             engagementDistanceTravelled = 0f;
             grappleTransform = Instantiate(grapplePrefab).transform;
-            look.rotationLocked = true;
-            movement.canMove = false;
+            look.LockRotation();
 
             HideSeeker();
         }
@@ -169,48 +170,55 @@ public class Grapple : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, toGrapplePoint, out hit, Mathf.Infinity, ~(1 << 10)))
         {
-            if (Mathf.Abs(hit.point.sqrMagnitude - grapplePoint.sqrMagnitude) > 0.1f)
+            if (Mathf.Abs(hit.point.sqrMagnitude - grapplePoint.sqrMagnitude) > 0.3f)
+                DisengageGrapple();
+        }
+
+        if (currentToMaxSpeedRatio > 0.3f)
+        {
+            float velocityDot = Vector3.Dot(kb.velocity.normalized, toGrapplePoint.normalized);
+
+            if (velocityDot <= 0.4f)
                 DisengageGrapple();
         }
     }
 
-    private void AlignPlayerToGrapplePoint()
+    private void AlignPlayerWithVelocity()
     {
-        Vector3 direction = grapplePoint - transform.position;
-        direction.y = 0f;
-        transform.rotation = Quaternion.LookRotation(direction);
+        if (currentToMaxSpeedRatio < 0.2f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(toGrapplePoint, Vector3.up);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothness*currentToMaxSpeedRatio);
     }
 
-    void ComputeVelocity()
+    private void ResetPlayerRotation()
     {
-        Vector3 velocity = new Vector3(kb.velocityX, kb.velocityY, kb.velocityZ);
-        Vector3 velocityToGrapple = Vector3.Project(velocity, toGrapplePoint);
-        float velocityToGrappleDot = Vector3.Dot(velocity.normalized, toGrapplePoint);
+        Vector3 flatPlayerForward = transform.forward;
+        flatPlayerForward.y = 0f;
+
+        Quaternion targetRotation = Quaternion.LookRotation(flatPlayerForward, Vector3.up);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationTransitionSmoothness);
+    }
+
+    void Accelerate()
+    {
+        Vector3 velocityToGrapple = Vector3.Project(kb.velocity, toGrapplePoint);
+        float velocityToGrappleDot = Vector3.Dot(kb.velocity.normalized, toGrapplePoint);
 
         if (velocityToGrapple.magnitude < grappleSpeed || velocityToGrappleDot <= 0f)
         {
-            velocity -= velocityToGrapple;
-            velocityToGrapple += toGrapplePoint*grappleAcceleration*Time.fixedDeltaTime;
+            kb.velocity -= velocityToGrapple;
+            velocityToGrapple += toGrapplePoint.normalized*toPointAcceleration*Time.fixedDeltaTime;
             if (velocityToGrapple.magnitude > grappleSpeed && velocityToGrappleDot > 0f)
                 velocityToGrapple = velocityToGrapple.normalized*grappleSpeed;
-            velocity += velocityToGrapple;
+            kb.velocity += velocityToGrapple;
         }
 
-        if (!Mathf.Approximately(velocityToGrappleDot, 1f))
-        {
-            Vector3 rightPerpendicularVelocityToGrapple = Vector3.Project(velocity, transform.right);
-            Vector3 upPerpendicularToGrapple = Vector3.Cross(toGrapplePoint, transform.right);
-            Vector3 upPerpendicularVelocityToGrapple = Vector3.Project(velocity, upPerpendicularToGrapple);
-
-            velocity -= rightPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha*
-                        currentToMaxSpeedRatio;
-            velocity -= upPerpendicularVelocityToGrapple*grapplePerpendicularVelocityDecayAlpha*
-                        currentToMaxSpeedRatio;
-        }
-
-        kb.velocityX = velocity.x;
-        kb.velocityY = velocity.y;
-        kb.velocityZ = velocity.z;
+        Quaternion xRot = Quaternion.AngleAxis(-look.grappleLookDir.y*toMouseAccelerationAngle, transform.right);
+        Quaternion yRot = Quaternion.AngleAxis(look.grappleLookDir.x*toMouseAccelerationAngle, transform.up);
+        Vector3 toGrappleRotated = xRot*(yRot*toGrapplePoint);
+        kb.velocity += toGrappleRotated.normalized*toMouseAcceleration*Time.fixedDeltaTime;
 
         kb.gravityMultiplier = 1 - currentToMaxSpeedRatio;
     }
@@ -376,7 +384,7 @@ public class Grapple : MonoBehaviour
             bool grapplePressed = false;
             if (FPSInput.grappleDown && !lastGrappleDown)
                 grapplePressed = true;
-            bool cancelKeyDown = FPSInput.spaceDown || FPSInput.shiftDown || grapplePressed;
+            bool cancelKeyDown = FPSInput.spaceDown || grapplePressed;
 
             if (cancelKeyDown)
                 DisengageGrapple();
@@ -399,12 +407,16 @@ public class Grapple : MonoBehaviour
             if (state == GrappleState.ENGAGED)
             CheckForBreak();
             if (state == GrappleState.ENGAGED)
-                ComputeVelocity();
-            AlignPlayerToGrapplePoint();
+                Accelerate();
+            AlignPlayerWithVelocity();
         }
         else if (state == GrappleState.SEEKING)
         {
             PositionSeeker();
+        }
+        else
+        {
+            ResetPlayerRotation();
         }
 
         /* Engagement/return logic */
@@ -422,12 +434,13 @@ public class Grapple : MonoBehaviour
 
     private void ComputeSpeedRatio()
     {
-        Vector3 velocity = new Vector3(kb.velocityX, kb.velocityY, kb.velocityZ);
+        Vector3 velocity = kb.velocity;
         float dot = Vector3.Dot(velocity.normalized, toGrapplePoint);
         if (dot < 0f)
             dot = 0f;
         velocity *= dot;
         currentToMaxSpeedRatio = velocity.magnitude/grappleSpeed;
+        currentToMaxSpeedRatio = Mathf.Clamp01(currentToMaxSpeedRatio);
     }
 
     private void FixedUpdate()
