@@ -7,8 +7,8 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     [Header("UI to close")]
-    [SerializeField] private GameObject _pauseMenu = null;
-    [SerializeField] private GameObject _debugMenu = null;
+    [SerializeField] private GameObject _pauseUI = null;
+    [SerializeField] private GameObject _debugUI = null;
 
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
@@ -67,8 +67,8 @@ public class PlayerStats : MonoBehaviour
         if((healthPercent <= 0) && !isDead)
         {
             isDead = true;
-            _pauseMenu.SetActive(false);
-            _debugMenu.SetActive(false);
+            _pauseUI.SetActive(false);
+            _debugUI.SetActive(false);
         }
     }
 
