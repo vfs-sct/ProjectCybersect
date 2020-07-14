@@ -145,7 +145,7 @@ public class Grapple : MonoBehaviour
         Destroy(grappleTransform.gameObject);
     }
 
-    private void ActivateGrapple()
+    private bool ActivateGrapple()
     {
         if (seekerWorldPoint != Vector3.zero)
         {
@@ -162,7 +162,11 @@ public class Grapple : MonoBehaviour
             look.LockRotation();
 
             HideSeeker();
+
+            return true;
         }
+
+        return false;
     }
 
     private void CheckForBreak()
@@ -355,44 +359,45 @@ public class Grapple : MonoBehaviour
     }
 
     bool lastLeftMouseDown = false;
-    bool lastGrappleDown = false;
+    bool lastGrapple = false;
     private void HandleInput()
     {
         previousState = state;
 
-        /* Grapple seeking logic */
-        if (FPSInput.grappleDown && state == GrappleState.INACTIVE)
+        if (state == GrappleState.INACTIVE)
         {
-            state = GrappleState.SEEKING;
-            ShowSeeker();
-        }
-        else if (!FPSInput.grappleDown && state == GrappleState.SEEKING)
+            if (FPSInput.grappleDown && !lastGrapple && grappleAvailable)
+            {
+                state = GrappleState.SEEKING;
+                ShowSeeker();
+            }
+        } 
+        else if (state == GrappleState.SEEKING)
         {
-            state = GrappleState.INACTIVE;
-            HideSeeker();
-        }
-
-        /* Grapple engage/disengage logic */
-        if (state == GrappleState.SEEKING && FPSInput.leftMouseDown && !lastLeftMouseDown)
-        {
-            if (grappleAvailable)
-                ActivateGrapple();
+            if (!FPSInput.grappleDown)
+            {
+                bool success = ActivateGrapple();
+                if (!success)
+                {
+                    state = GrappleState.INACTIVE;
+                    HideSeeker();
+                }
+            }
+            else if (FPSInput.rightMouseDown)
+            {
+                state = GrappleState.INACTIVE;
+                HideSeeker();
+            }
         }
         else if (state == GrappleState.ENGAGED)
         {
             /* Detect if cancel key is down/pressed */
-            bool grapplePressed = false;
-            if (FPSInput.grappleDown && !lastGrappleDown)
-                grapplePressed = true;
-            bool cancelKeyDown = FPSInput.spaceDown || grapplePressed;
-
-            if (cancelKeyDown)
-                DisengageGrapple();
-            else if (distanceToGrapplePoint <= grappleDisengageDistance)
+            bool cancel = FPSInput.spaceDown || FPSInput.leftMouseDown || FPSInput.rightMouseDown;
+            if (cancel)
                 DisengageGrapple();
         }
 
-        lastGrappleDown = FPSInput.grappleDown;
+        lastGrapple = FPSInput.grappleDown;
         lastLeftMouseDown = FPSInput.leftMouseDown;
     }
 
@@ -405,10 +410,14 @@ public class Grapple : MonoBehaviour
             toGrapplePoint.Normalize();
 
             if (state == GrappleState.ENGAGED)
-            CheckForBreak();
-            if (state == GrappleState.ENGAGED)
+            {
                 Accelerate();
-            AlignPlayerWithVelocity();
+                CheckForBreak();
+                AlignPlayerWithVelocity();
+
+                if (distanceToGrapplePoint <= grappleDisengageDistance)
+                    DisengageGrapple();
+            }
         }
         else if (state == GrappleState.SEEKING)
         {

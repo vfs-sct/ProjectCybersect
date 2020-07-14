@@ -13,6 +13,7 @@ public class FPSLook : MonoBehaviour
     [SerializeField] private float minPitch = -70;
 
     public Vector2 grappleLookDir = Vector2.zero;
+    public float grappleLookDirClamp = 3f;
 
     private Transform viewTransform;
     private Grapple grapple;
@@ -21,6 +22,7 @@ public class FPSLook : MonoBehaviour
     private float cameraPitch = 0f;
     private float cameraYaw = 0f;
     private float transitionAlpha = 0f;
+    private float normalizedGrappleLookDirSpeed;
 
     private void LockAndHideCursor()
     {
@@ -45,6 +47,16 @@ public class FPSLook : MonoBehaviour
         transitionAlpha = Mathf.Clamp01(transitionAlpha);
     }
 
+    private float TanhInverse(float x)
+    {
+        return (1f/2f)*Mathf.Log((1f + x)/(1f - x));
+    }
+
+    private float NormalizedToTanh(float x, float difference)
+    {
+        return -TanhInverse((float)System.Math.Tanh(x) - difference) + x;
+    }
+
     private void Update()
     {
         float deltaYaw = FPSInput.mouseDeltaX*rotationMultiplier;
@@ -64,16 +76,31 @@ public class FPSLook : MonoBehaviour
         }
         else
         {
-            grappleLookDir.x += deltaYaw*grappleRotationMultiplier;
-            grappleLookDir.y += -deltaPitch*grappleRotationMultiplier;
+            Vector2 delta = new Vector2(deltaYaw*grappleRotationMultiplier,
+                                        -deltaPitch*grappleRotationMultiplier);
 
-            if (grappleLookDir.sqrMagnitude > 1f)
-                grappleLookDir.Normalize();
+            float sqrMagnitude = grappleLookDir.sqrMagnitude;
+            Vector3 grappleDirPrime = (grappleLookDir + delta);
+            float sqrMagnitudePrime = grappleDirPrime.sqrMagnitude;
+            if (sqrMagnitudePrime < sqrMagnitude)
+            {
+                float magnitude = Mathf.Sqrt(sqrMagnitude);
+                float magnitudePrime = Mathf.Sqrt(sqrMagnitudePrime);
+                float targetMagnitudeDifference = magnitude - magnitudePrime;
+                grappleLookDir = grappleDirPrime.normalized*(magnitude - NormalizedToTanh(magnitude, targetMagnitudeDifference));
+            }
+            else
+            {
+                grappleLookDir += delta;
+            }
 
-            cameraYaw = grappleLookDir.x*grappleRotationDegrees;
-            float targetPitch = grappleLookDir.y*grappleRotationDegrees;
+            if (grappleLookDir.sqrMagnitude > grappleLookDirClamp*grappleLookDirClamp)
+                grappleLookDir = grappleLookDir.normalized*grappleLookDirClamp;
 
+            cameraYaw = (float)System.Math.Tanh(grappleLookDir.x)*grappleRotationDegrees;
+            float targetPitch = (float)System.Math.Tanh(grappleLookDir.y)*grappleRotationDegrees;
             float pitch = Mathf.Lerp(cameraPitch, targetPitch, transitionAlpha);
+
             viewTransform.localRotation = Quaternion.identity;
             viewTransform.Rotate(new Vector3(pitch, 0f, 0f), Space.Self);
             viewTransform.Rotate(new Vector3(0f, cameraYaw, 0f), Space.World);
