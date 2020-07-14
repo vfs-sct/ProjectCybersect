@@ -145,7 +145,7 @@ public class Grapple : MonoBehaviour
         Destroy(grappleTransform.gameObject);
     }
 
-    private void ActivateGrapple()
+    private bool ActivateGrapple()
     {
         if (seekerWorldPoint != Vector3.zero)
         {
@@ -162,7 +162,11 @@ public class Grapple : MonoBehaviour
             look.LockRotation();
 
             HideSeeker();
+
+            return true;
         }
+
+        return false;
     }
 
     private void CheckForBreak()
@@ -372,7 +376,12 @@ public class Grapple : MonoBehaviour
         {
             if (!FPSInput.grappleDown)
             {
-                ActivateGrapple();
+                bool success = ActivateGrapple();
+                if (!success)
+                {
+                    state = GrappleState.INACTIVE;
+                    HideSeeker();
+                }
             }
             else if (FPSInput.rightMouseDown)
             {
@@ -384,7 +393,6 @@ public class Grapple : MonoBehaviour
         {
             /* Detect if cancel key is down/pressed */
             bool cancel = FPSInput.spaceDown || FPSInput.leftMouseDown || FPSInput.rightMouseDown;
-
             if (cancel)
                 DisengageGrapple();
         }
@@ -406,6 +414,9 @@ public class Grapple : MonoBehaviour
                 Accelerate();
                 CheckForBreak();
                 AlignPlayerWithVelocity();
+
+                if (distanceToGrapplePoint <= grappleDisengageDistance)
+                    DisengageGrapple();
             }
         }
         else if (state == GrappleState.SEEKING)
