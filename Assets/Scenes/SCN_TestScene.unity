@@ -2756,7 +2756,7 @@ PrefabInstance:
     - target: {fileID: 1784145531023327923, guid: 03815fbf60c821b49a8bd99f2eab3bde,
         type: 3}
       propertyPath: m_SortingOrder
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1784145531023327923, guid: 03815fbf60c821b49a8bd99f2eab3bde,
         type: 3}
@@ -3023,9 +3023,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debris:
-  - {fileID: -927199367670048503, guid: 1f14ebf79fbbe0242a39f0ebab85eb7c, type: 3}
-  - {fileID: -927199367670048503, guid: f1e677ada521b0b488e36ee1a816003d, type: 3}
-  - {fileID: -927199367670048503, guid: 3c641526ad335714bb879464b256053c, type: 3}
+  - {fileID: 577443098635019873, guid: 544fe75d30c771847a22e45e9e3a964d, type: 3}
+  - {fileID: 5204492901344361997, guid: 34fa8a49a2fe11c4cb40e5f14e8166c7, type: 3}
+  - {fileID: 1997221021552854621, guid: ae0182183ea398d48acbf17ef5519d92, type: 3}
   _numOfDebris: 400
   _range: {x: 100, y: 10, z: 100}
 --- !u!1 &1128066600
