@@ -36,8 +36,8 @@ public class DMRGun : MonoBehaviour
         gunShot = GetComponent<AudioSource>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
-        playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
+        playerAmmo = GetComponentInParent<PlayerAmmo>();
+        playerGrapple = GetComponentInParent<Grapple>();
     }
 
     private void Update()

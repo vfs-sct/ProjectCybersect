@@ -6,12 +6,21 @@ using UnityEngine;
 
 public class KillY : MonoBehaviour
 {
-    [SerializeField] private PlayerStats _player = null;
+    [SerializeField] private float _killY = 0f;
+    
+    private PlayerStats _player = null;
+
+    private void Awake()
+    {
+        _player = GetComponent<PlayerStats>();
+    }
 
     private void Update()
     {
-        //kill if below -10 y
-        if(this.transform.position.y <= -10)
+        if(_player.isDead) return;
+
+        //kill if below _killY
+        if(this.transform.position.y <= _killY)
         {
             _player.BreakShield();
             _player.TakeDamage(999999);

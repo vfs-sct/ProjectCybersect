@@ -294,6 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf072b092c44db4b99734dd0b103839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pixelRange: 50
 --- !u!1 &1055901845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,6 +1085,11 @@ PrefabInstance:
         type: 3}
       propertyPath: toMouseAcceleration
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: toPointAcceleration
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 267403272448701217, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
