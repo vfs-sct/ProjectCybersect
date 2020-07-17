@@ -24,8 +24,10 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _fireRate = 15f;
     [SerializeField] private float _spreadAngle = 5f;
 
+    [Header("Game Manager")]
+    [SerializeField] private GameManager gameManager = null;
+
     private AudioSource gunShot = null;
-    private GameManager gameManager = null;
     private ProceduralGunAnimation gunAnimation = null;
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
@@ -36,9 +38,8 @@ public class Gun : MonoBehaviour
     {
         gunShot = GetComponent<AudioSource>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
-        playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
+        playerAmmo = GetComponentInParent<PlayerAmmo>();
+        playerGrapple = GetComponentInParent<Grapple>();
     }
 
     private void Update()
@@ -46,7 +47,7 @@ public class Gun : MonoBehaviour
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
+        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();

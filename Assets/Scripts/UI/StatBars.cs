@@ -13,12 +13,8 @@ public class StatBars : MonoBehaviour
     [SerializeField] private Image _boostBar = null;
     [SerializeField] private Image _boostRechargeBar = null;
 
-    private PlayerStats playerStats;
-
-    private void Awake()
-    {
-        playerStats = GameObject.Find("player").GetComponent<PlayerStats>();
-    }
+    [Header("Player")]
+    [SerializeField] private PlayerStats playerStats = null;
 
     private void Update()
     {

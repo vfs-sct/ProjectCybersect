@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020 by Yuya Yoshino
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,11 +34,16 @@ public class PlayerStats : MonoBehaviour
     public float boostRechargePercent = 1f;
 
     private float boostRechargeTimer = 0f;
+    private Respawn respawn;
+
+    private void Awake()
+    {
+        respawn = GetComponent<Respawn>();
+    }
 
     private void Update()
     {
-        CheckPlayer();
-        UpdatePercent();
+        UpdateBoost();
         RechargeBoost();
     }
 
@@ -54,22 +60,9 @@ public class PlayerStats : MonoBehaviour
         boostRechargeTimer += Time.deltaTime/_chargeTime;
     }
 
-    private void UpdatePercent()
+    private void UpdateBoost()
     {
-        healthPercent = _currentHealth / _maxHealth;
-        shieldPercent = _currentShield / (float)_maxShield;
-        boostPercent = _currentBoost / (float)_maxBoost;
         boostRechargePercent = _currentBoost/(float)_maxBoost + boostRechargeTimer*(1/3f);
-    }
-
-    private void CheckPlayer()
-    {
-        if((healthPercent <= 0) && !isDead)
-        {
-            isDead = true;
-            _pauseUI.SetActive(false);
-            _debugUI.SetActive(false);
-        }
     }
 
     public void RespawnPlayer()
@@ -111,6 +104,8 @@ public class PlayerStats : MonoBehaviour
                 ++_currentBoost;
             }
         }
+
+        boostPercent = _currentBoost / (float)_maxBoost;
     }
 
     public void Shield(int shieldAmount)
@@ -130,6 +125,8 @@ public class PlayerStats : MonoBehaviour
                 if(_currentShield > _maxShield) _currentShield = _maxShield;
             }
         }
+
+        shieldPercent = _currentShield / (float)_maxShield;
     }
 
     public void BreakShield()
@@ -147,6 +144,23 @@ public class PlayerStats : MonoBehaviour
         {
             _currentHealth -= damage;
         }
+
+        if(_currentHealth <= 0)
+        {
+            KillPlayer();
+        }
+
+        healthPercent = _currentHealth / _maxHealth;
+    }
+
+    private void KillPlayer()
+    {
+        if(isDead) return;
+
+        isDead = true;
+        respawn.RespawnPlayer();
+        _pauseUI.SetActive(false);
+        _debugUI.SetActive(false);
     }
 
     public void HealDamage(float health)
@@ -154,5 +168,7 @@ public class PlayerStats : MonoBehaviour
         if(_currentHealth < _maxHealth) _currentHealth += health;
 
         if(_currentHealth > _maxHealth) _currentHealth = _maxHealth;
+
+        healthPercent = _currentHealth / _maxHealth;
     }
 }

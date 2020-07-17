@@ -146,6 +146,8 @@ public class FPSMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(playerStats.isDead) return;
+
         HorizontalMovement();
         Jumping();
         Boosting();

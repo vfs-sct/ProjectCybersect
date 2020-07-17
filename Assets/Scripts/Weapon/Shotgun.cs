@@ -36,8 +36,8 @@ public class Shotgun : MonoBehaviour
     {
         gunShot = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        playerAmmo = GameObject.Find("player").GetComponent<PlayerAmmo>();
-        playerGrapple = GameObject.Find("player").GetComponent<Grapple>();
+        playerAmmo = GetComponentInParent<PlayerAmmo>();
+        playerGrapple = GetComponentInParent<Grapple>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
     }
 
@@ -46,7 +46,7 @@ public class Shotgun : MonoBehaviour
         if(playerAmmo.currentSGAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= timeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
+        if(Input.GetButton("Fire1") && Time.time >= timeToFire && !gameManager.isPaused)
         {
             timeToFire = Time.time + 1f/_fireRate;
             Shoot();
