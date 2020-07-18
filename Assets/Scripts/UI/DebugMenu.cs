@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class DebugMenu : MonoBehaviour
 {
-    private PlayerStats playerStats;
-
-    private void Awake()
-    {
-        playerStats = GameObject.Find("player").GetComponent<PlayerStats>();
-    }
+    [SerializeField] private PlayerStats playerStats;
 
     public void DamagePlayer()
     {

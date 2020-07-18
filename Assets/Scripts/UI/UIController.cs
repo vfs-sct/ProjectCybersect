@@ -14,11 +14,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _pauseMenu = null;
     [SerializeField] private GameObject _optionMenu = null;
 
-    private GameManager gameManager = null;
-
     private void Awake()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _pauseUI.SetActive(false);
         _debugUI.SetActive(false);
     }
@@ -60,25 +57,25 @@ public class UIController : MonoBehaviour
     
     private void PauseGame()
     {
-        gameManager.isPaused = true;
+        GameManager.Instance.isPaused = true;
         _pauseUI.SetActive(true);
     } 
 
     private void ContinueGame()
     {
-        gameManager.isPaused = false;
+        GameManager.Instance.isPaused = false;
         _pauseUI.SetActive(false);
     }
 
     private void OpenDebug()
     {
-        gameManager.isPaused = true;
+        GameManager.Instance.isPaused = true;
         _debugUI.SetActive(true);
     } 
 
     private void CloseDebug()
     {
-        gameManager.isPaused = false;
+        GameManager.Instance.isPaused = false;
         _debugUI.SetActive(false);
     }
 }

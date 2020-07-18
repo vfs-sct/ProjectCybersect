@@ -24,9 +24,6 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _fireRate = 15f;
     [SerializeField] private float _spreadAngle = 5f;
 
-    [Header("Game Manager")]
-    [SerializeField] private GameManager gameManager = null;
-
     private AudioSource gunShot = null;
     private ProceduralGunAnimation gunAnimation = null;
     private PlayerAmmo playerAmmo = null;
@@ -47,7 +44,7 @@ public class Gun : MonoBehaviour
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused)
+        if(Input.GetButton("Fire1") && Time.time >= TimeToFire && (GameManager.Instance.isPaused == false))
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();

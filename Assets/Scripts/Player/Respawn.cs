@@ -29,7 +29,6 @@ public class Respawn : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        Debug.Log("respawning");
         StartCoroutine(ResPlayer());
     }
 }

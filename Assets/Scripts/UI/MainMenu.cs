@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene(1, LoadSceneMode.Single);
+        GameManager.Instance.isPaused = false;
     }
 
     public void QuitGame()

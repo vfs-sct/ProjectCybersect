@@ -24,7 +24,6 @@ public class DMRGun : MonoBehaviour
     [SerializeField] private float _spreadAngle = 5f;
 
     private AudioSource gunShot = null;
-    private GameManager gameManager = null;
     private ProceduralGunAnimation gunAnimation = null;
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
@@ -35,7 +34,6 @@ public class DMRGun : MonoBehaviour
     {
         gunShot = GetComponent<AudioSource>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerAmmo = GetComponentInParent<PlayerAmmo>();
         playerGrapple = GetComponentInParent<Grapple>();
     }
@@ -45,7 +43,7 @@ public class DMRGun : MonoBehaviour
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
-        if(Input.GetButtonDown("Fire1") && Time.time >= TimeToFire && !gameManager.isPaused && (playerGrapple.state == GrappleState.INACTIVE))
+        if(Input.GetButtonDown("Fire1") && Time.time >= TimeToFire && (GameManager.Instance.isPaused == false))
         {
             TimeToFire = Time.time + 1f/_fireRate;
             Shoot();

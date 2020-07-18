@@ -92,7 +92,7 @@ public class OptionsMenu : MonoBehaviour
 
     private void LoadOther()
     {
-        _gammaSlider.value = PlayerPrefs.GetFloat("Gamma");
+        //_gammaSlider.value = PlayerPrefs.GetFloat("Gamma");
     }
 
     public void Master(float volume)
