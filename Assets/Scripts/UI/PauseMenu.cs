@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     [Header("Pause Menu")]
-    [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _pauseMenu = null;
 
     public void Continue()
     {

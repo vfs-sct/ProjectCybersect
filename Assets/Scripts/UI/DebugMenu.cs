@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DebugMenu : MonoBehaviour
 {
-    [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private PlayerStats playerStats = null;
 
     public void DamagePlayer()
     {
