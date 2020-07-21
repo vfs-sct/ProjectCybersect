@@ -23,8 +23,10 @@ public class DMRGun : MonoBehaviour
     [SerializeField] private float _fireRate = 15f;
     [SerializeField] private float _spreadAngle = 5f;
 
+
     private AudioSource gunShot = null;
     private ProceduralGunAnimation gunAnimation = null;
+    private PlayerStats playerStat = null;
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
 
@@ -33,6 +35,7 @@ public class DMRGun : MonoBehaviour
     private void Awake()
     {
         gunShot = GetComponent<AudioSource>();
+        playerStat = GetComponentInParent<PlayerStats>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
         playerAmmo = GetComponentInParent<PlayerAmmo>();
         playerGrapple = GetComponentInParent<Grapple>();
@@ -40,6 +43,7 @@ public class DMRGun : MonoBehaviour
 
     private void Update()
     {
+        if(playerStat.isDead) return;
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused

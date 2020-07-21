@@ -62,6 +62,9 @@ public class PlayerStats : MonoBehaviour
 
     private void UpdateBoost()
     {
+        healthPercent = _currentHealth / _maxHealth;
+        shieldPercent = _currentShield / (float)_maxShield;
+        boostPercent = _currentBoost / (float)_maxBoost;
         boostRechargePercent = _currentBoost/(float)_maxBoost + boostRechargeTimer*(1/3f);
     }
 
@@ -104,8 +107,6 @@ public class PlayerStats : MonoBehaviour
                 ++_currentBoost;
             }
         }
-
-        boostPercent = _currentBoost / (float)_maxBoost;
     }
 
     public void Shield(int shieldAmount)
@@ -125,8 +126,6 @@ public class PlayerStats : MonoBehaviour
                 if(_currentShield > _maxShield) _currentShield = _maxShield;
             }
         }
-
-        shieldPercent = _currentShield / (float)_maxShield;
     }
 
     public void BreakShield()
@@ -149,8 +148,6 @@ public class PlayerStats : MonoBehaviour
         {
             KillPlayer();
         }
-
-        healthPercent = _currentHealth / _maxHealth;
     }
 
     private void KillPlayer()

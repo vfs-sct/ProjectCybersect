@@ -26,6 +26,7 @@ public class Gun : MonoBehaviour
 
     private AudioSource gunShot = null;
     private ProceduralGunAnimation gunAnimation = null;
+    private PlayerStats playerStat = null;
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
 
@@ -35,12 +36,14 @@ public class Gun : MonoBehaviour
     {
         gunShot = GetComponent<AudioSource>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
+        playerStat = GetComponentInParent<PlayerStats>();
         playerAmmo = GetComponentInParent<PlayerAmmo>();
         playerGrapple = GetComponentInParent<Grapple>();
     }
 
     private void Update()
     {
+        if(playerStat.isDead) return;
         if(playerAmmo.currentARAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused

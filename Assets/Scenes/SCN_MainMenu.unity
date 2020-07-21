@@ -1415,7 +1415,6 @@ MonoBehaviour:
   _sfxSlider: {fileID: 1062870867}
   _resolutions: {fileID: 909529022}
   _fullscreenToggle: {fileID: 690353696}
-  _gammaSlider: {fileID: 0}
   _audioMixer: {fileID: 24100000, guid: 2bb23e484a702554e83cc946ac8a9ade, type: 2}
 --- !u!114 &1529208084
 MonoBehaviour:
@@ -2306,6 +2305,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8394167943621748383, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae,
+        type: 3}
+      propertyPath: enemyCountMap1
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae, type: 3}

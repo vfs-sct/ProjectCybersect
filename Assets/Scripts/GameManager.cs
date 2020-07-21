@@ -17,32 +17,19 @@ public class GameManager : MonoBehaviour
     public int enemyCountMap2 = 0;
     public int enemyCountMap3 = 0;
 
-    private int enemyCount = 0;
+    public int enemyCount = 0;
+
+    public Scene currentScene;
+    public int buildIndex;
 
     private void Awake()
     {
-        Scene currentScene = SceneManager.GetActiveScene();
-        int buildIndex = currentScene.buildIndex;
+        currentScene = SceneManager.GetActiveScene();
+        buildIndex = currentScene.buildIndex;
 
         if(Instance == null)
         {
             Instance = this;
-
-            switch(buildIndex)
-            {
-                case 0:
-                    break;
-                case 1:
-                    enemyCount = enemyCountMap1;
-                    break;
-                case 2:
-                    enemyCount = enemyCountMap2;
-                    break;
-                case 3:
-                    enemyCount = enemyCountMap3;
-                    break;
-            }
-
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -51,9 +38,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        switch(buildIndex)
+        {
+            case 0:
+                break;
+            case 1:
+                enemyCount = enemyCountMap1;
+                break;
+            case 2:
+                enemyCount = enemyCountMap2;
+                break;
+            case 3:
+                enemyCount = enemyCountMap3;
+                break;
+        }
+    }
+
     private void Update()
     {
         CheckPause();
+        CheckEndGame();
     }
 
     public void EnemyKilled()
@@ -63,6 +69,8 @@ public class GameManager : MonoBehaviour
 
     private void CheckPause()
     {
+        if(buildIndex == 0) return;
+
         if(isPaused)
         {
             //game is paused
@@ -76,6 +84,16 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+    }
+
+    private void CheckEndGame()
+    {
+        if(buildIndex == 0) return;
+
+        if(enemyCount == 0)
+        {
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
     }
 }

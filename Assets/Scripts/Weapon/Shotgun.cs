@@ -26,6 +26,7 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private float _spreadAngle = 5f;
 
     private AudioSource gunShot = null;
+    private PlayerStats playerStat = null;
     private PlayerAmmo playerAmmo = null;
     private Grapple playerGrapple = null;
     private float timeToFire = 0f;
@@ -34,6 +35,7 @@ public class Shotgun : MonoBehaviour
     private void Awake()
     {
         gunShot = GetComponent<AudioSource>();
+        playerStat = GetComponentInParent<PlayerStats>();
         playerAmmo = GetComponentInParent<PlayerAmmo>();
         playerGrapple = GetComponentInParent<Grapple>();
         gunAnimation = GetComponent<ProceduralGunAnimation>();
@@ -41,6 +43,7 @@ public class Shotgun : MonoBehaviour
 
     private void Update()
     {
+        if(playerStat.isDead) return;
         if(playerAmmo.currentSGAmmo <= 0) return;
         //checks the fire input and firerate
         //also checks to see if the game is paused
