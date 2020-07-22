@@ -12,11 +12,7 @@ public class GameManager : MonoBehaviour
     [Header("Paused")]
     public bool isPaused = true;
 
-    [Header("Num of Enemies")]
-    public int enemyCountMap1 = 0;
-    public int enemyCountMap2 = 0;
-    public int enemyCountMap3 = 0;
-
+    [Header("Enemies")]
     public int enemyCount = 0;
 
     public Scene currentScene;
@@ -24,9 +20,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        currentScene = SceneManager.GetActiveScene();
-        buildIndex = currentScene.buildIndex;
-
         if(Instance == null)
         {
             Instance = this;
@@ -36,41 +29,21 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    private void Start()
-    {
-        switch(buildIndex)
-        {
-            case 0:
-                break;
-            case 1:
-                enemyCount = enemyCountMap1;
-                break;
-            case 2:
-                enemyCount = enemyCountMap2;
-                break;
-            case 3:
-                enemyCount = enemyCountMap3;
-                break;
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        currentScene = SceneManager.GetActiveScene();
+        buildIndex = currentScene.buildIndex;
     }
 
     private void Update()
     {
         CheckPause();
-        CheckEndGame();
-    }
-
-    public void EnemyKilled()
-    {
-        enemyCount--;
     }
 
     private void CheckPause()
     {
-        if(buildIndex == 0) return;
-
         if(isPaused)
         {
             //game is paused
@@ -87,13 +60,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CheckEndGame()
+    public void EnemiesCounted()
     {
-        if(buildIndex == 0) return;
+        enemyCount++;
+    }
 
+    public void EnemyKilled()
+    {
+        enemyCount--;
         if(enemyCount == 0)
         {
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+
         }
     }
 }

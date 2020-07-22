@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2310,6 +2310,11 @@ PrefabInstance:
         type: 3}
       propertyPath: enemyCountMap1
       value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 8394167943621748383, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae,
+        type: 3}
+      propertyPath: isPaused
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae, type: 3}

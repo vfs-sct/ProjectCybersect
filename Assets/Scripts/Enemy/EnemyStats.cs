@@ -24,6 +24,8 @@ public class EnemyStats : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.EnemiesCounted();
+        
         if(GetComponent<Renderer>())
         {
             dissolveMat = GetComponent<Renderer>().material;

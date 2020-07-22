@@ -16,7 +16,7 @@ public class CritTarget : MonoBehaviour
     public void TakeDamage(float damage)
     {
         target.health -= (damage * 2);
-        if(target.health <= 0)
+        if(target.health <= 0 && target.isDead == false)
         {
             GameManager.Instance.EnemyKilled();
         }
