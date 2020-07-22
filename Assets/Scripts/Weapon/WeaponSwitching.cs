@@ -7,18 +7,11 @@ using UnityEngine;
 public class WeaponSwitching : MonoBehaviour
 {
     [SerializeField] private int selectedWeapon = 0;
-
-    private GameManager gameManager = null;
-
-    private void Awake()
-    {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
-
+    
     private void Update()
     {
         //checks if the game is paused if not check selected weapons
-        if(gameManager.isPaused) return;
+        if(GameManager.Instance.isPaused) return;
         ScrollSelectWeapon();
         ManuelSelectWeapon();
     }

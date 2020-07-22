@@ -82,8 +82,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.9
+  m_Radius: 0.6
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &267403272448701144
@@ -149,9 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frictionAlpha: 0.9
-  velocityX: 0
-  velocityY: 0
-  velocityZ: 0
+  velocity: {x: 0, y: 0, z: 0}
   gravityMultiplier: 1
 --- !u!114 &267403272448701221
 MonoBehaviour:
@@ -167,11 +165,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationMultiplier: 1
   verticalRotationMultiplier: 1
+  grappleRotationMultiplier: 1
+  transitionSmoothness: 0.5
+  grappleRotationDegrees: 8
   maxPitch: 85
   minPitch: -70
-  cameraYawAlpha: 0.2
-  cameraYawClamp: 50
-  rotationLocked: 0
+  grappleLookDir: {x: 0, y: 0}
+  grappleLookDirClamp: 3
 --- !u!114 &267403272448701145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,12 +203,15 @@ MonoBehaviour:
     type: 3}
   grappleDistance: 25
   grappleEngagementSpeed: 100
-  grappleAcceleration: 70
+  toPointAcceleration: 80
+  toMouseAcceleration: 20
+  toMouseAccelerationAngle: 90
   grappleSpeed: 25
   grappleCooldown: 0
-  grapplePerpendicularVelocityDecayAlpha: 0.1
   grappleDisengageDistance: 3
+  rotationSmoothness: 0.5
   mapGameObject: {fileID: 0}
+  rotationTransitionSmoothness: 0.5
   grappleSnapDistance: 0.05
   grappleSnapAlpha: 0.494
   state: 0
@@ -228,18 +231,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49cc460d81c1514f951d9ef38e7a0c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseMenu: {fileID: 0}
-  _debugMenu: {fileID: 0}
+  _pauseUI: {fileID: 0}
+  _debugUI: {fileID: 0}
   _currentHealth: 100
   _maxHealth: 100
   _currentShield: 4
   _maxShield: 4
   _currentBoost: 3
   _maxBoost: 3
+  _chargeTime: 2
   isDead: 0
   healthPercent: 100
   shieldPercent: 1
   boostPercent: 1
+  boostRechargePercent: 1
 --- !u!114 &267403272448701148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSGAmmo: 32
   currentARAmmo: 100
+  currentDMRAmmo: 50
 --- !u!1 &267403272964104964
 GameObject:
   m_ObjectHideFlags: 0

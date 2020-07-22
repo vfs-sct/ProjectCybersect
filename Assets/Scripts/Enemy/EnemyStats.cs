@@ -15,7 +15,7 @@ public class EnemyStats : MonoBehaviour
     [SerializeField] private Shader _shader = null;
     [SerializeField] private float _dissolveSpeed = 0f;
 
-    private Material _dissolveMat = null;
+    private Material dissolveMat = null;
     private float timer = 0f;
     private bool isDissolved = false;
 
@@ -24,10 +24,12 @@ public class EnemyStats : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.EnemiesCounted();
+        
         if(GetComponent<Renderer>())
         {
-            _dissolveMat = GetComponent<Renderer>().material;
-            _dissolveMat.shader = _shader;
+            dissolveMat = GetComponent<Renderer>().material;
+            dissolveMat.shader = _shader;
         }
     }
 
@@ -43,9 +45,9 @@ public class EnemyStats : MonoBehaviour
         {
             //animates the death shader
             timer += Time.deltaTime/_dissolveSpeed;
-            _dissolveMat.SetFloat("Vector1_E189AF9C", timer);
+            dissolveMat.SetFloat("Vector1_E189AF9C", timer);
 
-            if(_dissolveMat.GetFloat("Vector1_E189AF9C") > 1)
+            if(dissolveMat.GetFloat("Vector1_E189AF9C") > 1)
             {
                 isDissolved = true;
             }

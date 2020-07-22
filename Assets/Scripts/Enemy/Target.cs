@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    EnemyStats target;
+    private EnemyStats target;
 
     private void Awake()
     {
@@ -16,5 +16,9 @@ public class Target : MonoBehaviour
     public void TakeDamage(float damage)
     {
         target.health -= damage;
+        if(target.health <= 0 && target.isDead == false)
+        {
+            GameManager.Instance.EnemyKilled();
+        }
     }
 }

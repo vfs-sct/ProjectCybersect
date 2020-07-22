@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
+        GameManager.Instance.isPaused = false;
         SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 

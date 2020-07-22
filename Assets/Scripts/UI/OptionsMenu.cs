@@ -20,8 +20,8 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private TMP_Dropdown _resolutions = null;
     [SerializeField] private Toggle _fullscreenToggle = null;
 
-    [Header("Gamma")]
-    [SerializeField] private Slider _gammaSlider = null;
+    //[Header("Gamma")]
+    //[SerializeField] private Slider _gammaSlider = null;
 
     [Header("Audio")]
     [SerializeField] private AudioMixer _audioMixer = null;
@@ -92,7 +92,7 @@ public class OptionsMenu : MonoBehaviour
 
     private void LoadOther()
     {
-        _gammaSlider.value = PlayerPrefs.GetFloat("Gamma");
+        //_gammaSlider.value = PlayerPrefs.GetFloat("Gamma");
     }
 
     public void Master(float volume)
@@ -156,6 +156,6 @@ public class OptionsMenu : MonoBehaviour
         _audioMixer.SetFloat("musicVolume", _musicSlider.value);
         _audioMixer.SetFloat("musicVolume", _sfxSlider.value);
         Screen.SetResolution(1920, 1080, true);
-        _gammaSlider.value = 0f;
+        //_gammaSlider.value = 0f;
     }
 }
