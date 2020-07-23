@@ -10,7 +10,8 @@ public class TestAgent : MonoBehaviour
 
     private NavMeshAgent agent;
     private UtilitySelector utilitySelector;
-    private Transform player;
+    private PlayerStats playerStats;
+    private Transform playerTransform;
     private Transform mainCamera;
 
     private bool pathedToPlayer = false;
@@ -24,7 +25,7 @@ public class TestAgent : MonoBehaviour
 
     private void EvalutateToPlayer()
     {
-        toPlayer = player.position - transform.position;
+        toPlayer = playerTransform.position - transform.position;
         toPlayerSqrMag = toPlayer.sqrMagnitude;
     }
 
@@ -33,7 +34,7 @@ public class TestAgent : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, toPlayer, out hit))
         {
-            if (hit.transform == player.transform)
+            if (hit.transform == playerTransform.transform)
                 los = true;
             else
                 los = false;
@@ -82,7 +83,7 @@ public class TestAgent : MonoBehaviour
     {
         float utility = 0f;
 
-        Vector3 fromPlayer = (transform.position - player.position).normalized;
+        Vector3 fromPlayer = (transform.position - playerTransform.position).normalized;
         Vector3 playerLook = mainCamera.forward;
 
         float dot = Vector3.Dot(fromPlayer, playerLook);
@@ -110,7 +111,7 @@ public class TestAgent : MonoBehaviour
 
     private void PathToPlayer()
     {
-        agent.SetDestination(player.position);
+        agent.SetDestination(playerTransform.position);
         pathedToPlayer = true;
     }
 
@@ -153,7 +154,8 @@ public class TestAgent : MonoBehaviour
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.Find("player").transform;
+        playerStats = GameObject.Find("player").GetComponent<PlayerStats>();
+        playerTransform = GameObject.Find("player").transform;
         mainCamera = GameObject.Find("mainCamera").transform;
 
         InitUtilitySelector();
@@ -210,6 +212,7 @@ public class TestAgent : MonoBehaviour
 
         timer += Time.deltaTime;
 
+        if(playerStats.isDead) return;
         Shooting();
     }
 }

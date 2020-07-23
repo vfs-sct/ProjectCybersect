@@ -83,6 +83,12 @@ public class Shotgun : MonoBehaviour
             RaycastHit hit;
             if(Physics.Raycast(_playerCam.transform.position, rotation * Vector3.forward, out hit, _range))
             {
+                EnemyStats enemyStats = hit.transform.GetComponent<EnemyStats>();
+                if(enemyStats != null)
+                {
+                    if(enemyStats.isDead) return;
+                }
+
                 CritTarget critTarget = hit.transform.GetComponent<CritTarget>();
                 if(critTarget != null)
                 {

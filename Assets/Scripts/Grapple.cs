@@ -71,6 +71,13 @@ public class Grapple : MonoBehaviour
     Vector3 seekerWorldPoint;
     private float squaredGrappleDistance;
 
+    private PlayerStats playerStats;
+
+    private void Awake()
+    {
+        playerStats = GetComponent<PlayerStats>();
+    }
+
     private void AquireReferences()
     {
         kb = GetComponent<FPSKinematicBody>();
@@ -392,7 +399,7 @@ public class Grapple : MonoBehaviour
         else if (state == GrappleState.ENGAGED)
         {
             /* Detect if cancel key is down/pressed */
-            bool cancel = FPSInput.spaceDown || FPSInput.leftMouseDown || FPSInput.rightMouseDown;
+            bool cancel = FPSInput.spaceDown || FPSInput.rightMouseDown || playerStats.isDead;
             if (cancel)
                 DisengageGrapple();
         }

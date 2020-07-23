@@ -18,6 +18,7 @@ public class Target : MonoBehaviour
         target.health -= damage;
         if(target.health <= 0 && target.isDead == false)
         {
+            target.isDead = true;
             GameManager.Instance.EnemyKilled();
         }
     }

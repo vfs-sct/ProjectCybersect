@@ -70,7 +70,8 @@ public class GameManager : MonoBehaviour
         enemyCount--;
         if(enemyCount == 0)
         {
-
+            isPaused = true;
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
     }
 }

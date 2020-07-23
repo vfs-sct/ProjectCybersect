@@ -21,9 +21,9 @@ public class Respawn : MonoBehaviour
     IEnumerator ResPlayer()
     {
         yield return new WaitForSeconds(_respawnTime);
+        playerStats.transform.position = _respawnPoint.position + (Vector3.up*2);
         playerRB.velocity = Vector3.zero;
         playerRB.angularVelocity = Vector3.zero;
-        playerStats.transform.position = _respawnPoint.position + Vector3.up;
         playerStats.RespawnPlayer();
     }
 

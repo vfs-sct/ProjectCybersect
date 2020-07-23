@@ -165,7 +165,5 @@ public class PlayerStats : MonoBehaviour
         if(_currentHealth < _maxHealth) _currentHealth += health;
 
         if(_currentHealth > _maxHealth) _currentHealth = _maxHealth;
-
-        healthPercent = _currentHealth / _maxHealth;
     }
 }

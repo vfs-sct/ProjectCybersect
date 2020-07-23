@@ -59,6 +59,8 @@ public class FPSLook : MonoBehaviour
 
     private void Update()
     {
+        if(GameManager.Instance.isPaused) return;
+        
         float deltaYaw = FPSInput.mouseDeltaX*rotationMultiplier;
         float deltaPitch = -FPSInput.mouseDeltaY*rotationMultiplier*verticalRotationMultiplier;
 

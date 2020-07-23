@@ -25,7 +25,7 @@ public class EnemyStats : MonoBehaviour
     private void Awake()
     {
         GameManager.Instance.EnemiesCounted();
-        
+
         if(GetComponent<Renderer>())
         {
             dissolveMat = GetComponent<Renderer>().material;
@@ -35,11 +35,11 @@ public class EnemyStats : MonoBehaviour
 
     private void Update()
     {
-        CheckDeath();
-        PlayDeath();
+        SetOnDeath();
+        DissolveOnDeath();
     }
 
-    private void PlayDeath()
+    private void SetOnDeath()
     {
         if(isDead)
         {
@@ -54,18 +54,13 @@ public class EnemyStats : MonoBehaviour
         }
     }
 
-    private void CheckDeath()
+    private void DissolveOnDeath()
     {
-        if(health <= 0f)
-        {
-            isDead = true;
-
             if(isDissolved)
             {
                 //get and random num and spawn a shield pickup if the number is 1
                 if(Random.Range(1,_chance) == 1) Instantiate(_shieldPrefab,this.transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
-        }
     }
 }

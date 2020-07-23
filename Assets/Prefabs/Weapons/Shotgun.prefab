@@ -4920,13 +4920,14 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 7481193867395198613}
   _impactEffect: {fileID: 751098255209872561, guid: 32371a539e2faf647a6add8fc890ad21,
     type: 3}
+  _impactTime: 2
   _maxDamage: 10
   _minDamage: 5
   _rangeOffStart: 30
   _rangeOffEnd: 50
   _range: 5
   _impactForce: 0
-  _fireRate: 1.35
+  _fireRate: 1
   _pellets: 7
   _spreadAngle: 5
 --- !u!82 &5827508203097207328

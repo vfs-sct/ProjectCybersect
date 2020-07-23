@@ -166,14 +166,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shieldPrefab: {fileID: 4497264223791912908, guid: 51c42b591ec763049b2a35a74d2bd25a,
     type: 3}
-  _randomRange: 12
-  _dissolveMat: {fileID: 0}
-  _dissolveSpeed: 1
+  _chance: 10
   _shader: {fileID: -6465566751694194690, guid: de7723e00aefbe0438624395478d973a,
     type: 3}
+  _dissolveSpeed: 1
   isDead: 0
-  isDissolved: 0
-  health: 100
+  health: 50
 --- !u!114 &5494345792199738106
 MonoBehaviour:
   m_ObjectHideFlags: 0
