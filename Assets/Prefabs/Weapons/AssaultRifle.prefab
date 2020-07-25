@@ -4881,11 +4881,11 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
+  m_UseCustomVertexStreams: 1
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
-  m_VertexStreams: 00010304
+  m_VertexStreams: 000304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -6541,8 +6541,8 @@ MonoBehaviour:
   delaySmoothness: 0.15
   delayOffset: 0.5
   recoilRateOfChangeDecayAlpha: 0.3
-  recoilDegrees: 0.005
-  recoilUnitDisplacement: 0.05
+  recoilDegrees: 0.2
+  recoilUnitDisplacement: 0.02
   recoilAmount: 1
   recoilCompensationAlpha: 0.1
 --- !u!114 &2151304734884444290
@@ -6559,16 +6559,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCam: {fileID: 0}
   _muzzleFlash: {fileID: 8748903004504349842}
-  _impactEffect: {fileID: 650961090677442068, guid: 7c36f65cabbb56645b9e9ebb620ded6b,
+  _impactEffect: {fileID: 7221635793536548701, guid: b4ff3eb146ee0314fb38bf09b90df274,
     type: 3}
-  _maxDamage: 10
-  _minDamage: 5
-  _rangeOffStart: 30
-  _rangeOffEnd: 50
+  _impactTime: 2
+  _maxDamage: 7
+  _minDamage: 3
+  _rangeOffStart: 35
+  _rangeOffEnd: 85
   _range: 100
-  _impactForce: 0
-  _fireRate: 10
-  _spreadAngle: 5
+  _impactForce: 100
+  _fireRate: 12
+  _spreadAngle: 3
 --- !u!82 &3626235581891883516
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6582,7 +6583,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 0f2c5b47acbfb784987b0881231f3da5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.35
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
