@@ -96,7 +96,7 @@ public class FPSLook : MonoBehaviour
                 grappleLookDir += delta;
             }
 
-            if (grappleLookDir.sqrMagnitude > grappleLookDirClamp*grappleLookDirClamp)
+            if (sqrMagnitude > grappleLookDirClamp*grappleLookDirClamp)
                 grappleLookDir = grappleLookDir.normalized*grappleLookDirClamp;
 
             cameraYaw = (float)System.Math.Tanh(grappleLookDir.x)*grappleRotationDegrees;
