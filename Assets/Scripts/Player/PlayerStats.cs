@@ -26,6 +26,10 @@ public class PlayerStats : MonoBehaviour
     [Header("Boost Recharge")]
     [SerializeField] private float _chargeTime = 2f;
 
+    [Header("Respawn")]
+    [SerializeField] private float _respawnTime = 2f;
+    [SerializeField] private Transform _respawnPoint = null;
+
     [Header("Public")]
     public bool isDead = false;
     public float healthPercent = 1f;
@@ -34,11 +38,11 @@ public class PlayerStats : MonoBehaviour
     public float boostRechargePercent = 1f;
 
     private float boostRechargeTimer = 0f;
-    private Respawn respawn;
+    private Rigidbody playerRB;
 
     private void Awake()
     {
-        respawn = GetComponent<Respawn>();
+        playerRB = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -68,12 +72,23 @@ public class PlayerStats : MonoBehaviour
         boostRechargePercent = _currentBoost/(float)_maxBoost + boostRechargeTimer*(1/3f);
     }
 
-    public void RespawnPlayer()
+    public void ResetPlayer()
     {
         isDead = false;
+        this.transform.rotation = _respawnPoint.rotation;
+        this.transform.position = _respawnPoint.position + (Vector3.up*2);
+        playerRB.velocity = Vector3.zero;
+        playerRB.angularVelocity = Vector3.zero;
         _currentHealth = _maxHealth;
         _currentShield = _maxShield;
         _currentBoost = _maxBoost;
+    }
+
+    IEnumerator RespawnPlayer()
+    {
+        yield return new WaitForSeconds(_respawnTime);
+        this.transform.position = _respawnPoint.position + (Vector3.up*2);
+        ResetPlayer();
     }
 
     public float ReadHealth()
@@ -155,9 +170,9 @@ public class PlayerStats : MonoBehaviour
         if(isDead) return;
 
         isDead = true;
-        respawn.RespawnPlayer();
         _pauseUI.SetActive(false);
         _debugUI.SetActive(false);
+        StartCoroutine(RespawnPlayer());
     }
 
     public void HealDamage(float health)

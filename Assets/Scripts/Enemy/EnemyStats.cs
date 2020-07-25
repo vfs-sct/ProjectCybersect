@@ -43,6 +43,11 @@ public class EnemyStats : MonoBehaviour
     {
         if(isDead)
         {
+            foreach(Transform child in transform) 
+            {
+                Destroy(child.gameObject);
+            }
+
             //animates the death shader
             timer += Time.deltaTime/_dissolveSpeed;
             dissolveMat.SetFloat("Vector1_E189AF9C", timer);
