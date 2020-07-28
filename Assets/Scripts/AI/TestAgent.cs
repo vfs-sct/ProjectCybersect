@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TestAgent : MonoBehaviour
+public class TestAgent : AI
 {
     public bool accountForBulletDrop = true;
-    [SerializeField] private GameObject projectilePrefab;
+    public float fireRate = 0.75f;
+    public GameObject projectilePrefab;
 
-    private NavMeshAgent agent;
-    private UtilitySelector utilitySelector;
+    private NavMeshAgent navMeshAgent;
     private PlayerStats playerStats;
     private Transform playerTransform;
     private Transform mainCamera;
+    private EnemyStats enemyStats;
 
     private bool pathedToPlayer = false;
     private bool los = false;
@@ -20,8 +21,7 @@ public class TestAgent : MonoBehaviour
     private float toPlayerSqrMag = 0f;
     private Random random = new Random();
 
-    private float shootTimer = 0f;
-    private float shootTime = 0.75f;
+    private float fireTimer = 0f;
 
     private void EvalutateToPlayer()
     {
@@ -45,40 +45,6 @@ public class TestAgent : MonoBehaviour
         los = false;
     }
 
-    private float MoveToPlayerUtility()
-    {
-        float utility = 0f;
-
-        if (los && toPlayerSqrMag > 14*14f)
-        {
-            utility = Mathf.Clamp01(toPlayerSqrMag/(30f*30f))*40f;
-        }
-
-        return utility;
-    }
-
-    private float MoveAwayPlayerUtility()
-    {
-        float utility = 0f;
-
-        if (los && toPlayerSqrMag < 10*10f)
-        {
-            utility = (1 - Mathf.Clamp01(toPlayerSqrMag/(5*5f)))*40f;
-        }
-
-        return utility;
-    }
-
-    private float GetLineOfSightUtility()
-    {
-        float utility = 0f;
-
-        if (!los)
-            utility = 120f;
-
-        return utility;
-    }
-
     private float StrafeUtility()
     {
         float utility = 0f;
@@ -95,7 +61,7 @@ public class TestAgent : MonoBehaviour
 
     private void Strafe()
     {
-        if (agent.hasPath && !pathedToPlayer)
+        if (navMeshAgent.hasPath && !pathedToPlayer)
             return;
 
         Vector3 perpendicular = Vector3.Cross(toPlayer, Vector3.up);
@@ -104,14 +70,14 @@ public class TestAgent : MonoBehaviour
         float rnd = Random.Range(-1f, 1f);
         perpendicular *= Mathf.Sign(rnd);
 
-        agent.SetDestination(transform.position + perpendicular*2f);
+        navMeshAgent.SetDestination(transform.position + perpendicular*2f);
 
         pathedToPlayer = false;
     }
 
     private void PathToPlayer()
     {
-        agent.SetDestination(playerTransform.position);
+        navMeshAgent.SetDestination(playerTransform.position);
         pathedToPlayer = true;
     }
 
@@ -119,46 +85,24 @@ public class TestAgent : MonoBehaviour
     {
         Vector3 toPlayerNormalize = toPlayer.normalized;
         toPlayerNormalize *= 3f;
-        agent.SetDestination(transform.position - toPlayerNormalize);
+        navMeshAgent.SetDestination(transform.position - toPlayerNormalize);
     }
 
     private void ClearPath()
     {
-        agent.ResetPath();
+        navMeshAgent.ResetPath();
         pathedToPlayer = false;
     }
 
-    private void InitUtilitySelector()
+    new private void Start()
     {
-        utilitySelector = new UtilitySelector();
+        base.Start();
 
-        Selection.Input losInput = GetLineOfSightUtility;
-        Selection.Callback losCallback = PathToPlayer;
-        utilitySelector.AddSelection(losInput, losCallback);
-
-        Selection.Input strafeInput = StrafeUtility;
-        Selection.Callback strafeCallback = Strafe;
-        utilitySelector.AddSelection(strafeInput, strafeCallback);
-
-        Selection.Input toPlayerInput = MoveToPlayerUtility;
-        Selection.Callback toPlayerCallback = PathToPlayer;
-        utilitySelector.AddSelection(toPlayerInput, toPlayerCallback);
-
-        Selection.Input awayPlayerInput = MoveAwayPlayerUtility;
-        Selection.Callback awayPlayerCallback = PathAwayFromPlayer;
-        utilitySelector.AddSelection(awayPlayerInput, awayPlayerCallback);
-
-        utilitySelector.SetDefault(ClearPath);
-    }
-
-    private void Start()
-    {
-        agent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         playerStats = GameObject.Find("player").GetComponent<PlayerStats>();
         playerTransform = GameObject.Find("player").transform;
         mainCamera = GameObject.Find("mainCamera").transform;
-
-        InitUtilitySelector();
+        enemyStats = GetComponent<EnemyStats>();
     }
 
     private void Shoot()
@@ -179,40 +123,34 @@ public class TestAgent : MonoBehaviour
     {
         if (los)
         {
-            if (shootTimer > shootTime)
+            if (fireTimer > fireRate)
             {
-                shootTimer -= shootTime;
+                fireTimer -= fireRate;
                 Shoot();
             }
 
-            shootTimer += Time.deltaTime;
+            fireTimer += Time.deltaTime;
         }
         else
         {
-            shootTimer = 0f;
+            fireTimer = 0f;
         }
     }
 
     float timer = 0f;
-    private void Update()
+    new private void Update()
     {
-        if(GetComponent<EnemyStats>().isDead) return;
+        base.Update();
+
+        if (enemyStats.isDead)
+            return;
         
-        if (!AIState.aggressive)
+        if (!aggressive)
             return;
 
-        if (timer > AI.decisionTickPeriod)
-        {
-            timer -= AI.decisionTickPeriod;
+        if (playerStats.isDead) 
+            return;
 
-            EvalutateToPlayer();
-            CheckLOS();
-            utilitySelector.Run();
-        }
-
-        timer += Time.deltaTime;
-
-        if(playerStats.isDead) return;
         Shooting();
     }
 }
