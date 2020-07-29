@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate bool Condition();
+
 public class Node
 {
-    public delegate bool Condition();
-
     public Node[] children;
     public Condition condition;
 
@@ -22,13 +22,20 @@ public class Node
     }
 }
 
+public class Branch 
+{
+    public Condition condition;
+    public Node node;
+
+    public Branch(Condition _condition, Node _node)
+    {
+        condition = _condition;
+        node = _node;
+    }
+}
+
 public class Fork : Node
 {
-    public class Branch 
-    {
-        public Condition condition;
-        public Node node;
-    }
 
     public Branch[] branches;
     public Node defaultBranch;
@@ -42,6 +49,12 @@ public class Fork : Node
 
         branches = _branches;
     }
+
+    public Fork()
+    {
+        branches = null;
+        defaultBranch = null;
+    }
 }
 
 public class Leaf : Node
@@ -49,11 +62,16 @@ public class Leaf : Node
     public delegate void Callback();
 
     public Callback callback;
+
+    public Leaf(Callback _callback)
+    {
+        callback = _callback;
+    }
 }
 
 public class BehaviourTree
 {
-    Node root = new Node();
+    public Node root = new Node();
 
     public void Execute()
     {

@@ -226,8 +226,9 @@ public class Grapple : MonoBehaviour
             kb.velocity += velocityToGrapple;
         }
 
-        Quaternion xRot = Quaternion.AngleAxis(-look.grappleLookDir.y*toMouseAccelerationAngle, transform.right);
-        Quaternion yRot = Quaternion.AngleAxis(look.grappleLookDir.x*toMouseAccelerationAngle, transform.up);
+        Vector3 toGrapplePerpendicular = Vector3.Cross(Vector3.up, toGrapplePoint);
+        Quaternion xRot = Quaternion.AngleAxis(look.grappleLookDir.y*toMouseAccelerationAngle, toGrapplePerpendicular);
+        Quaternion yRot = Quaternion.AngleAxis(look.grappleLookDir.x*toMouseAccelerationAngle, Vector3.up);
         Vector3 toGrappleRotated = xRot*(yRot*toGrapplePoint);
         kb.velocity += toGrappleRotated.normalized*toMouseAcceleration*Time.fixedDeltaTime;
 

@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 94cea93335099564888e334018c3be15,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -6224,6 +6224,11 @@ PrefabInstance:
       propertyPath: toPointAcceleration
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: toMouseAcceleration
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 267403272448701151, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: _pauseMenu
@@ -6298,6 +6303,11 @@ PrefabInstance:
         type: 3}
       propertyPath: movementSpeed
       value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701221, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: grappleRotationMultiplier
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 267403272448701223, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}

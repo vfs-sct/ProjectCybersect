@@ -7,7 +7,10 @@ public class TestAgent : AI
 {
     public bool accountForBulletDrop = true;
     public float fireRate = 0.75f;
+    public float closeProximity = 5f;
+    public float farProximity = aggressionRadius - 5f;
     public GameObject projectilePrefab;
+    public Transform projectileReleaseTransform = null;
 
     private NavMeshAgent navMeshAgent;
     private PlayerStats playerStats;
@@ -19,14 +22,19 @@ public class TestAgent : AI
     private bool los = false;
     private Vector3 toPlayer = Vector3.zero;
     private float toPlayerSqrMag = 0f;
+    private float distanceToPlayer = 0f;
     private Random random = new Random();
+    private int xStrafeDir = 0;
+    private int zStrafeDir = 0;
 
     private float fireTimer = 0f;
+    private float decisionTimer = 0f;
 
-    private void EvalutateToPlayer()
+    private void EvaluateToPlayer()
     {
         toPlayer = playerTransform.position - transform.position;
         toPlayerSqrMag = toPlayer.sqrMagnitude;
+        distanceToPlayer = toPlayer.magnitude;
     }
 
     private void CheckLOS()
@@ -45,47 +53,10 @@ public class TestAgent : AI
         los = false;
     }
 
-    private float StrafeUtility()
-    {
-        float utility = 0f;
-
-        Vector3 fromPlayer = (transform.position - playerTransform.position).normalized;
-        Vector3 playerLook = mainCamera.forward;
-
-        float dot = Vector3.Dot(fromPlayer, playerLook);
-        if (dot > 0.85f)
-            utility = dot*60f;
-
-        return utility;
-    }
-
-    private void Strafe()
-    {
-        if (navMeshAgent.hasPath && !pathedToPlayer)
-            return;
-
-        Vector3 perpendicular = Vector3.Cross(toPlayer, Vector3.up);
-        perpendicular.Normalize();
-
-        float rnd = Random.Range(-1f, 1f);
-        perpendicular *= Mathf.Sign(rnd);
-
-        navMeshAgent.SetDestination(transform.position + perpendicular*2f);
-
-        pathedToPlayer = false;
-    }
-
     private void PathToPlayer()
     {
         navMeshAgent.SetDestination(playerTransform.position);
         pathedToPlayer = true;
-    }
-
-    private void PathAwayFromPlayer()
-    {
-        Vector3 toPlayerNormalize = toPlayer.normalized;
-        toPlayerNormalize *= 3f;
-        navMeshAgent.SetDestination(transform.position - toPlayerNormalize);
     }
 
     private void ClearPath()
@@ -94,7 +65,7 @@ public class TestAgent : AI
         pathedToPlayer = false;
     }
 
-    new private void Start()
+    public override void Start()
     {
         base.Start();
 
@@ -103,6 +74,9 @@ public class TestAgent : AI
         playerTransform = GameObject.Find("player").transform;
         mainCamera = GameObject.Find("mainCamera").transform;
         enemyStats = GetComponent<EnemyStats>();
+
+        if (projectileReleaseTransform == null)
+            projectileReleaseTransform = transform;
     }
 
     private void Shoot()
@@ -116,7 +90,7 @@ public class TestAgent : AI
             dir = toPlayer;
 
         Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
-        projectile.Release(dir, gameObject);
+        projectile.Release(dir, projectileReleaseTransform.gameObject);
     }
 
     private void Shooting()
@@ -137,8 +111,55 @@ public class TestAgent : AI
         }
     }
 
-    float timer = 0f;
-    new private void Update()
+    private void Movement()
+    {
+        if (los)
+        {
+            xStrafeDir = 0;
+            zStrafeDir = 0;
+
+            bool shouldStrafe = false;
+            {
+                Vector3 fromPlayer = (transform.position - playerTransform.position).normalized;
+                Vector3 playerLook = mainCamera.forward;
+
+                float dot = Vector3.Dot(fromPlayer, playerLook);
+                if (dot > 0.85f)
+                    shouldStrafe = true;
+            }
+
+            if (shouldStrafe)
+            {
+                int dir = (int)Random.Range(0, 1);
+                if (dir == 0)
+                    xStrafeDir = -1;
+                else
+                    xStrafeDir = 1;
+            }
+
+            if (distanceToPlayer < closeProximity)
+                zStrafeDir = -1;
+            else if (distanceToPlayer > farProximity)
+                zStrafeDir = 1;
+
+            Vector3 toPlayerPerpendicular = Vector3.Cross(toPlayer, Vector3.up);
+            Vector3 relativeTarget = Vector3.zero;
+
+            relativeTarget += toPlayer.normalized*zStrafeDir;
+            relativeTarget += toPlayerPerpendicular.normalized*xStrafeDir;
+
+            if (relativeTarget == Vector3.zero)
+                ClearPath();
+            else
+                navMeshAgent.SetDestination(transform.position + relativeTarget);
+        }
+        else
+        {
+            PathToPlayer();
+        }
+    }
+
+    public override void Update()
     {
         base.Update();
 
@@ -151,6 +172,17 @@ public class TestAgent : AI
         if (playerStats.isDead) 
             return;
 
+        EvaluateToPlayer();
+        CheckLOS();
+
         Shooting();
+
+        if (decisionTimer >= decisionTickRate)
+        {
+            Movement();
+            decisionTimer -= decisionTickRate;
+        }
+
+        decisionTimer += Time.deltaTime;
     }
 }

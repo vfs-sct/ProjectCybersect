@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
-    public const float aggressionRadius = 5f;
+    public const float aggressionRadius = 25f;
     public const float decisionTickRate = 0.5f;
     public const float aggressionCheckRate = 1f;
 
-    public static bool aggressive = false;
+    public bool aggressive = false;
     public BehaviourTree behaviourTree = null;
     
     private GameObject player;
     private float aggressionCheckTimer = 0f;
-    private float decisionTimer = 0f;
+    private float _decisionTimer = 0f;
 
     private float aggressionRadiusSquared = aggressionRadius*aggressionRadius;
 
-    public void Start()
+    public virtual void Start()
     {
         player = GameObject.Find("player");
     }
@@ -47,16 +47,16 @@ public class AI : MonoBehaviour
         if (behaviourTree == null)
             return;
 
-        if (decisionTimer >= decisionTickRate)
+        if (_decisionTimer >= decisionTickRate)
         {
             behaviourTree.Execute();
-            decisionTimer -= decisionTickRate;
+            _decisionTimer -= decisionTickRate;
         }
 
-        decisionTimer += Time.deltaTime;
+        _decisionTimer += Time.deltaTime;
     }
 
-    public void Update()
+    public virtual void Update()
     {
         UpdateAggression();
         UpdateDecision();
