@@ -3,30 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TestAgent : MonoBehaviour
+public class TestAgent : AI
 {
     public bool accountForBulletDrop = true;
-    [SerializeField] private GameObject projectilePrefab;
+    public float fireRate = 0.75f;
+    public float closeProximity = 5f;
+    public float farProximity = aggressionRadius - 5f;
+    public GameObject projectilePrefab;
+    public Transform projectileReleaseTransform = null;
 
-    private NavMeshAgent agent;
-    private UtilitySelector utilitySelector;
+    private NavMeshAgent navMeshAgent;
     private PlayerStats playerStats;
     private Transform playerTransform;
     private Transform mainCamera;
+    private EnemyStats enemyStats;
 
     private bool pathedToPlayer = false;
     private bool los = false;
     private Vector3 toPlayer = Vector3.zero;
     private float toPlayerSqrMag = 0f;
+    private float distanceToPlayer = 0f;
     private Random random = new Random();
+    private int xStrafeDir = 0;
+    private int zStrafeDir = 0;
 
-    private float shootTimer = 0f;
-    private float shootTime = 0.75f;
+    private float fireTimer = 0f;
+    private float decisionTimer = 0f;
 
-    private void EvalutateToPlayer()
+    private void EvaluateToPlayer()
     {
         toPlayer = playerTransform.position - transform.position;
         toPlayerSqrMag = toPlayer.sqrMagnitude;
+        distanceToPlayer = toPlayer.magnitude;
     }
 
     private void CheckLOS()
@@ -45,120 +53,30 @@ public class TestAgent : MonoBehaviour
         los = false;
     }
 
-    private float MoveToPlayerUtility()
-    {
-        float utility = 0f;
-
-        if (los && toPlayerSqrMag > 14*14f)
-        {
-            utility = Mathf.Clamp01(toPlayerSqrMag/(30f*30f))*40f;
-        }
-
-        return utility;
-    }
-
-    private float MoveAwayPlayerUtility()
-    {
-        float utility = 0f;
-
-        if (los && toPlayerSqrMag < 10*10f)
-        {
-            utility = (1 - Mathf.Clamp01(toPlayerSqrMag/(5*5f)))*40f;
-        }
-
-        return utility;
-    }
-
-    private float GetLineOfSightUtility()
-    {
-        float utility = 0f;
-
-        if (!los)
-            utility = 120f;
-
-        return utility;
-    }
-
-    private float StrafeUtility()
-    {
-        float utility = 0f;
-
-        Vector3 fromPlayer = (transform.position - playerTransform.position).normalized;
-        Vector3 playerLook = mainCamera.forward;
-
-        float dot = Vector3.Dot(fromPlayer, playerLook);
-        if (dot > 0.85f)
-            utility = dot*60f;
-
-        return utility;
-    }
-
-    private void Strafe()
-    {
-        if (agent.hasPath && !pathedToPlayer)
-            return;
-
-        Vector3 perpendicular = Vector3.Cross(toPlayer, Vector3.up);
-        perpendicular.Normalize();
-
-        float rnd = Random.Range(-1f, 1f);
-        perpendicular *= Mathf.Sign(rnd);
-
-        agent.SetDestination(transform.position + perpendicular*2f);
-
-        pathedToPlayer = false;
-    }
-
     private void PathToPlayer()
     {
-        agent.SetDestination(playerTransform.position);
+        navMeshAgent.SetDestination(playerTransform.position);
         pathedToPlayer = true;
-    }
-
-    private void PathAwayFromPlayer()
-    {
-        Vector3 toPlayerNormalize = toPlayer.normalized;
-        toPlayerNormalize *= 3f;
-        agent.SetDestination(transform.position - toPlayerNormalize);
     }
 
     private void ClearPath()
     {
-        agent.ResetPath();
+        navMeshAgent.ResetPath();
         pathedToPlayer = false;
     }
 
-    private void InitUtilitySelector()
+    public override void Start()
     {
-        utilitySelector = new UtilitySelector();
+        base.Start();
 
-        Selection.Input losInput = GetLineOfSightUtility;
-        Selection.Callback losCallback = PathToPlayer;
-        utilitySelector.AddSelection(losInput, losCallback);
-
-        Selection.Input strafeInput = StrafeUtility;
-        Selection.Callback strafeCallback = Strafe;
-        utilitySelector.AddSelection(strafeInput, strafeCallback);
-
-        Selection.Input toPlayerInput = MoveToPlayerUtility;
-        Selection.Callback toPlayerCallback = PathToPlayer;
-        utilitySelector.AddSelection(toPlayerInput, toPlayerCallback);
-
-        Selection.Input awayPlayerInput = MoveAwayPlayerUtility;
-        Selection.Callback awayPlayerCallback = PathAwayFromPlayer;
-        utilitySelector.AddSelection(awayPlayerInput, awayPlayerCallback);
-
-        utilitySelector.SetDefault(ClearPath);
-    }
-
-    private void Start()
-    {
-        agent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         playerStats = GameObject.Find("player").GetComponent<PlayerStats>();
         playerTransform = GameObject.Find("player").transform;
         mainCamera = GameObject.Find("mainCamera").transform;
+        enemyStats = GetComponent<EnemyStats>();
 
-        InitUtilitySelector();
+        if (projectileReleaseTransform == null)
+            projectileReleaseTransform = transform;
     }
 
     private void Shoot()
@@ -172,47 +90,99 @@ public class TestAgent : MonoBehaviour
             dir = toPlayer;
 
         Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
-        projectile.Release(dir, gameObject);
+        projectile.Release(dir, projectileReleaseTransform.gameObject);
     }
 
     private void Shooting()
     {
         if (los)
         {
-            if (shootTimer > shootTime)
+            if (fireTimer > fireRate)
             {
-                shootTimer -= shootTime;
+                fireTimer -= fireRate;
                 Shoot();
             }
 
-            shootTimer += Time.deltaTime;
+            fireTimer += Time.deltaTime;
         }
         else
         {
-            shootTimer = 0f;
+            fireTimer = 0f;
         }
     }
 
-    float timer = 0f;
-    private void Update()
+    private void Movement()
     {
-        if(GetComponent<EnemyStats>().isDead) return;
+        if (los)
+        {
+            xStrafeDir = 0;
+            zStrafeDir = 0;
+
+            bool shouldStrafe = false;
+            {
+                Vector3 fromPlayer = (transform.position - playerTransform.position).normalized;
+                Vector3 playerLook = mainCamera.forward;
+
+                float dot = Vector3.Dot(fromPlayer, playerLook);
+                if (dot > 0.85f)
+                    shouldStrafe = true;
+            }
+
+            if (shouldStrafe)
+            {
+                int dir = (int)Random.Range(0, 1);
+                if (dir == 0)
+                    xStrafeDir = -1;
+                else
+                    xStrafeDir = 1;
+            }
+
+            if (distanceToPlayer < closeProximity)
+                zStrafeDir = -1;
+            else if (distanceToPlayer > farProximity)
+                zStrafeDir = 1;
+
+            Vector3 toPlayerPerpendicular = Vector3.Cross(toPlayer, Vector3.up);
+            Vector3 relativeTarget = Vector3.zero;
+
+            relativeTarget += toPlayer.normalized*zStrafeDir;
+            relativeTarget += toPlayerPerpendicular.normalized*xStrafeDir;
+
+            if (relativeTarget == Vector3.zero)
+                ClearPath();
+            else
+                navMeshAgent.SetDestination(transform.position + relativeTarget);
+        }
+        else
+        {
+            PathToPlayer();
+        }
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (enemyStats.isDead)
+            return;
         
-        if (!AIState.aggressive)
+        if (!aggressive)
             return;
 
-        if (timer > AI.decisionTickPeriod)
-        {
-            timer -= AI.decisionTickPeriod;
+        if (playerStats.isDead) 
+            return;
 
-            EvalutateToPlayer();
-            CheckLOS();
-            utilitySelector.Run();
+        EvaluateToPlayer();
+        CheckLOS();
+
+        Shooting();
+
+        if (decisionTimer >= decisionTickRate)
+        {
+            Movement();
+            decisionTimer -= decisionTickRate;
         }
 
-        timer += Time.deltaTime;
-
-        if(playerStats.isDead) return;
-        Shooting();
+        decisionTimer += Time.deltaTime;
     }
 }

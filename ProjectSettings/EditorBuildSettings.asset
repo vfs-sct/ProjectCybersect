@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SCN_TestScene.unity
     guid: 23a07f8ca20e128408a260e53f76e089
+  - enabled: 0
+    path: Assets/Scenes/aiTest.unity
+    guid: 64d0f86c23ca1424089135ac2f763c37
   m_configObjects: {}
