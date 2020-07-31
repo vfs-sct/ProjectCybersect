@@ -92,6 +92,8 @@ GameObject:
   - component: {fileID: 7390303366921350248}
   - component: {fileID: 8366793738247457395}
   - component: {fileID: -5481510970828471306}
+  - component: {fileID: 2155481890254132201}
+  - component: {fileID: 5012444353407768385}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -204,6 +206,48 @@ MonoBehaviour:
   _dissolveSpeed: 1
   isDead: 0
   health: 50
+--- !u!195 &2155481890254132201
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3112670357884166746}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &5012444353407768385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3112670357884166746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b405a9761a9b94c40bd44e8f5e9dda18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aggressive: 0
+  accountForBulletDrop: 0
+  fireRate: 0.75
+  closeProximity: 5
+  farProximity: 20
+  projectilePrefab: {fileID: 2868524537879091836, guid: 142f1bbf419b59d498df18225f75c1d4,
+    type: 3}
+  projectileReleaseTransform: {fileID: 7971988484183047739}
 --- !u!1 &5517607027625255284
 GameObject:
   m_ObjectHideFlags: 0
