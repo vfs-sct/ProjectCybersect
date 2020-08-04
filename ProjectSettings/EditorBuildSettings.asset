@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/aiTest.unity
     guid: 64d0f86c23ca1424089135ac2f763c37
+  - enabled: 1
+    path: Assets/Scenes/SCN_FinalMap.unity
+    guid: d2772bbf5c3e20a43a8ff779a02a7d26
   m_configObjects: {}

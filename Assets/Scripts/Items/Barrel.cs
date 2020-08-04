@@ -38,7 +38,6 @@ public class Barrel : MonoBehaviour
             _sphereCollider.radius = _explosionRadius;
             _sphereCollider.isTrigger = true;
             _explosionSound.Play();
-            _explosionEffect.Play();
             Destroy(gameObject,0.1f);
         }
     }
