@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
         releasee = _releasee;
         rb = GetComponent<Rigidbody>();
         rb.velocity = dir.normalized*speed;
+        transform.position = _releasee.transform.position;
     }
 
     private void AlignToVelocity()

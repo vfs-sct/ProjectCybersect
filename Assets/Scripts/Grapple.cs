@@ -25,23 +25,23 @@ public class Grapple : MonoBehaviour
 
     // Serialized Data
     [Header("Grappling")]
-    [SerializeField] private GameObject grapplePrefab = null;
-    [SerializeField] private float grappleDistance = 50f;
-    [SerializeField] private float grappleEngagementSpeed = 100f;
-    [SerializeField] private float toPointAcceleration = 80f;
-    [SerializeField] private float toMouseAcceleration = 20f;
-    [SerializeField] private float toMouseAccelerationAngle = 90f;
-    [SerializeField] private float grappleSpeed = 25f;
-    [SerializeField] private float grappleCooldown = 10f;
-    [SerializeField] private float grappleDisengageDistance = 3f;
-    [SerializeField] private float rotationSmoothness = 0.5f;
-    [SerializeField] private GameObject mapGameObject;
-    [SerializeField] private float rotationTransitionSmoothness = 0.5f;
+    public GameObject grapplePrefab = null;
+    public float grappleDistance = 50f;
+    public float grappleEngagementSpeed = 100f;
+    public float toPointAcceleration = 80f;
+    public float toMouseAcceleration = 20f;
+    public float toMouseAccelerationAngle = 90f;
+    public float grappleSpeed = 25f;
+    public float grappleCooldown = 10f;
+    public float grappleDisengageDistance = 3f;
+    public float rotationSmoothness = 0.5f;
+    public GameObject mapGameObject;
+    public float rotationTransitionSmoothness = 0.5f;
 
     [Header("Snapping")]
-    [SerializeField] private float grappleSnapDistance = 0.05f;
-    [SerializeField,
-    Range(0, 1)]     private float grappleSnapAlpha = 0.5f;
+    public float grappleSnapDistance = 0.05f;
+    [Range(0, 1)] 
+    public float grappleSnapAlpha = 0.5f;
 
     [HideInInspector] public GrappleState state = GrappleState.INACTIVE;
     [HideInInspector] public GrappleCursorState cursorState = GrappleCursorState.OUT_OF_RANGE;
@@ -49,14 +49,15 @@ public class Grapple : MonoBehaviour
     [HideInInspector] public float currentToMaxSpeedRatio = 0f;
     [HideInInspector] public bool onCooldown = false;
 
+    [HideInInspector] public Vector3 grapplePoint;
+    [HideInInspector] public Vector3 toGrapplePoint;
+    [HideInInspector] public float distanceToGrapplePoint;
+
     // Private Members
     private FPSKinematicBody kb;
     private FPSLook look;
     private FPSMovement movement;
 
-    private Vector3 grapplePoint;
-    private Vector3 toGrapplePoint;
-    private float distanceToGrapplePoint;
     private bool grappleAvailable = true;
     private float engagementDistanceTravelled = 0f;
 
@@ -226,11 +227,11 @@ public class Grapple : MonoBehaviour
             kb.velocity += velocityToGrapple;
         }
 
-        Vector3 toGrapplePerpendicular = Vector3.Cross(Vector3.up, toGrapplePoint);
-        Quaternion xRot = Quaternion.AngleAxis(look.grappleLookDir.y*toMouseAccelerationAngle, toGrapplePerpendicular);
-        Quaternion yRot = Quaternion.AngleAxis(look.grappleLookDir.x*toMouseAccelerationAngle, Vector3.up);
-        Vector3 toGrappleRotated = xRot*(yRot*toGrapplePoint);
-        kb.velocity += toGrappleRotated.normalized*toMouseAcceleration*Time.fixedDeltaTime;
+        Vector3 right = Vector3.Cross(toGrapplePoint, Vector3.up);
+        Vector3 up = Vector3.Cross(toGrapplePoint, right);
+
+        kb.velocity += right*-look.grappleLookDir.x*toMouseAcceleration*Time.fixedDeltaTime;
+        kb.velocity += up*-look.grappleLookDir.y*toMouseAcceleration*Time.fixedDeltaTime;
 
         kb.gravityMultiplier = 1 - currentToMaxSpeedRatio;
     }

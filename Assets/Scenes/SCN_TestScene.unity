@@ -6207,7 +6207,7 @@ PrefabInstance:
     - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: grappleEngagementSpeed
-      value: 85
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
@@ -6227,8 +6227,14 @@ PrefabInstance:
     - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: toMouseAcceleration
-      value: 15
+      value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 267403272448701150, guid: 7486dd35a861fa94b97edca83f16aa7a,
+        type: 3}
+      propertyPath: grapplePrefab
+      value: 
+      objectReference: {fileID: 2181914369130228601, guid: b2810ab3d3bfaab4aa80641dbb405d89,
+        type: 3}
     - target: {fileID: 267403272448701151, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: _pauseMenu
@@ -6307,7 +6313,7 @@ PrefabInstance:
     - target: {fileID: 267403272448701221, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}
       propertyPath: grappleRotationMultiplier
-      value: 0.04
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 267403272448701223, guid: 7486dd35a861fa94b97edca83f16aa7a,
         type: 3}

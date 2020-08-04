@@ -58,6 +58,9 @@ public class FPSMovement : MonoBehaviour
 
     private void HorizontalMovement()
     {
+        if (grapple.state == GrappleState.ENGAGED)
+            return;
+
         if (groundCheck.grounded)
         {
             Vector3 velocity = new Vector3(kb.velocity.x, 0.0f, kb.velocity.z);
