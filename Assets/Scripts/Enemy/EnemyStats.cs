@@ -43,6 +43,7 @@ public class EnemyStats : MonoBehaviour
     {
         if(isDead)
         {
+            //removes any child object in the enemy
             foreach(Transform child in transform) 
             {
                 Destroy(child.gameObject);

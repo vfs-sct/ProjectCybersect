@@ -15,8 +15,12 @@ public class GameManager : MonoBehaviour
     [Header("Enemies")]
     public int enemyCount = 0;
 
-    public Scene currentScene;
-    public int buildIndex;
+    [Header("Build")]
+    [SerializeField] private Scene currentScene;
+    [SerializeField] private int buildIndex;
+    [SerializeField] private int buildCount;
+
+    private int sceneIndex;
 
     private void Awake()
     {
@@ -33,8 +37,8 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        currentScene = SceneManager.GetActiveScene();
-        buildIndex = currentScene.buildIndex;
+        CheckBuild();
+        buildCount = SceneManager.sceneCountInBuildSettings - 1;
     }
 
     private void Update()
@@ -60,6 +64,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void CheckBuild()
+    {
+        currentScene = SceneManager.GetActiveScene();
+        buildIndex = currentScene.buildIndex;
+    }
+
     public void EnemiesCounted()
     {
         enemyCount++;
@@ -71,7 +81,18 @@ public class GameManager : MonoBehaviour
         if(enemyCount == 0)
         {
             isPaused = true;
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            CheckBuild();
+            sceneIndex = currentScene.buildIndex + 1;
+
+            if(buildIndex < buildCount)
+            {
+                isPaused = false;
+                SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
+            }
+            else if(buildIndex >= buildCount)
+            {
+                SceneManager.LoadScene(0, LoadSceneMode.Single);
+            }
         }
     }
 }
