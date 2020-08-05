@@ -26,41 +26,54 @@ public class EnemyStats : MonoBehaviour
     {
         GameManager.Instance.EnemiesCounted();
 
-        if(GetComponent<Renderer>())
-        {
-            dissolveMat = GetComponent<Renderer>().material;
-            dissolveMat.shader = _shader;
+        foreach(Transform child in transform)
+        {   
+            //sets the shader
+            if(child.GetComponent<Renderer>())
+            {
+                dissolveMat = child.GetComponent<Renderer>().material;
+                dissolveMat.shader = _shader;
+            }
         }
     }
 
     private void Update()
     {
         SetOnDeath();
-        DissolveOnDeath();
+        DropShieldOnDeath();
     }
 
     private void SetOnDeath()
     {
         if(isDead)
         {
-            //removes any child object in the enemy
-            foreach(Transform child in transform) 
-            {
-                Destroy(child.gameObject);
-            }
-
             //animates the death shader
             timer += Time.deltaTime/_dissolveSpeed;
-            dissolveMat.SetFloat("Vector1_E189AF9C", timer);
-
-            if(dissolveMat.GetFloat("Vector1_E189AF9C") > 1)
+            
+            foreach(Transform child in transform)
             {
-                isDissolved = true;
+                //removes any child "Bullet"  object in the enemy
+                if(child.gameObject.tag == "Bullet")
+                {
+                    Destroy(child.gameObject);
+                }
+                else
+                {
+                    dissolveMat = child.GetComponent<Renderer>().material;
+
+                    dissolveMat.SetFloat("Vector1_E189AF9C", timer);
+
+                    if(dissolveMat.GetFloat("Vector1_E189AF9C") > 1)
+                    {
+                        isDissolved = true;
+                    }
+                }
             }
+
         }
     }
 
-    private void DissolveOnDeath()
+    private void DropShieldOnDeath()
     {
             if(isDissolved)
             {

@@ -89,13 +89,13 @@ public class Shotgun : MonoBehaviour
                     if(enemyStats.isDead) return;
                 }
 
-                CritTarget critTarget = hit.transform.GetComponent<CritTarget>();
+                CritTarget critTarget = hit.transform.GetComponentInChildren<CritTarget>();
                 if(critTarget != null)
                 {
                     critTarget.TakeDamage(DamageFallOff(hit));
                 }
 
-                Target target = hit.transform.GetComponent<Target>();
+                Target target = hit.transform.GetComponentInChildren<Target>();
                 if(target != null)
                 {
                     target.TakeDamage(DamageFallOff(hit));
