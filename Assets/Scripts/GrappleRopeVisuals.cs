@@ -29,11 +29,10 @@ public class GrappleRopeVisuals : MonoBehaviour
 
     private void Start()
     {
-        mesh = GetComponent<MeshFilter>().mesh;
+        mesh = GetComponent<MeshFilter>().sharedMesh;
         vertexCount = mesh.vertexCount;
 
-        initialVertices = new Vector3[vertexCount];
-        Array.Copy(mesh.vertices, initialVertices, vertexCount);
+        initialVertices = mesh.vertices;
 
         vertexSwapA = new Vector3[vertexCount];
         vertexSwapB = new Vector3[vertexCount];
