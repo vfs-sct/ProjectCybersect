@@ -9,7 +9,6 @@ public class PlayerStats : MonoBehaviour
 {
     [Header("UI to close")]
     [SerializeField] private GameObject _pauseUI = null;
-    [SerializeField] private GameObject _debugUI = null;
 
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
@@ -171,7 +170,6 @@ public class PlayerStats : MonoBehaviour
 
         isDead = true;
         _pauseUI.SetActive(false);
-        _debugUI.SetActive(false);
         StartCoroutine(RespawnPlayer());
     }
 

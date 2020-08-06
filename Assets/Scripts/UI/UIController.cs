@@ -8,7 +8,6 @@ public class UIController : MonoBehaviour
 {   
     [Header("UI")]
     [SerializeField] private GameObject _pauseUI = null;
-    [SerializeField] private GameObject _debugUI = null;
 
     [Header("Menu")]
     [SerializeField] private GameObject _pauseMenu = null;
@@ -17,7 +16,6 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         _pauseUI.SetActive(false);
-        _debugUI.SetActive(false);
     }
 
     private void Update()
@@ -25,8 +23,6 @@ public class UIController : MonoBehaviour
         //pause menu
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            CloseDebug();
-
             if (_pauseUI.activeInHierarchy) 
             {
                 _optionMenu.SetActive(false);
@@ -38,21 +34,6 @@ public class UIController : MonoBehaviour
                 PauseGame();
             }
         } 
-
-        //debug menu
-        if(Input.GetKeyDown(KeyCode.BackQuote))
-        {
-            ContinueGame();
-
-            if (_debugUI.activeInHierarchy) 
-            {
-                CloseDebug();
-            }
-            else
-            {
-                OpenDebug();
-            }
-        }
     }
     
     private void PauseGame()
@@ -65,17 +46,5 @@ public class UIController : MonoBehaviour
     {
         GameManager.Instance.isPaused = false;
         _pauseUI.SetActive(false);
-    }
-
-    private void OpenDebug()
-    {
-        GameManager.Instance.isPaused = true;
-        _debugUI.SetActive(true);
-    } 
-
-    private void CloseDebug()
-    {
-        GameManager.Instance.isPaused = false;
-        _debugUI.SetActive(false);
     }
 }

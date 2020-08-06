@@ -9,8 +9,7 @@ public class Barrel : MonoBehaviour
     public float health = 50f;
 
     [Header("Input")]
-    [SerializeField] private AudioSource _explosionSound = null;
-    [SerializeField] private ParticleSystem _explosionEffect = null;
+    [SerializeField] private GameObject _explosion = null;
     [SerializeField] private int _explosionRadius = 400;
 
     private SphereCollider _sphereCollider = null;
@@ -37,7 +36,7 @@ public class Barrel : MonoBehaviour
         {
             _sphereCollider.radius = _explosionRadius;
             _sphereCollider.isTrigger = true;
-            _explosionSound.Play();
+            Instantiate(_explosion,this.transform.position, Quaternion.identity);
             Destroy(gameObject,0.1f);
         }
     }
