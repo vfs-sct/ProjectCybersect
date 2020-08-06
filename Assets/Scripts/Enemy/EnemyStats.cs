@@ -27,7 +27,7 @@ public class EnemyStats : MonoBehaviour
     {
         GameManager.Instance.EnemiesCounted();
 
-        /*foreach(Transform child in transform)
+        foreach(Transform child in transform)
         {   
             //sets the shader
             if(child.GetComponent<Renderer>())
@@ -35,7 +35,7 @@ public class EnemyStats : MonoBehaviour
                 dissolveMat = child.GetComponent<Renderer>().material;
                 dissolveMat.shader = _shader;
             }
-        }*/
+        }
     }
 
     private void Update()
@@ -48,8 +48,6 @@ public class EnemyStats : MonoBehaviour
     {
         if(isDead)
         {
-            isDissolved = true;
-            /*
             //animates the death shader
             timer += Time.deltaTime/_dissolveSpeed;
             
@@ -71,7 +69,7 @@ public class EnemyStats : MonoBehaviour
                         isDissolved = true;
                     }
                 }
-            }*/
+            }
 
         }
 
@@ -82,7 +80,7 @@ public class EnemyStats : MonoBehaviour
             if(isDissolved)
             {
                 //get and random num and spawn a shield pickup if the number is 1
-                if(Random.Range(1,_chance) == 1) Instantiate(_shieldPrefab,this.transform.position, Quaternion.identity);
+                if(Random.Range(1,_chance) == 1) Instantiate(_shieldPrefab,this.transform.position + Vector3.up, Quaternion.identity);
                 Destroy(this.gameObject);
             }
     }
