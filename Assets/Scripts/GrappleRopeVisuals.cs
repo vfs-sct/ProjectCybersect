@@ -74,7 +74,7 @@ public class GrappleRopeVisuals : MonoBehaviour
             mesh.vertices = vertexSwapB;
         }
 
-        timer += Time.deltaTime + Time.time/3f;
+        timer += Time.deltaTime;
     }
 
     private void Bend()

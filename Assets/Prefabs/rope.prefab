@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf49211f4febee42a1ce6ab9e65ebed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sinDuration: 0.2
-  sinSize: 3.5
-  sinFrequency: 300
-  sinSpeed: 15
+  sinDuration: 0.24
+  sinSize: 3.2
+  sinFrequency: 200
+  sinSpeed: 40
