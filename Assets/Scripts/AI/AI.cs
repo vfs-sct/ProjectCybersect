@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
-    public const float aggressionRadius = 25f;
+    public const float aggressionRadius = 55f;
     public const float decisionTickRate = 0.5f;
     public const float aggressionCheckRate = 1f;
 

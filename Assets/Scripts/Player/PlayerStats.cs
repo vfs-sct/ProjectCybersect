@@ -37,11 +37,11 @@ public class PlayerStats : MonoBehaviour
     public float boostRechargePercent = 1f;
 
     private float boostRechargeTimer = 0f;
-    private Rigidbody playerRB;
+    private FPSKinematicBody kinematic;
 
     private void Awake()
     {
-        playerRB = GetComponent<Rigidbody>();
+        kinematic = GetComponent<FPSKinematicBody>();
     }
 
     private void Update()
@@ -76,8 +76,7 @@ public class PlayerStats : MonoBehaviour
         isDead = false;
         this.transform.rotation = _respawnPoint.rotation;
         this.transform.position = _respawnPoint.position + (Vector3.up*2);
-        playerRB.velocity = Vector3.zero;
-        playerRB.angularVelocity = Vector3.zero;
+        kinematic.velocity = Vector3.zero;
         _currentHealth = _maxHealth;
         _currentShield = _maxShield;
         _currentBoost = _maxBoost;

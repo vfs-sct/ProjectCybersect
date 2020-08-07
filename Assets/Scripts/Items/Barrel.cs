@@ -37,7 +37,7 @@ public class Barrel : MonoBehaviour
             _sphereCollider.radius = _explosionRadius;
             _sphereCollider.isTrigger = true;
             Instantiate(_explosion,this.transform.position, Quaternion.identity);
-            Destroy(gameObject,0.1f);
+            Destroy(this.gameObject,0.1f);
         }
     }
 

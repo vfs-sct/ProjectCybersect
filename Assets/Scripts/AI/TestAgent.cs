@@ -91,7 +91,7 @@ public class TestAgent : AI
         if (accountForBulletDrop)
             dir = Trajectory.Calculate(toPlayer, projectileSpeed);
         else
-            dir = player.position = projectileReleaseTransform.position;
+            dir = playerTransform.position - projectileReleaseTransform.position;
 
         Projectile projectile = Instantiate(projectilePrefab, projectileReleaseTransform.position, Quaternion.identity).GetComponent<Projectile>();
 

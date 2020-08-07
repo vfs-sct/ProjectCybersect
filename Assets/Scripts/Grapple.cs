@@ -74,6 +74,8 @@ public class Grapple : MonoBehaviour
 
     private PlayerStats playerStats;
 
+    private float timer = 0;
+
     private void Awake()
     {
         playerStats = GetComponent<PlayerStats>();
@@ -161,6 +163,8 @@ public class Grapple : MonoBehaviour
             toGrapplePoint = grapplePoint - transform.position;
             distanceToGrapplePoint = toGrapplePoint.magnitude;
             toGrapplePoint.Normalize();
+
+            if(distanceToGrapplePoint <= 2) return false;
 
             state = GrappleState.ENGAGING;
             grappleAvailable = false;
@@ -479,7 +483,7 @@ public class Grapple : MonoBehaviour
         Vector3 newToGrapplePoint = grapplePoint - transform.position;
         grappleTransform.rotation = Quaternion.LookRotation(newToGrapplePoint);
         grappleTransform.position = transform.position;
-
+        
         Vector3 scale = new Vector3(1f, 1f, newDistanceToGrapplePoint);
         if (state == GrappleState.ENGAGING)
             scale.z *= engagementDistanceTravelled/distanceToGrapplePoint;

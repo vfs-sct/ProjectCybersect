@@ -27,7 +27,7 @@ public class GrappleRopeVisuals : MonoBehaviour
     private int vertexCount;
     private float timer = 0f;
 
-    private void Start()
+    private void Awake()
     {
         mesh = GetComponent<MeshFilter>().sharedMesh;
         vertexCount = mesh.vertexCount;
@@ -51,8 +51,7 @@ public class GrappleRopeVisuals : MonoBehaviour
 
     private void Wobble()
     {
-        if (timer > sinDuration + 0.5f)
-            return;
+        if (timer > sinDuration + 0.5f) return;
 
         for (int i = 0; i < vertexCount; ++i)
         {
