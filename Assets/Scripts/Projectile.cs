@@ -18,7 +18,6 @@ public class Projectile : MonoBehaviour
         releasee = _releasee;
         rb = GetComponent<Rigidbody>();
         rb.velocity = dir.normalized*speed;
-        transform.position = _releasee.transform.position;
     }
 
     private void AlignToVelocity()
@@ -42,7 +41,8 @@ public class Projectile : MonoBehaviour
             PlayerStats playerStats = other.GetComponent<PlayerStats>();
             playerStats.TakeDamage(damage);
         }
-        else if (releasee != other.gameObject)
+        else if (releasee != null && releasee.transform != other.transform && 
+                 other.transform.parent != releasee.transform)
         {
             Destroy(gameObject);
         }

@@ -30,6 +30,8 @@ public class TestAgent : AI
     private float fireTimer = 0f;
     private float decisionTimer = 0f;
 
+    private AimAtPlayer aimAtPlayer;
+
     private void EvaluateToPlayer()
     {
         toPlayer = playerTransform.position - transform.position;
@@ -74,6 +76,8 @@ public class TestAgent : AI
         playerTransform = GameObject.Find("player").transform;
         mainCamera = GameObject.Find("mainCamera").transform;
         enemyStats = GetComponent<EnemyStats>();
+        aimAtPlayer = GetComponentInChildren<AimAtPlayer>();
+        aimAtPlayer.enabled = false;
 
         if (projectileReleaseTransform == null)
             projectileReleaseTransform = transform;
@@ -89,8 +93,8 @@ public class TestAgent : AI
         else
             dir = toPlayer;
 
-        Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
-        projectile.Release(dir, projectileReleaseTransform.gameObject);
+        Projectile projectile = Instantiate(projectilePrefab, projectileReleaseTransform.position, Quaternion.identity).GetComponent<Projectile>();
+        projectile.Release(dir, gameObject);
     }
 
     private void Shooting()
@@ -165,12 +169,17 @@ public class TestAgent : AI
 
         if (enemyStats.isDead)
             return;
-        
+
         if (!aggressive)
+        {
+            aimAtPlayer.enabled = false;
             return;
+        }
 
         if (playerStats.isDead) 
             return;
+
+        aimAtPlayer.enabled = true;
 
         EvaluateToPlayer();
         CheckLOS();
