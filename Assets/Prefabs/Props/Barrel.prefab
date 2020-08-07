@@ -143,7 +143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 50
-  _explosionSound: {fileID: 0}
-  _explosionEffect: {fileID: 198000012942003240, guid: ecdd96beb7f93494880c052dfccf9dc1,
+  _explosion: {fileID: 8086378929788942051, guid: 0c3777a068c14904c98a2e1acc93f8b9,
     type: 3}
   _explosionRadius: 400

@@ -13,6 +13,7 @@ public class Barrel : MonoBehaviour
     [SerializeField] private int _explosionRadius = 400;
 
     private SphereCollider _sphereCollider = null;
+    private bool exploded = false;
 
     private void Awake()
     {
@@ -32,8 +33,9 @@ public class Barrel : MonoBehaviour
 
     private void CheckDeath()
     {
-        if(health <= 0f)
+        if(health <= 0f && exploded == false)
         {
+            exploded = true;
             _sphereCollider.radius = _explosionRadius;
             _sphereCollider.isTrigger = true;
             Instantiate(_explosion,this.transform.position, Quaternion.identity);

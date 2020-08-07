@@ -164,7 +164,7 @@ public class Grapple : MonoBehaviour
             distanceToGrapplePoint = toGrapplePoint.magnitude;
             toGrapplePoint.Normalize();
 
-            if(distanceToGrapplePoint <= 2) return false;
+            if(distanceToGrapplePoint <= 2.1f) return false;
 
             state = GrappleState.ENGAGING;
             grappleAvailable = false;
