@@ -26,7 +26,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/aiTest.unity
     guid: 64d0f86c23ca1424089135ac2f763c37
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SCN_LukasMap2.unity
     guid: f36a9a8325a9f3e458768109c2f6647c
   - enabled: 1
