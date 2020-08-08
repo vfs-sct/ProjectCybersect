@@ -145,4 +145,4 @@ MonoBehaviour:
   health: 50
   _explosion: {fileID: 8086378929788942051, guid: 0c3777a068c14904c98a2e1acc93f8b9,
     type: 3}
-  _explosionRadius: 400
+  _explosionRadius: 550

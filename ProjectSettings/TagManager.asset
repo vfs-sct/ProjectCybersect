@@ -9,6 +9,9 @@ TagManager:
   - agent
   - Bullet
   - Portal
+  - Body
+  - Gun
+  - Head
   layers:
   - Default
   - TransparentFX

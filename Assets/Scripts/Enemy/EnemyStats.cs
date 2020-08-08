@@ -34,6 +34,14 @@ public class EnemyStats : MonoBehaviour
             {
                 dissolveMat = child.GetComponent<Renderer>().material;
                 dissolveMat.shader = _shader;
+                dissolveMat.SetColor("Color_523CE8E0", Color.magenta);
+
+                if(child.tag == "Gun")
+                {
+                    dissolveMat.SetFloat("Vector1_CBEBDBFD", 0.5f);
+                    dissolveMat.SetColor("Color_523CE8E0", new Color32(192, 192, 192, 255));
+                } 
+                    
             }
         }
     }
