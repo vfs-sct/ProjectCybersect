@@ -6,27 +6,11 @@ using UnityEngine;
 
 public class DebugMenu : MonoBehaviour
 {
-    GameObject player;
-    PlayerStats playerStats;
-
-    private void Awake()
-    {
-        player = GameObject.Find("player");
-        playerStats = player.GetComponent<PlayerStats>();
-    }
-
-    private void FixedUpdate()
-    {
-        player = GameObject.Find("player");
-        playerStats = player.GetComponent<PlayerStats>();
-    }
+    [SerializeField] private PlayerStats playerStats = null;
 
     public void DamagePlayer()
     {
-        if(playerStats.ReadHealth() > 10f)
-        {
-            playerStats.TakeDamage(10f);
-        }
+        playerStats.TakeDamage(10f);
     }
 
     public void HealPlayer()
@@ -36,16 +20,16 @@ public class DebugMenu : MonoBehaviour
 
     public void AddBoost()
     {
-        playerStats.AddBoost();
+        playerStats.Boost(1);
     }
 
     public void RemoveShield()
     {
-        playerStats.UseShield();
+        playerStats.Shield(-1);
     }
 
     public void AddShield()
     {
-        playerStats.AddShield();
+        playerStats.Shield(1);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class FPSMovement : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float movementSpeed = 5.0f;
+    [SerializeField] public float movementSpeed = 5.0f;
     [SerializeField, Range(0, 100)] private float decelerationPercent = 41.0f;
     [SerializeField] private float movementAcceleration = 50.0f;
     [SerializeField] private float airMovementMultiplier = 0.1f;
@@ -24,7 +24,6 @@ public class FPSMovement : MonoBehaviour
     private PlayerStats playerStats;
     private FPSGroundCheck groundCheck;
     private FPSKinematicBody kb;
-    private FPSInput input;
     private Grapple grapple;
     private float horizontalBoostYOffset;
 
@@ -41,7 +40,6 @@ public class FPSMovement : MonoBehaviour
     private void Start()
     {
         kb = GetComponent<FPSKinematicBody>();
-        input = GetComponent<FPSInput>();
         groundCheck = GetComponent<FPSGroundCheck>();
         playerStats = GetComponent<PlayerStats>();
         grapple = GetComponent<Grapple>();
@@ -60,16 +58,15 @@ public class FPSMovement : MonoBehaviour
 
     private void HorizontalMovement()
     {
+        if (grapple.state == GrappleState.ENGAGED)
+            return;
+
         if (groundCheck.grounded)
         {
-            Vector3 velocity = new Vector3(kb.velocityX, 0.0f, kb.velocityZ);
+            Vector3 velocity = new Vector3(kb.velocity.x, 0.0f, kb.velocity.z);
             velocity = Quaternion.Inverse(transform.rotation)*velocity;
 
-            Vector2 targetVelocity;
-            if (canMove)
-                targetVelocity = new Vector2(input.movementX, input.movementZ).normalized*movementSpeed;
-            else
-                targetVelocity = Vector2.zero;
+            Vector2 targetVelocity = new Vector2(FPSInput.movementX, FPSInput.movementZ).normalized*movementSpeed;
 
             Vector2 currentVelocity = new Vector2(velocity.x, velocity.z);
             Vector2 difference = targetVelocity - currentVelocity;
@@ -92,71 +89,68 @@ public class FPSMovement : MonoBehaviour
             }
 
             velocity = transform.rotation*velocity; 
-            kb.velocityX = velocity.x;
-            kb.velocityZ = velocity.z;
+            kb.velocity.x = velocity.x;
+            kb.velocity.z = velocity.z;
         }
         else
         {
-            Vector3 deltaVelocity = new Vector3(input.movementX, 0, input.movementZ);
+            Vector3 deltaVelocity = new Vector3(FPSInput.movementX, 0, FPSInput.movementZ);
             deltaVelocity.Normalize();
             deltaVelocity = transform.rotation*deltaVelocity;
             deltaVelocity *= airMovementMultiplier;
-            kb.velocityX += deltaVelocity.x;
-            kb.velocityZ += deltaVelocity.z;
+            kb.velocity.x += deltaVelocity.x;
+            kb.velocity.z += deltaVelocity.z;
         }
     }
 
     bool lastSpaceDown = false;
     private void Jumping()
     {
-        if (input.spaceDown && !lastSpaceDown && groundCheck.grounded && canMove)
-            kb.velocityY = jumpPower;
+        if (FPSInput.spaceDown && !lastSpaceDown && groundCheck.grounded)
+            kb.velocity.y = jumpPower;
 
-        lastSpaceDown = input.spaceDown;
+        lastSpaceDown = FPSInput.spaceDown;
     }
 
     bool lastShiftDown = false;
     private void Boosting()
     {
-        if (input.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0 && canMove)
+        if (FPSInput.shiftDown && !lastShiftDown && playerStats.ReadBoost() > 0)
         {
-            if (input.movementZ != 0 || input.movementX != 0)
+            if (FPSInput.movementZ != 0 || FPSInput.movementX != 0)
             {
-                Vector3 boost = new Vector3(input.movementX, 0.0f, input.movementZ).normalized;
+                Vector3 boost = new Vector3(FPSInput.movementX, 0.0f, FPSInput.movementZ).normalized;
                 boost = transform.rotation*boost;
-                if (groundCheck.grounded)
+                if (groundCheck.grounded && grapple.state == GrappleState.INACTIVE)
                 {
                     boost.y = horizontalBoostYOffset;
                     boost.Normalize();
                 }
                 boost *= horizontalBoostPower;
 
-                if (grapple.state == GrappleState.RETURNING && grapple.previousState == GrappleState.ENGAGED)
-                {
-                    kb.velocityX += boost.x;
-                    kb.velocityZ += boost.z;
-                    kb.velocityY += boost.y;
-                }
+                if (grapple.state != GrappleState.INACTIVE)
+                    kb.velocity += boost;
                 else
-                {
-                    kb.velocityX = boost.x;
-                    kb.velocityZ = boost.z;
-                    kb.velocityY = boost.y;
-                }
+                    kb.velocity = boost;
             }
             else
             {
-                kb.velocityY = verticalBoostPower;
+                if (grapple.state != GrappleState.INACTIVE)
+                    kb.velocity.y += verticalBoostPower;
+                else
+                    kb.velocity.y = verticalBoostPower;
             }
 
-            playerStats.UseBoost();
+            playerStats.Boost(-1);
         }
 
-        lastShiftDown = input.shiftDown;
+        lastShiftDown = FPSInput.shiftDown;
     }
 
     private void FixedUpdate()
     {
+        if(playerStats.isDead) return;
+
         HorizontalMovement();
         Jumping();
         Boosting();

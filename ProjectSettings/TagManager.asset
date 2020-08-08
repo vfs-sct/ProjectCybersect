@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Music_MainMenu
+  - Music_GamePlay
+  - agent
+  - Bullet
+  - Portal
+  - Body
+  - Gun
+  - Head
   layers:
   - Default
   - TransparentFX
@@ -16,8 +24,8 @@ TagManager:
   - ground
   - KillFloor
   - Player
-  - 
-  - 
+  - Enemy
+  - gunRender
   - 
   - 
   - 

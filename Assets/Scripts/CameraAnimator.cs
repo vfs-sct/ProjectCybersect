@@ -13,7 +13,12 @@ public class CameraAnimator : MonoBehaviour
     public float grappleFOVMultiplier = 1.3f;
     public float grappleFOVAlpha = 0.1f;
 
+    [Header("Landing")]
+    public float landingShakeAmount = 2f;
+    public float landingShakeSmoothness = 1.0f;
+
     private Grapple grapple;
+    private FPSKinematicBody kinematicBody;
     private Camera cameraComponent;
 
     private float cameraShake = 0.0f;
@@ -26,7 +31,10 @@ public class CameraAnimator : MonoBehaviour
 
     private void Start()
     {
-        grapple = GameObject.Find("player").GetComponent<Grapple>();
+        GameObject player = GameObject.Find("player");
+        grapple = player.GetComponent<Grapple>();
+        kinematicBody = player.GetComponent<FPSKinematicBody>();
+
         cameraComponent = GetComponent<Camera>();
         startFov = cameraComponent.fieldOfView;
         fov = startFov;
@@ -73,6 +81,7 @@ public class CameraAnimator : MonoBehaviour
         transform.localEulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
 
+    float lastVelocityY = 0f;
     private void FixedUpdate()
     {
         if (grapple.state != grapple.previousState)
@@ -85,17 +94,13 @@ public class CameraAnimator : MonoBehaviour
             targetFov = startFov + (grappleFOVMultiplier - 1)*startFov*grapple.currentToMaxSpeedRatio;
         else
             targetFov = startFov;
+
+        if (PlayerState.state != PlayerState.previousState)
+        {
+            if (PlayerState.previousState == PlayerStates.AIRBORNE && PlayerState.state != PlayerStates.GRAPPLING)
+                cameraShake = (float)System.Math.Tanh(-lastVelocityY*landingShakeSmoothness)*landingShakeAmount;
+        }
+
+        lastVelocityY = kinematicBody.velocity.y;
     }
 }
-/*
-if (PlayerState.state != State.AIRBORNE && PlayerState.previousState == State.AIRBORNE)
-{
-    cameraShake = shakeAmount;
-    depressionROC = landingDepressionAmount;
-}
-
-depression += depressionROC;
-depression -= (float)System.Math.Tanh((double)depression*landingDepressionRecoverySmoothness)*landingDepressionRecoverySpeed;
-rotation.x += depression*landingDepressionPitch;
-depressionROC = HalfLife(depressionROC, Time.deltaTime, landingDepressionIncreaseHalfLife);
-transform.parent.localPosition = Vector3.down*depression*landingDepressionOffset + Vector3.up*cameraHeight;*/

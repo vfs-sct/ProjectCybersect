@@ -7,18 +7,20 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject _pauseMenu;
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject _pauseMenu = null;
 
     public void Continue()
     {
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        GameManager.Instance.isPaused = false;
         _pauseMenu.SetActive(false);
     }
 
     public void MainMenu()
     {
+        Time.timeScale = 1;
+        GameManager.Instance.isPaused = true;
+        GameManager.Instance.enemyCount = 0;
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 }

@@ -1,11 +1,15 @@
 ﻿// Copyright (c) 2020 by Yuya Yoshino
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("UI to close")]
+    [SerializeField] private GameObject _pauseUI = null;
+
     [Header("Health")]
     [SerializeField] private float _currentHealth = 100f;
     [SerializeField] private float _maxHealth = 100f;
@@ -18,67 +22,71 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int _currentBoost = 3;
     [SerializeField] private int _maxBoost = 3;
 
-    public float healthPercent = 100f;
+    [Header("Boost Recharge")]
+    [SerializeField] private float _chargeTime = 2f;
+
+    [Header("Respawn")]
+    [SerializeField] private float _respawnTime = 2f;
+    [SerializeField] private Transform _respawnPoint = null;
+
+    [Header("Public")]
+    public bool isDead = false;
+    public float healthPercent = 1f;
     public float shieldPercent = 1f;
     public float boostPercent = 1f;
+    public float boostRechargePercent = 1f;
 
-    [Header("UI to close")]
-    [SerializeField] private GameObject _pauseMenu;
-    [SerializeField] private GameObject _debugMenu;
+    private float boostRechargeTimer = 0f;
+    private FPSKinematicBody kinematic;
+
+    private void Awake()
+    {
+        kinematic = GetComponent<FPSKinematicBody>();
+    }
 
     private void Update()
     {
-        KillPlayer();
+        UpdateBoost();
+        RechargeBoost();
+    }
+
+    private void RechargeBoost()
+    {
+        if (_currentBoost/(float)_maxBoost > 0.9f) return;
+
+        if (boostRechargeTimer >= 1f)
+        {
+            boostRechargeTimer = 0f;
+            Boost(1);
+        }
+
+        boostRechargeTimer += Time.deltaTime/_chargeTime;
+    }
+
+    private void UpdateBoost()
+    {
         healthPercent = _currentHealth / _maxHealth;
-        shieldPercent = (float)_currentShield / (float)_maxShield;
-        boostPercent = (float)_currentBoost / (float)_maxBoost;
+        shieldPercent = _currentShield / (float)_maxShield;
+        boostPercent = _currentBoost / (float)_maxBoost;
+        boostRechargePercent = _currentBoost/(float)_maxBoost + boostRechargeTimer*(1/3f);
     }
 
-    private void KillPlayer()
+    public void ResetPlayer()
     {
-        if(healthPercent <= 0)
-        {
-            _pauseMenu.SetActive(false);
-            _debugMenu.SetActive(false);
-            Destroy(gameObject);
-        }
-    }
-    
-    public int ReadBoost()
-    {
-        return _currentBoost;
+        isDead = false;
+        this.transform.rotation = _respawnPoint.rotation;
+        this.transform.position = _respawnPoint.position + (Vector3.up*2);
+        kinematic.velocity = Vector3.zero;
+        _currentHealth = _maxHealth;
+        _currentShield = _maxShield;
+        _currentBoost = _maxBoost;
     }
 
-    public void UseBoost()
+    IEnumerator RespawnPlayer()
     {
-        if(_currentBoost >= 1)
-        {
-            --_currentBoost;
-        }
-    }
-
-    public void AddBoost()
-    {
-        if(_currentBoost < _maxBoost)
-        {
-            ++_currentBoost;
-        }
-    }
-
-    public void UseShield()
-    {
-        if(_currentShield >= 1)
-        {
-            --_currentShield;
-        }
-    }
-
-    public void AddShield()
-    {
-        if(_currentShield < _maxShield)
-        {
-            ++_currentShield;
-        }
+        yield return new WaitForSeconds(_respawnTime);
+        this.transform.position = _respawnPoint.position + (Vector3.up*2);
+        ResetPlayer();
     }
 
     public float ReadHealth()
@@ -86,14 +94,88 @@ public class PlayerStats : MonoBehaviour
         return _currentHealth;
     }
 
+    public int ReadShield()
+    {
+        return _currentShield;
+    }
+    
+    public int ReadBoost()
+    {
+        return _currentBoost;
+    }
+
+    public void Boost(int boostAmount)
+    {
+        if(Mathf.Sign(boostAmount) == -1)
+        {
+            if(_currentBoost >= 1)
+            {
+                --_currentBoost;
+            }
+        }
+        else
+        {
+            if(_currentBoost < _maxBoost)
+            {
+                ++_currentBoost;
+            }
+        }
+    }
+
+    public void Shield(int shieldAmount)
+    {
+        if(Mathf.Sign(shieldAmount) == -1)
+        {
+            if(_currentShield >= 1)
+            {
+                --_currentShield;
+            }
+        }
+        else
+        {
+            if(_currentShield < _maxShield)
+            {
+                _currentShield = _currentShield + shieldAmount;
+                if(_currentShield > _maxShield) _currentShield = _maxShield;
+            }
+        }
+    }
+
+    public void BreakShield()
+    {
+        _currentShield = 0;
+    }
+
     public void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
+        if(_currentShield >= 1)
+        {
+            Shield(-1);
+        }
+        else
+        {
+            _currentHealth -= damage;
+        }
+
+        if(_currentHealth <= 0)
+        {
+            KillPlayer();
+        }
+    }
+
+    private void KillPlayer()
+    {
+        if(isDead) return;
+
+        isDead = true;
+        _pauseUI.SetActive(false);
+        StartCoroutine(RespawnPlayer());
     }
 
     public void HealDamage(float health)
     {
-        if(_currentHealth < _maxHealth)
-        _currentHealth += health;
+        if(_currentHealth < _maxHealth) _currentHealth += health;
+
+        if(_currentHealth > _maxHealth) _currentHealth = _maxHealth;
     }
 }
