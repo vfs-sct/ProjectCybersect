@@ -2316,6 +2316,12 @@ PrefabInstance:
       propertyPath: isPaused
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8394167943621748383, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae,
+        type: 3}
+      propertyPath: _portal
+      value: 
+      objectReference: {fileID: 6816672608607624687, guid: c801a9be3dca36d44860854b98c5248e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b477b6f2f3a6ebb4bb364d41ee5f23ae, type: 3}
 --- !u!1001 &993989992240402375

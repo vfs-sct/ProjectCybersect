@@ -8,6 +8,7 @@ TagManager:
   - Music_GamePlay
   - agent
   - Bullet
+  - Portal
   layers:
   - Default
   - TransparentFX

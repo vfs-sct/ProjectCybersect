@@ -20,7 +20,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int buildIndex;
     [SerializeField] private int buildCount;
 
-    private int sceneIndex;
+    [Header("Portal")]
+    [SerializeField] private GameObject _portal = null;
+
+    private GameObject portalPoint;
+
+    public int sceneIndex;
 
     private void Awake()
     {
@@ -80,19 +85,25 @@ public class GameManager : MonoBehaviour
         enemyCount--;
         if(enemyCount == 0)
         {
-            isPaused = true;
-            CheckBuild();
-            sceneIndex = currentScene.buildIndex + 1;
+            portalPoint = GameObject.Find("PortalPoint");
+            Instantiate(_portal, portalPoint.transform.position, Quaternion.identity);
+        }
+    }
 
-            if(buildIndex < buildCount)
-            {
-                isPaused = false;
-                SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
-            }
-            else if(buildIndex >= buildCount)
-            {
-                SceneManager.LoadScene(0, LoadSceneMode.Single);
-            }
+    public void NextScene()
+    {
+        isPaused = true;
+        CheckBuild();
+        sceneIndex = currentScene.buildIndex + 1;
+
+        if(buildIndex < buildCount)
+        {
+            isPaused = false;
+            SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single);
+        }
+        else if(buildIndex >= buildCount)
+        {
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
     }
 }
