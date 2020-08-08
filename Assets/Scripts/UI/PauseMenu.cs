@@ -20,6 +20,7 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         GameManager.Instance.isPaused = true;
+        GameManager.Instance.enemyCount = 0;
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 }
